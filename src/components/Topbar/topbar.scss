@@ -1,0 +1,18 @@
+.alx {
+  $search-bg : #E8F0FE;
+  // border-bottom: solid 2px red;
+
+  .navbar-brand{
+    font-weight: bold;
+    font-size: 25px;
+  }
+
+  #alx-nav-search{
+    background: $search-bg;
+  }
+  
+  .input-group-text{
+    background: $search-bg;
+    // background: #E7FBE0;
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "headings": {
+    "welcome": "Bienvenue",
+    "my-pps": "Mes politiques et procédures",
+    "job-types": "Types d'emploi"
+  },
+  "buttons": {
+    "add-user": "Add User"
+  },
+  "messages": {
+    "delete-users": "Are you sure you want to delete the following users?"
+  },
+  "actions": {
+    "create-user": {
+      "message": "User created",
+      "error": "There was an error creating this user"
+    },
+    "create-policy": {
+      "short": "Créer politique",
+      "standard": "Ajouter une nouvelle politique"
+    },
+    "create-level": {
+      "short": "Créer repertoire",
+      "standard": "Ajouter un nouveau répertoire"
+    }
+  },
+  "inputs": {
+    "policy-name": {
+      "label": "Name",
+      "placeholder": "Nom",
+      "helper": "Enter a name for the new policy",
+      "error": "Nom"
+    }
+  }
+}

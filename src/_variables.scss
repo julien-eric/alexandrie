@@ -1,0 +1,72 @@
+$primary: #598b65;
+$secondary: #ffd1a3;
+$deep-gray: #c0c0c0;
+$deep2-gray: #a8a8a8;
+$deep3-gray: #202020;
+$canvas-gray: #f7f7f7;
+$primary-tone: #E8F0FE;
+
+// $secondary: #FFA500;
+$theme-colors: (
+  "primary": $primary,
+  "deep-gray": $deep-gray,
+  "deep2-gray": $deep2-gray,
+  "canvas-gray": $canvas-gray,
+  "primary-tone": $primary-tone,
+  "secondary": $secondary,
+  "info": tomato,
+  "white": white,
+  "danger": teal
+);
+
+$spacer: 1.3rem;
+$border-width: 0;
+
+$border-radius: 10px;
+$input-btn-padding-y: 1rem;
+$input-btn-padding-x: 2rem;
+// $input-padding-y: 2rem;
+// $input-bg: gray;
+$navbar-light-color: #FFF !important;
+
+$navbar-brand-font-size: 2rem;
+$list-group-hover-bg: $deep-gray;
+$list-group-active-bg: $secondary;
+$input-group-addon-bg: #FFFFFF;
+
+$offcanvas-padding-y: 2rem;
+$offcanvas-padding-x: 3rem;
+$offcanvas-bg-color: $canvas-gray;
+$offcanvas-vertical-height: 30vh;
+
+$form-label-margin-bottom:              .5rem;
+$form-label-font-size:                  1rem;
+$form-label-font-weight:                bold;
+// $form-label-font-style:                 null;
+// $form-label-color:                      null;
+
+.breadcrumb a{
+  color: $primary;
+}
+$breadcrumb-divider-color:          $primary;
+$breadcrumb-active-color:           $primary;
+
+//Badges
+$badge-border-radius:               3px;
+
+//Dropdown 
+$input-group-dropdown-box-shadow:               10px 5px 15px rgba(80, 80, 80, 0.25);
+
+
+// $modal-title-line-height:           50px;
+// $offcanvas-padding-y:               $modal-inner-padding;
+// $offcanvas-padding-x:               $modal-inner-padding;
+$offcanvas-horizontal-width:        600px;
+// $offcanvas-vertical-height:         30vh;
+// $offcanvas-transition-duration:     .3s;
+$offcanvas-border-color:            $primary;
+$offcanvas-border-width:            10px;
+// $offcanvas-title-line-height:       $modal-title-line-height;
+// $offcanvas-bg-color:                $modal-content-bg;
+// $offcanvas-color:                   $modal-content-color;
+// $offcanvas-box-shadow:              $modal-content-box-shadow-xs;

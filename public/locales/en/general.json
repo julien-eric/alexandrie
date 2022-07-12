@@ -1,0 +1,35 @@
+{
+  "headings": {
+    "welcome": "Welcome2",
+    "my-pps": "My Policies and Procedures",
+    "job-types": "Roles"
+  },
+  "buttons": {
+    "add-user": "Add User"
+  },
+  "messages": {
+    "delete-users": "Are you sure you want to delete the following users?"
+  },
+  "actions": {
+    "create-user": {
+      "message": "User created",
+      "error": "There was an error creating this user"
+    },
+    "create-policy": {
+      "short": "Create Policy",
+      "standard": "Create a New Policy"
+    },
+    "create-level": {
+      "short": "Create Level",
+      "standard": "Create a New Level"
+    }
+  },
+  "inputs": {
+    "policy-name": {
+      "label": "Nom",
+      "placeholder": "Nom",
+      "helper": "Entrer le nom de la politique",
+      "error": "Nom"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+@import './variables';
+
+.bg-light.alx {
+  background-color:  #FFF !important;
+  border-bottom: 1px solid $deep-gray;
+  font-family: 'Montserrat', sans-serif !important;
+  font-weight: 100;
+}
+
+
+
+////////////////////////////// https://bootstrap.build/app
+
+@import "~bootstrap/scss/bootstrap";
+
+.wrapper {
+  display: flex;
+  width: 100%;
+  align-items: stretch;
+  background-color: $canvas-gray;
+}
+
+.input-group {
+  .input-group-text {
+    border-radius: 10px 0 0 10px;
+  }
+}
+
+.round {
+  border-radius: 20px;
+}

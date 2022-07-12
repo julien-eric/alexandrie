@@ -1,13 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import './i18n'
 import './index.css';
-import App from './App';
+import MyPps from './views/MyPps'
+import JobTypes from './views/JobTypes'
+import { Route, Routes, BrowserRouter as Router } from 'react-router-dom' // react-router v4/v5
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Router>
+    <Routes>
+      <Route exact path='/' element={<MyPps/>} />
+      <Route exact path='/jobs' element={<JobTypes/>} />
+    </Routes>
+  </Router>,
   document.getElementById('root')
 );
 

@@ -1,0 +1,52 @@
+@import '../../variables';
+
+#sidebar {
+  font-family: 'Montserrat', sans-serif !important;
+  font-weight: bolder;
+  background-color: #f1f3f4;
+  min-width: 250px;
+  max-width: 250px;
+  min-height: 100vh;
+  border-right: #e7e7e7 solid 1px;
+  // box-shadow:         inset 0 0 20px #9a9a9a;
+
+  // margin-right: 40px;
+
+  .institution-name{
+    border-bottom: solid 1px #e7e7e7;
+  }
+  
+  &.active {
+    margin-left: -250px;
+  }
+  
+  .projet-holder {
+    border: solid 1px #e7e7e7;
+  }
+  
+  .list-group {
+    
+    text-align: left;
+    
+    .list-group-item {
+      margin-top: 5px;
+      // color: #48674F;
+      // margin-top:10px; 
+      height:50px;
+      background-color: #f1f3f4;
+      font-size: 16px;;
+      border-radius: 5px;
+      
+      &.active {
+        background-color: $deep2-gray;
+      }
+
+      &:hover {
+        border-radius: 5px;
+        background-color: $deep-gray;
+        color: #FFFFFF;
+      }
+    }
+  }
+
+}

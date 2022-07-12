@@ -1,0 +1,16 @@
+@import '../../../variables';
+
+.add-entry {
+  .nav-item{
+    font-size: 1.2rem;
+    .active{
+      font-weight: bold;
+      border-bottom: solid 2px $primary;
+    }
+  }
+}
+
+.breadcrumb-item.active {
+  font-weight: bold;
+  text-decoration: underline;
+}
