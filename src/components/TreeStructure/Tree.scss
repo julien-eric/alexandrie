@@ -1,123 +1,112 @@
 //https://github.com/atlassian/react-beautiful-dnd
 //https://atlaskit.atlassian.com/packages/confluence/tree
-
 @import '../../variables';
-//Need to do this the clean way by rewriting variables in the .less files of antd Tree
-.ant-tree-list-holder {
-  background-color: $canvas-gray;
-}
 
-.lh-tree  {
-  max-width: 1580px;
-  $folder-border: #700909;
-  $file-node-background: #ffffff;
-  $folder-node-background: #e8eaeb;
-  $folder-height: 52px;
-  $file-height: 36px;
+$file-node-background: #ffffff;
+$folder-node-background: #e8eaeb;
+$folder-height: 52px;
+$file-height: 36px;
 
-  .folder-button {
-    padding-left: 10px;
-    button {
-      // box-shadow: -5px -5px 9px rgba(255,255,255,0.45), 5px 5px 9px rgba(94,104,121,0.3);
-      border-radius: 50%;
-    }
-  }
-
-  .dropdown-toggle {
-    margin-right: 10px;
-  }
-  .dropdown-toggle::after {
+.caret-off {
+  button::before{
     display: none;
   }
+}
+.caret-off {
+  button::after{
+    display: none;
+  }
+}
 
-  .ant-tree-treenode:hover {
+.tree-root {
+  max-width: 1580px ;
+}
 
-    .folder-button:not(:hover) {
-      button {
-        box-shadow: -5px -5px 9px rgba(255,255,255,0.60), 5px 5px 9px rgba(94,104,121,0.45);
-        background-color: white !important;
-      }
-    }
+.tree-node {
 
-    .ant-tree-node-content-wrapper, .ant-tree-switcher{
-      transition-duration: 0.2s;
-      background-color: $primary-tone !important;
-    }
-    
-    .folder {
-      .ant-tree-node-content-wrapper, .ant-tree-switcher{
-        background-color: $primary-tone !important;
-      }
+  transition-duration: 0.2s;
+  border-radius: 6px;
+
+  padding: 5px 15px;
+  margin-bottom: 5px;
+  transition-duration: 0.2s;
+
+  &.leaf {
+    background-color: $file-node-background;
+    min-height: $file-height;
+    line-height: $file-height;
+  }
+  
+  &.folder {
+    background-color: $folder-node-background;
+    min-height: $folder-height;
+    line-height: $folder-height;
+    font-weight: bold;
+  }
+  
+  &:hover, &.dragging {
+    background-color: $primary-tone;
+    .size-badge {
+      opacity: 1;
     }
   }
   
-  .ant-tree-node-content-wrapper{
-    
-    transition-duration: 0.2s !important;
-    background-color: $file-node-background !important;
-    min-height: $file-height !important;
-    line-height: $file-height !important;
-    padding: 0px 20px 0px 0px !important;
-    border-radius: 0px 6px 6px 0px !important;
-    // box-shadow: 10px 5px 15px rgba(0,	0, 0, 0.15	);
-    // box-shadow: 0px 1px 2px 0px rgba(0,	0, 0, 0.15	)
-    //         1px 2px 4px 0px rgba(0,	0, 0, 0.15	)
-    //         2px 4px 8px 0px rgba(0,	0, 0, 0.15	)
-    //         2px 4px 16px 0px rgba(0,	0, 0, 0.15	);
+  .size-badge {
+    // opacity: 0;
+    transition-duration: 0.7s;
   }
 
-  .folder .ant-tree-node-content-wrapper{
-    min-height: $folder-height !important;
-    line-height: $folder-height !important;
-    background-color: $folder-node-background !important;
-    font-weight: bold !important;
-  }
-
-  .ant-tree-switcher {
-    background-color: $file-node-background !important;
-
-    min-height: $file-height !important;
-    line-height: $file-height !important;
-    padding: 0px 20px !important;
-    border-radius: 6px 0px 0px 6px;
-    box-shadow: 10px 5px 15px rgba(80, 80, 80, 0.25);
-    overflow: hidden;    
-  }
-
-  .folder .ant-tree-switcher{
-    min-height: $folder-height !important;
-    line-height: $folder-height !important;
-    background-color: $folder-node-background !important;
-
-    // &::after {
-    //   content: '';
-    //   width: 0;
-    //   height: 0;
-    //   border-style: solid;
-    //   border-width: 0 0 19px 18px;
-    //   border-color: transparent transparent transparent $secondary;
-    //   left: 0;
-    //   top: 0;
-    //   // border-color: transparent #608A32 transparent transparent;
-    //   position: absolute;
-    // }
-  }
-
-  .ant-tree-draggable-icon {
-    display: none;
-  }
-
-  .ant-tree-indent-unit {
-    width: 45px !important;
-  }
-
-  .ant-tree-indent-unit::before {
-    border-right: 1px solid red;
-    opacity: 1;
 }
 
-  .ant-tree-treenode-leaf-first {
-    margin-bottom: 20px !important;
-  }
 
+.folder-button {
+  padding-left: 10px;
+  button {
+    box-shadow: -5px -5px 9px rgba(255,255,255,0.45), 5px 5px 9px rgba(94,104,121,0.3);
+    &:hover{
+      box-shadow: -5px -5px 9px rgba(211, 211, 211, 0.45), 5px 5px 9px rgba(45, 52, 67, 0.5);
+    }
+    border-radius: 50%;
+  }
+}
+
+.folder .ant-tree-node-content-wrapper{
+  min-height: $folder-height !important;
+  line-height: $folder-height !important;
+  background-color: $folder-node-background !important;
+  font-weight: bold !important;
+}
+
+.ant-tree-switcher {
+  background-color: $file-node-background !important;
+
+  min-height: $file-height !important;
+  line-height: $file-height !important;
+  padding: 0px 20px !important;
+  border-radius: 6px 0px 0px 6px;
+  box-shadow: 10px 5px 15px rgba(80, 80, 80, 0.25);
+  overflow: hidden;    
+}
+
+.folder .ant-tree-switcher{
+  min-height: $folder-height !important;
+  line-height: $folder-height !important;
+  background-color: $folder-node-background !important;
+}
+
+.ant-tree-draggable-icon {
+  display: none;
+}
+
+.ant-tree-indent-unit {
+  width: 45px !important;
+}
+
+.ant-tree-indent-unit::before {
+  border-right: 1px solid red;
+  opacity: 1;
+}
+
+.ant-tree-treenode-leaf-first {
+  margin-bottom: 20px !important;
 }

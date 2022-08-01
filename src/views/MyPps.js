@@ -15,7 +15,7 @@ export const MyPps = ({ ...props }) => {
     <App router={props.router}>
       <PageHeader />
       <Row>
-        <Col>
+        <Col className='tree-root'>
           <Tree />
         </Col>
       </Row>

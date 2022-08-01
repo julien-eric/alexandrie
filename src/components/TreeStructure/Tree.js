@@ -1,24 +1,30 @@
 import React, { useEffect, useState } from 'react'
 import './Tree.scss'
 
-import 'antd/dist/antd.css';
-// import 'antd/dist/antd.dark.css';
-
-import { Tree } from "antd";
 import { DownOutlined } from '@ant-design/icons';
 import { AddEntry } from '../Sliders/AddEntry'
-import { TreeTitle } from './TreeTitle.js'
+import { TreeNode } from './TreeNode'
 import { Slider } from '../Sliders/Slider/Slider.js'
 import { useTranslation } from 'react-i18next'
 
 import axios from 'axios'
 import useSWR, { useSWRConfig }  from 'swr'
 
-const { TreeNode } = Tree;
+import Tree, {
+  mutateTree,
+  moveItemOnTree,
+  RenderItemParams,
+  TreeItem,
+  TreeData,
+  ItemId,
+  TreeSourcePosition,
+  TreeDestinationPosition,
+} from '@atlaskit/tree';
 
 const fetcher = url => axios.get(url).then(res => res.data)
 const poster = (url, body) => axios.post(url, body).then(res => res.data)
-const putter = (url, body) => axios.post(url, body).then(res => res.data)
+
+const PADDING_PER_LEVEL = 32;
 
 const useTreeData = () => {
   const { data, error } = useSWR('http://localhost:3000/entries', fetcher)
@@ -29,112 +35,127 @@ const useTreeData = () => {
   }
 };
 
+const mergeLocalRemote = (local, remote) => {
+  if(!remote) return
+
+  const items = {};
+  for (const itemId in remote.items) {
+    items[itemId] = {...remote.items[itemId], isExpanded: local ? local.items[itemId].isExpanded : false}
+  }
+  
+  return {
+    rootId: '1',
+    items: items
+  };
+
+}
+
 export const TreeStructure = ({
   router,
   ...props
 }) => {
-
+  
   const { t } = useTranslation()
+  const [remoteTreeData, setRemoteTreeData] = useState();
   const [treeData, setTreeData] = useState();
   const [selected, setSelected] = useState();
   const [nodeCreation, setNodeCreation] = useState(false);
   const { fetchedData, isLoading, isError } = useTreeData();
-
+  
   //AddEntries
   const { mutate } = useSWRConfig()
   const [show, setShow] = useState(false);
   const [folder, setFolder] = useState(false);
-  const handleShow = () => setShow(true);
+  
+  const handleShow = (item, folder = false) => {
+    setShow(true);
+    if (folder) setFolder(true)
+  }
   
   const handleClose = async () => {
     await mutate('http://localhost:3000/entries')
     setShow(false);
   }
-
-  useEffect(() => {
-    setTreeData(fetchedData);
-  });
-
-  const onDragEnter = info => {
-    // console.log('enter', info.node);
-  };
-
-  const onSelect = (selectedKeys, info) => {
-    console.log("selected", selectedKeys, info);
-    setSelected(info.node.key)
-  };
-
-  const onLoad = (selectedKeys, info) => {
-    console.log("load", selectedKeys, info);
-  };
-
-  const onDrop = async info => {
-    const dropKey = info.node.key;
-    const dragKey = info.dragNode.key;
-    const dropPos = info.node.pos.split('-');
-    const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1]);
-    // console.log('dropKey', dropKey);
-    // console.log('dragKey', info.dragNode);
-    // console.log('dropPos', dropPos);
-    // console.log('dropPosition', dropPosition);
-
-    const findBySequence = (data, sequence, getNextPos) => {
-      let dataLevel = data;
-      let element = {};
-      let nextElement;
   
-      sequence.forEach((position, index, array) => {
-        position = Number(position);
-        const lastPos = getNextPos && index === array.length - 1 && position + 1 <= dataLevel.length - 1;
-        if(!dataLevel[position]) {
-          return -1;
-        }
-        element = dataLevel[position];
-        if(lastPos) {
-          nextElement = dataLevel[position + 1];
-        }
-        dataLevel = element.children;
-      });
-      return { dropElement: element, nextElement: nextElement }
+  useEffect(() => {
+    setRemoteTreeData(fetchedData);
+  });
+  
+  const onExpand = (itemId) => {
+    const result = mutateTree(mergeLocalRemote(treeData, remoteTreeData), itemId, { isExpanded: true });
+    setRemoteTreeData(result)
+    setTreeData(result)
+  };
+  
+  const onCollapse = (itemId) => {
+    const result = mutateTree(mergeLocalRemote(treeData, remoteTreeData), itemId, { isExpanded: false });
+    setRemoteTreeData(result)
+    setTreeData(result)
+  };
+  
+  // const onDragStart = ( source, destination ) => {
+  // };
+
+  const onDragEnd = async ( source, destination ) => {
+    if (!destination) { return; }
+
+    const draggedEntryId = remoteTreeData.items[source.parentId].children[source.index];
+    const newSortOrder = generateNewSortOrder(source, destination);
+    const newTree = moveItemOnTree(mergeLocalRemote(treeData, remoteTreeData), source, destination);
+    newTree.items[draggedEntryId] = {...newTree.items[draggedEntryId], data:{ ...newTree.items[draggedEntryId].data, sortOrder: newSortOrder}}
+   
+    setTreeData(newTree)
+
+    await mutate('http://localhost:3000/entries', newTree, false)
+
+    const getResult = async () => poster('http://localhost:3000/entries/sortorder', {_id: draggedEntryId, sortOrder: newSortOrder});
+    // const options = { optimisticData: newTree, rollbackOnError: true }
+    const options = { optimisticData: newTree, revalidate:false }
+
+    try {
+      // await mutate('http://localhost:3000/entries', getResult, options)
+    } catch (error) {
+      console.log('error', error)
     }
 
-    dropPos.shift();
-    const { dropElement, nextElement } = findBySequence(treeData, dropPos, true);    
-    const result = await putter('http://localhost:3000/entries/sortorder', {_id: dragKey, sortOrder: getMiddleSortOrder(dropElement, nextElement)});
-    console.log('result', result)
-    await mutate('http://localhost:3000/entries')
   };
 
-  const getMiddleSortOrder = (pos1, pos2) => {
-    if(pos1.sortOrder && pos2.sortOrder) {
-      return Math.ceil((pos1.sortOrder + pos2.sortOrder)/2);
-    }
-    return -1;
+  const getChildFromParent = (parentId, index) => {
+    return remoteTreeData.items[remoteTreeData.items[parentId].children[index]];
   }
 
-  const showAddEntry = (item, folder) => {
-    setShow(item);
-    setFolder(folder);
-  }
+  const generateNewSortOrder = (source, destination) => {
 
-  const renderTreeData = (data, level = 0) => {
-    if(!data) return [];
-    return data.map((item) => {
-      item.level = level;
-      item.showAddEntry = (folder) => {
-        showAddEntry(item, folder)
-      };
-      if (item.children) {
-          const children = renderTreeData(item.children, level + 1)
-          return {key: item._id, title: item.name, className: item.folder ? 'folder' : '', dataRef: item, children: children} 
+    const getMiddleSortOrder = (pos1, pos2) => {
+      if(pos1.sortOrder && pos2.sortOrder) {
+        return Math.ceil((pos1.sortOrder + pos2.sortOrder)/2);
       }
-      return {key: item._id, title: item.name, className: item.folder ? 'folder' : '', dataRef: item, children: []} 
-    });
-  }
-  const renderedTreeData = renderTreeData(treeData);
+      return -1;
+    }
 
+    if(destination.index > 0 && destination.index < remoteTreeData.items[destination.parentId].children.length - 1) {
+      return getMiddleSortOrder(
+        getChildFromParent(destination.parentId, destination.index).data,
+        getChildFromParent(destination.parentId, destination.index+1).data
+      );
+    }
+    if(destination.index === 0) {
+      const ogFirstChild = getChildFromParent(destination.parentId, 0).data;
+      if(ogFirstChild.sortOrder === 0) {
+        return -100;
+      } else if(ogFirstChild.sortOrder > 0) {
+        return getMiddleSortOrder(0, ogFirstChild.sortOrder);
+      }
+    }
+    if(destination.index === remoteTreeData.items[destination.parentId].children.length - 1) {
+      const parentEntry = remoteTreeData.items[destination.parentId];
+      return getChildFromParent(destination.parentId, parentEntry.children.length - 1).data.sortOrder + 100
+    }
+  }
+
+  // const convertedData = convertRawData(remoteTreeData);
   if (isError) return "An error has occurred.";
-  if (isLoading) return "Loading...";
+  if (isLoading || !remoteTreeData) return "Loading...";
   return (
     <>
       <Slider 
@@ -145,40 +166,25 @@ export const TreeStructure = ({
       >
         <AddEntry
           item={show}
-          tree={treeData}
+          tree={remoteTreeData}
           folder={folder}
           setFolder={setFolder}
           handleClose={handleClose}
         />
       </Slider>
-
-      {/* <p className='fs-6 text-primary mb-3'>Seules les PPs qui vous sont associées sont affichées</p> */}
-
       <Tree
-        // showLine
-        // defaultExpandedKeys={["0-0-0"]}
-        showline={{ hideLeafIcon: true }}
-        switcherIcon={<DownOutlined />}
-        onSelect={onSelect}
-        draggable
-        blockNode
-        className='lh-tree hide-file-icon'
-        onDragEnter={onDragEnter}
-        onDrop={onDrop}
-        onLoad={onLoad}
-        treeData={renderedTreeData}
-        titleRender={(data) => {
-          return <TreeTitle 
-            data={data}
-            fetchedData={fetchedData}
-            selected={selected}
-            nodeCreation={nodeCreation}
-            setNodeCreation={setNodeCreation}
-          />
-        }}
+        tree={mergeLocalRemote(treeData, remoteTreeData)}
+        renderItem={(renderItemParams) => <TreeNode renderItemParams={renderItemParams} offsetPerLevel={PADDING_PER_LEVEL} handleShow={handleShow}/>}
+        onExpand={onExpand}
+        onCollapse={onCollapse}
+        onDragEnd={onDragEnd}
+        // onDragStart={onDragStart}
+        offsetPerLevel={PADDING_PER_LEVEL}
+        isDragEnabled
       />
     </>
   );
+  
 }
 
 export default TreeStructure

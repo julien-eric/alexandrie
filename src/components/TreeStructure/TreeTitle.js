@@ -51,7 +51,6 @@ export const TreeTitle = ({
       element = dataLevel[index];
       dataLevel = element.children;
     });
-    console.log('element', element);
   }
 
   const createNewNode = (item, folder) => {
