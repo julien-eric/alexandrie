@@ -18,22 +18,13 @@ export const AddEntry = ({
   });
 
   const findNode = (data, id) => {
-    function iter(a) {
-        if (a._id === id) {
-            result = a;
-            return true;
-        }
-        return Array.isArray(a.children) && a.children.some(iter);
-    }
-    var result;
-    data.some(iter);
-    return result;
+    
   }
   
   let breadcrumb = []; 
   let breadcrumb2 = [];
   if(item && item._id) {
-    const element = findNode(tree, item._id);
+    const element = tree.find(item._id);
     breadcrumb.push(element);
     let element2, element3;
     if(element && element.parent) {
