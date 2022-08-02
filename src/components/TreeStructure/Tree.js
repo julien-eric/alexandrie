@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import './Tree.scss'
 
 import { DownOutlined } from '@ant-design/icons';
@@ -77,7 +77,7 @@ export const TreeStructure = ({
     setShow(false);
   }
   
-  useEffect(() => {
+  useLayoutEffect(() => {
     setRemoteTreeData(fetchedData);
   });
   
