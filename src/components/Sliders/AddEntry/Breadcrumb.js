@@ -24,7 +24,7 @@ export const AddEntry = ({
   let breadcrumb = []; 
   let breadcrumb2 = [];
   if(item && item._id) {
-    const element = tree.find(item._id);
+    const element = tree.items[item._id];
     breadcrumb.push(element);
     let element2, element3;
     if(element && element.parent) {
@@ -38,7 +38,7 @@ export const AddEntry = ({
   }
 
   if(policyName) {
-    breadcrumb2.push({name: policyName});
+    breadcrumb2.push({data:{name: policyName}});
   }
 
   const targetIcon = props.folder ? faFolderClosed : faFilePdf;
@@ -48,11 +48,11 @@ export const AddEntry = ({
       <Breadcrumb className='mt-2'>
         {breadcrumb.map(
           (item, index) => {
-            const active = item.name === policyName;
+            const active = item && item.data.name === policyName;
             return(
               <Breadcrumb.Item href="#" active={active}>
                 {index === 0 ? <FontAwesomeIcon className='text-primary me-2' icon={faFolderOpen} /> : <></>}
-                {item.name}
+                {item.data.name}
               </Breadcrumb.Item>
             )
           }
@@ -61,8 +61,8 @@ export const AddEntry = ({
       <Breadcrumb>
         {breadcrumb2.map(
           (item) => {
-            const active = item.name === policyName;
-            return(<Breadcrumb.Item href="#" active={active}><FontAwesomeIcon className='text-primary me-2' icon={targetIcon} />{item.name}</Breadcrumb.Item>)
+            const active = item && item.data.name === policyName;
+            return(<Breadcrumb.Item href="#" active={active}><FontAwesomeIcon className='text-primary me-2' icon={targetIcon} />{item.data.name}</Breadcrumb.Item>)
           }
         )} 
       </Breadcrumb>

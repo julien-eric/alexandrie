@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import styled from 'styled-components';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleUp, faAngleDown, faAngleRight, faFilePdf, faFolder, faFolderClosed } from '@fortawesome/free-solid-svg-icons'
+import { faAngleUp, faAngleDown, faAngleRight, faFilePdf, faFolder, faFolderClosed, faHyphen } from '@fortawesome/free-solid-svg-icons'
 
 export const TreeNode = ({
   router,
@@ -24,7 +24,6 @@ export const TreeNode = ({
   const { t } = useTranslation();
   const { item, onExpand, onCollapse, provided, snapshot } = renderItemParams;
 
-  // console.log('sortOrder', item.data.sortOrder)
   const folderCategory = (level) => {
     if(level == 0) return 'Service';
     if(level == 1) return 'Département';
@@ -38,7 +37,7 @@ export const TreeNode = ({
     onExpand,
     onCollapse
   ) => {
-    if (item.children && item.children.length > 0) {
+    if (item.data.folder && item.children && item.children.length > 0) {
       return item.isExpanded ? (
         <Button variant="link" size="sm" onClick={() => onCollapse(item.id)} className='round d-inline text-black' bg="deep-gray">
           <FontAwesomeIcon icon={faAngleDown} />
@@ -48,10 +47,16 @@ export const TreeNode = ({
           <FontAwesomeIcon icon={faAngleRight} />
         </Button>
       );
+    } else if (item.data.folder) {
+      return (<span className='round d-inline text-black' bg="deep-gray">
+        -
+        </span>
+      )
     }
     return (<Button variant="link" size="sm" onClick={() => onExpand(item.id)} className='round d-inline' bg="deep-gray">
       <FontAwesomeIcon icon={faFilePdf} />
     </Button>);
+
   };
 
   let classes = 'tree-node'
@@ -91,10 +96,12 @@ export const TreeNode = ({
         }
       </span>  
       <span>{item.data ? item.data.name : ''}</span>
-        {item.data.sortOrder !== undefined ?
-          // {item.children.length !== 0 ?
-          // <Badge className='size-badge round' bg="deep-gray ms-2">{item.children.length}</Badge> :
+        {/* {item.data.sortOrder !== undefined ?
           <Badge className='size-badge round' bg="deep-gray ms-2">{item.data.sortOrder}</Badge> :
+          <></>
+        } */}
+        {item.children.length !== 0 ?
+          <Badge className='size-badge round' bg="deep-gray ms-2">{item.children.length}</Badge> :
           <></>
         }
     </div>

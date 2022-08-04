@@ -40,7 +40,7 @@ const mergeLocalRemote = (local, remote) => {
 
   const items = {};
   for (const itemId in remote.items) {
-    items[itemId] = {...remote.items[itemId], isExpanded: local ? local.items[itemId].isExpanded : false}
+    items[itemId] = {...remote.items[itemId], isExpanded: local && local.items[itemId] ? local.items[itemId].isExpanded : false}
   }
   
   return {
@@ -68,7 +68,7 @@ export const TreeStructure = ({
   const [folder, setFolder] = useState(false);
   
   const handleShow = (item, folder = false) => {
-    setShow(true);
+    setShow(item);
     if (folder) setFolder(true)
   }
   
@@ -80,9 +80,12 @@ export const TreeStructure = ({
   useLayoutEffect(() => {
     setRemoteTreeData(fetchedData);
   });
+
   
   const onExpand = (itemId) => {
     const result = mutateTree(mergeLocalRemote(treeData, remoteTreeData), itemId, { isExpanded: true });
+    // const item = result.items[itemId]
+
     setRemoteTreeData(result)
     setTreeData(result)
   };
@@ -98,26 +101,25 @@ export const TreeStructure = ({
 
   const onDragEnd = async ( source, destination ) => {
     if (!destination) { return; }
-
+    
     const draggedEntryId = remoteTreeData.items[source.parentId].children[source.index];
     const newSortOrder = generateNewSortOrder(source, destination);
     const newTree = moveItemOnTree(mergeLocalRemote(treeData, remoteTreeData), source, destination);
     newTree.items[draggedEntryId] = {...newTree.items[draggedEntryId], data:{ ...newTree.items[draggedEntryId].data, sortOrder: newSortOrder}}
-   
     setTreeData(newTree)
 
-    await mutate('http://localhost:3000/entries', newTree, false)
-
-    const getResult = async () => poster('http://localhost:3000/entries/sortorder', {_id: draggedEntryId, sortOrder: newSortOrder});
-    // const options = { optimisticData: newTree, rollbackOnError: true }
-    const options = { optimisticData: newTree, revalidate:false }
-
+    // await mutate('http://localhost:3000/entries', newTree, false)
+    const getResult = async () => {
+      //This doesn't seem right. But a POST request to update one item shouldn't return the complete list no... so what is the best practice for that update to return the list?   
+      await poster('http://localhost:3000/entries/sortorder', {_id: draggedEntryId, sortOrder: newSortOrder});
+      return newTree;
+    }
+    const options = { optimisticData: newTree, rollbackOnError: true }
     try {
-      // await mutate('http://localhost:3000/entries', getResult, options)
+      mutate('http://localhost:3000/entries', getResult, options)
     } catch (error) {
       console.log('error', error)
     }
-
   };
 
   const getChildFromParent = (parentId, index) => {
@@ -153,7 +155,6 @@ export const TreeStructure = ({
     }
   }
 
-  // const convertedData = convertRawData(remoteTreeData);
   if (isError) return "An error has occurred.";
   if (isLoading || !remoteTreeData) return "Loading...";
   return (
