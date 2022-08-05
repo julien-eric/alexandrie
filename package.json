@@ -31,6 +31,7 @@
     "react-sortable-tree": "2.8.0",
     "react-sortable-tree-patch-react-17": "^2.9.0",
     "react-sortable-tree-theme-file-explorer": "^2.0.0",
+    "react-transition-group": "^4.4.5",
     "styled-components": "^5.3.5",
     "swr": "^1.2.2",
     "web-vitals": "^2.1.4"
