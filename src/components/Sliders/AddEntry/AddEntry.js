@@ -9,6 +9,7 @@ import Col from 'react-bootstrap/Col'
 import Button from 'react-bootstrap/Button'
 
 import EntryBreadCrumb from './Breadcrumb'
+import FileUpload from '../../FileUpload/FileUpload.js';
 
 import axios from 'axios'
 const poster = (url, body) => axios.post(url, body).then(res => res.data)
@@ -81,19 +82,7 @@ export const AddEntry = ({
         </Form.Group>
 
         {!folder && 
-          <Form.Group as={Row} className='mb-3'>
-            <Form.Label htmlFor='inputPassword5'>Fichier</Form.Label>
-            <Form.Control
-              type='file'
-              id='file'
-              aria-describedby='passwordHelpBlock'
-              filename={formData.title}
-              onChange={(e) => setFormData({...formData, file: e.target.value})}
-            />
-            <Form.Text id='passwordHelpBlock' muted>
-              Your password must be 8-20 characters long, contain letters and numbers.
-            </Form.Text>
-          </Form.Group>
+          <FileUpload />
         }
 
         <Row className='mt-5'>

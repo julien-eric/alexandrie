@@ -5,7 +5,7 @@ import DropdownButton from 'react-bootstrap/DropdownButton'
 import Button from 'react-bootstrap/Button'
 import Badge from 'react-bootstrap/Badge'
 import { useTranslation } from 'react-i18next'
-import styled from 'styled-components';
+import { CSSTransition} from 'react-transition-group'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleUp, faAngleDown, faAngleRight, faFilePdf, faFolder, faFolderClosed, faHyphen } from '@fortawesome/free-solid-svg-icons'
@@ -23,6 +23,7 @@ export const TreeNode = ({
 }) => {
   const { t } = useTranslation();
   const { item, onExpand, onCollapse, provided, snapshot } = renderItemParams;
+  const [inProp, setInProp] = useState(true);
 
   const folderCategory = (level) => {
     if(level == 0) return 'Service';
@@ -65,47 +66,50 @@ export const TreeNode = ({
   if(snapshot.isDragging) classes += ' dragging'
 
   return (
-    <div
-      ref={provided.innerRef}
-      {...provided.draggableProps}
-      {...provided.dragHandleProps}
-    >
-    <div className={classes}>
-      <span>{getIcon(item, onExpand, onCollapse)}</span>
-      {item.data.folder ?
-        <DropdownButton
-          variant="link"
-          title={item.data.folder ? <FontAwesomeIcon className='text-primary' icon={faFolderClosed} /> : <FontAwesomeIcon icon={faFilePdf} />}
-          size="sm"
-          className='folder-button caret-off me-2'
-          style={{display: 'inline'}}
-          id="input-group-dropdown-1"
-        >
-          <Dropdown.Item href="#" onClick={() => handleShow(item.data)}>{t('general:actions.create-policy.short')}</Dropdown.Item>
-          <Dropdown.Item href="#" onClick={() => handleShow(item.data, true)}>{t('general:actions.create-level.short')}</Dropdown.Item>
-        </DropdownButton>
-        : <></>
-      }
-      <span>
-        
+    <CSSTransition in={inProp} timeout={200} classNames="my-node">
+
+      <div
+        ref={provided.innerRef}
+        {...provided.draggableProps}
+        {...provided.dragHandleProps}
+      >
+      <div className={classes}>
+        <span>{getIcon(item, onExpand, onCollapse)}</span>
         {item.data.folder ?
-          <Badge bg="primary me-2">
-            {levelCategory}
-          </Badge> :
-          <></>
+          <DropdownButton
+            variant="link"
+            title={item.data.folder ? <FontAwesomeIcon className='text-primary' icon={faFolderClosed} /> : <FontAwesomeIcon icon={faFilePdf} />}
+            size="sm"
+            className='folder-button caret-off me-2'
+            style={{display: 'inline'}}
+            id="input-group-dropdown-1"
+          >
+            <Dropdown.Item href="#" onClick={() => handleShow(item.data)}>{t('general:actions.create-policy.short')}</Dropdown.Item>
+            <Dropdown.Item href="#" onClick={() => handleShow(item.data, true)}>{t('general:actions.create-level.short')}</Dropdown.Item>
+          </DropdownButton>
+          : <></>
         }
-      </span>  
-      <span>{item.data ? item.data.name : ''}</span>
-        {/* {item.data.sortOrder !== undefined ?
-          <Badge className='size-badge round' bg="deep-gray ms-2">{item.data.sortOrder}</Badge> :
-          <></>
-        } */}
-        {item.children.length !== 0 ?
-          <Badge className='size-badge round' bg="deep-gray ms-2">{item.children.length}</Badge> :
-          <></>
-        }
+        <span>
+          
+          {item.data.folder ?
+            <Badge bg="primary me-2">
+              {levelCategory}
+            </Badge> :
+            <></>
+          }
+        </span>  
+        <span>{item.data ? item.data.name : ''}</span>
+          {/* {item.data.sortOrder !== undefined ?
+            <Badge className='size-badge round' bg="deep-gray ms-2">{item.data.sortOrder}</Badge> :
+            <></>
+          } */}
+          {item.children.length !== 0 ?
+            <Badge className='size-badge round' bg="deep-gray ms-2">{item.children.length}</Badge> :
+            <></>
+          }
+      </div>
     </div>
-  </div>
+  </CSSTransition>
   );
 }
 

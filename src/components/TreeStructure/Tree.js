@@ -47,7 +47,6 @@ const mergeLocalRemote = (local, remote) => {
     rootId: '1',
     items: items
   };
-
 }
 
 export const TreeStructure = ({
@@ -79,7 +78,7 @@ export const TreeStructure = ({
   
   useLayoutEffect(() => {
     setRemoteTreeData(fetchedData);
-  });
+  }, [fetchedData]);
 
   
   const onExpand = (itemId) => {
