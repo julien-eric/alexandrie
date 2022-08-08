@@ -38,7 +38,7 @@ export const AddEntry = ({
   }
 
   if(policyName) {
-    breadcrumb2.push({data:{name: policyName}});
+    breadcrumb2.push({data:{name: policyName, id: '999'}});
   }
 
   const targetIcon = props.folder ? faFolderClosed : faFilePdf;
@@ -50,7 +50,7 @@ export const AddEntry = ({
           (item, index) => {
             const active = item && item.data.name === policyName;
             return(
-              <Breadcrumb.Item href="#" active={active}>
+              <Breadcrumb.Item href="#" active={active} key={item.data._id}>
                 {index === 0 ? <FontAwesomeIcon className='text-primary me-2' icon={faFolderOpen} /> : <></>}
                 {item.data.name}
               </Breadcrumb.Item>

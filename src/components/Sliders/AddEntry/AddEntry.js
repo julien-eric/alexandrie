@@ -76,13 +76,13 @@ export const AddEntry = ({
             tree={props.tree}
             newPolicyName={formData.name}
           />
-          {/* <Form.Text id='passwordHelpBlock' muted>
-            {t('general:inputs.policy-name.helper')}
-          </Form.Text> */}
         </Form.Group>
 
         {!folder && 
-          <FileUpload />
+          <FileUpload
+            formData={formData}
+            setFormData={setFormData}
+          />
         }
 
         <Row className='mt-5'>

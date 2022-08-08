@@ -1,4 +1,7 @@
 import React, { useState } from 'react'
+import { CognitoIdentityClient } from '@aws-sdk/client-cognito-identity';
+import { fromCognitoIdentityPool } from '@aws-sdk/credential-provider-cognito-identity';
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 
 import Dropdown from 'react-bootstrap/Dropdown'
 import DropdownButton from 'react-bootstrap/DropdownButton'
@@ -8,7 +11,35 @@ import { useTranslation } from 'react-i18next'
 import { CSSTransition} from 'react-transition-group'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleUp, faAngleDown, faAngleRight, faFilePdf, faFolder, faFolderClosed, faHyphen } from '@fortawesome/free-solid-svg-icons'
+import { faAngleDown, faAngleRight, faFilePdf, faFolder, faFolderClosed, faHyphen } from '@fortawesome/free-solid-svg-icons'
+
+
+///////////////////////
+// Set AWS Info
+const REGION ='us-east-1';
+const S3_BUCKET ='lighthouse-pilot';
+const ID_POOL_ID = 'us-east-1:ef383138-3a73-47e1-93df-6217b2b1612e';
+// Initialize the Amazon Cognito credentials provider
+const s3 = new S3Client({
+  region: REGION,
+  credentials: fromCognitoIdentityPool({
+    client: new CognitoIdentityClient({ region: REGION }),
+    identityPoolId: ID_POOL_ID,
+  }),
+});
+const albumBucketName = S3_BUCKET;
+///////////////////////
+
+const getS3Link = async (fileKey) => {
+  console.log('fileKey', fileKey)
+  const getParams = {
+    Bucket: albumBucketName,
+    Key: fileKey
+  };
+  const command = new GetObjectCommand(getParams);
+  const response = await s3.send(command);
+  alert(JSON.stringify(response))
+}
 
 export const TreeNode = ({
   router,
@@ -55,7 +86,7 @@ export const TreeNode = ({
       )
     }
     return (<Button variant="link" size="sm" onClick={() => onExpand(item.id)} className='round d-inline' bg="deep-gray">
-      <FontAwesomeIcon icon={faFilePdf} />
+      <FontAwesomeIcon icon={faFilePdf} onClick={(e) => {getS3Link(item.data.files[0])}} />
     </Button>);
 
   };
