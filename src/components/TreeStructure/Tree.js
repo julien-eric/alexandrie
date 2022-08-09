@@ -3,9 +3,12 @@ import './Tree.scss'
 
 import { DownOutlined } from '@ant-design/icons';
 import { AddEntry } from '../Sliders/AddEntry'
+import { PDFViewer } from '../Sliders/PDFViewer'
 import { TreeNode } from './TreeNode'
 import { Slider } from '../Sliders/Slider/Slider.js'
 import { useTranslation } from 'react-i18next'
+
+
 
 import axios from 'axios'
 import useSWR, { useSWRConfig }  from 'swr'
@@ -23,6 +26,7 @@ import Tree, {
 
 const fetcher = url => axios.get(url).then(res => res.data)
 const poster = (url, body) => axios.post(url, body).then(res => res.data)
+
 
 const PADDING_PER_LEVEL = 32;
 
@@ -63,17 +67,21 @@ export const TreeStructure = ({
   
   //AddEntries
   const { mutate } = useSWRConfig()
-  const [show, setShow] = useState(false);
+  const [showSlider, setShowSlider] = useState(false);
+  const [showPdfViewer, setShowPdfViewer] = useState(false);
   const [folder, setFolder] = useState(false);
+
+  //PdfViewer
+  const [pdfFile, setPdfFile] = useState();
   
   const handleShow = (item, folder = false) => {
-    setShow(item);
+    setShowSlider(item);
     if (folder) setFolder(true)
   }
   
   const handleClose = async () => {
     await mutate('http://localhost:3000/entries')
-    setShow(false);
+    setShowSlider(false);
   }
   
   useLayoutEffect(() => {
@@ -161,20 +169,25 @@ export const TreeStructure = ({
       <Slider 
         placement='end'
         title={folder ? t('menus:headings.add-folder') : t('menus:headings.add-policy')}
-        show={show}
+        show={showSlider}
         handleClose={handleClose}
       >
         <AddEntry
-          item={show}
+          item={showSlider}
           tree={remoteTreeData}
           folder={folder}
           setFolder={setFolder}
           handleClose={handleClose}
         />
       </Slider>
+      <PDFViewer
+        show={!!pdfFile}
+        setPdfFile={setPdfFile}
+        pdfFile={pdfFile}
+      ></PDFViewer>
       <Tree
         tree={mergeLocalRemote(treeData, remoteTreeData)}
-        renderItem={(renderItemParams) => <TreeNode renderItemParams={renderItemParams} offsetPerLevel={PADDING_PER_LEVEL} handleShow={handleShow}/>}
+        renderItem={(renderItemParams) => <TreeNode renderItemParams={renderItemParams} offsetPerLevel={PADDING_PER_LEVEL} setPdfFile={setPdfFile} handleShow={handleShow}/>}
         onExpand={onExpand}
         onCollapse={onCollapse}
         onDragEnd={onDragEnd}

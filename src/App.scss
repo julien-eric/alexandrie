@@ -30,6 +30,14 @@
   border-radius: 20px;
 }
 
+.react-pdf__Page__canvas {
+  width: 100% !important;
+  height: inherit !important;
+}
+.pdf-modal {
+  min-width: 1080px;
+}
+
 .spinning {
   -webkit-animation-name: spin;
   -webkit-animation-duration: 4000ms;

@@ -9,10 +9,10 @@ import Button from 'react-bootstrap/Button'
 import Badge from 'react-bootstrap/Badge'
 import { useTranslation } from 'react-i18next'
 import { CSSTransition} from 'react-transition-group'
+import {Buffer} from 'buffer';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDown, faAngleRight, faFilePdf, faFolder, faFolderClosed, faHyphen } from '@fortawesome/free-solid-svg-icons'
-
 
 ///////////////////////
 // Set AWS Info
@@ -30,17 +30,6 @@ const s3 = new S3Client({
 const albumBucketName = S3_BUCKET;
 ///////////////////////
 
-const getS3Link = async (fileKey) => {
-  console.log('fileKey', fileKey)
-  const getParams = {
-    Bucket: albumBucketName,
-    Key: fileKey
-  };
-  const command = new GetObjectCommand(getParams);
-  const response = await s3.send(command);
-  alert(JSON.stringify(response))
-}
-
 export const TreeNode = ({
   router,
   data,
@@ -49,6 +38,7 @@ export const TreeNode = ({
   setNodeCreation,
   renderItemParams,
   offsetPerLevel,
+  setPdfFile,
   handleShow,
   ...props
 }) => {
@@ -63,6 +53,32 @@ export const TreeNode = ({
     if(level === undefined) return undefined
   } 
   const levelCategory = folderCategory(provided.draggableProps.style.paddingLeft / offsetPerLevel);
+  
+  const streamToData = async (stream) => {
+    const reader = stream.getReader();
+    const chunks = [];
+    let stop = false;
+    while (!stop) {
+      const { done, value } = await reader.read();
+      if (value) {
+        chunks.push(value);
+      }
+      if (done) {
+        stop = true;
+      }
+    }
+    return Buffer.concat(chunks);
+  };
+
+  const getS3Link = async (fileKey) => {
+    const getParams = {
+      Bucket: albumBucketName,
+      Key: fileKey
+    };
+    const command = new GetObjectCommand(getParams);
+    const { Body } = await s3.send(command);
+    setPdfFile(await streamToData(Body));
+  }
 
   const getIcon = (
     item,
