@@ -1,7 +1,9 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { Document, Page } from 'react-pdf/dist/esm/entry.webpack5';
+import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons'
 
 export const PDFViewer = ({
   show,
@@ -31,6 +33,16 @@ export const PDFViewer = ({
           </Document>
         </Modal.Body>
         <Modal.Footer>
+          { numPages !== null && 
+            <>
+              <Button variant="secondary" onClick={() => setPageNumber(pageNumber - 1)} disabled={pageNumber === 1}>
+                <FontAwesomeIcon icon={faArrowLeft} />
+              </Button>
+              <Button variant="secondary" onClick={() => setPageNumber(pageNumber + 1)} disabled={pageNumber === numPages}>
+                <FontAwesomeIcon icon={faArrowRight} />
+              </Button>
+            </>
+          }
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>

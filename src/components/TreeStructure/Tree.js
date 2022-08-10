@@ -117,7 +117,8 @@ export const TreeStructure = ({
 
     // await mutate('http://localhost:3000/entries', newTree, false)
     const getResult = async () => {
-      //This doesn't seem right. But a POST request to update one item shouldn't return the complete list no... so what is the best practice for that update to return the list?   
+      //This doesn't seem right. But a POST request to update one item shouldn't return the complete list no?... 
+      //So what is the best practice for that update to return the list?   
       await poster('http://localhost:3000/entries/sortorder', {_id: draggedEntryId, sortOrder: newSortOrder});
       return newTree;
     }
@@ -143,10 +144,17 @@ export const TreeStructure = ({
     }
 
     if(destination.index > 0 && destination.index < remoteTreeData.items[destination.parentId].children.length - 1) {
-      return getMiddleSortOrder(
-        getChildFromParent(destination.parentId, destination.index).data,
-        getChildFromParent(destination.parentId, destination.index+1).data
-      );
+      if(source.index < destination.index) {
+        return getMiddleSortOrder(
+            getChildFromParent(destination.parentId, destination.index).data,
+            getChildFromParent(destination.parentId, destination.index+1).data
+          );
+        } else {
+          return getMiddleSortOrder(
+            getChildFromParent(destination.parentId, destination.index-1).data,
+            getChildFromParent(destination.parentId, destination.index).data
+          );
+        }
     }
     if(destination.index === 0) {
       const ogFirstChild = getChildFromParent(destination.parentId, 0).data;

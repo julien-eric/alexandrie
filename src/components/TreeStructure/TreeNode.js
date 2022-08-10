@@ -45,6 +45,7 @@ export const TreeNode = ({
   const { t } = useTranslation();
   const { item, onExpand, onCollapse, provided, snapshot } = renderItemParams;
   const [inProp, setInProp] = useState(true);
+  const showSO = false;
 
   const folderCategory = (level) => {
     if(level == 0) return 'Service';
@@ -146,10 +147,10 @@ export const TreeNode = ({
           }
         </span>  
         <span>{item.data ? item.data.name : ''}</span>
-          {/* {item.data.sortOrder !== undefined ?
+          {showSO && item.data.sortOrder !== undefined ?
             <Badge className='size-badge round' bg="deep-gray ms-2">{item.data.sortOrder}</Badge> :
             <></>
-          } */}
+          }
           {item.children.length !== 0 ?
             <Badge className='size-badge round' bg="deep-gray ms-2">{item.children.length}</Badge> :
             <></>
