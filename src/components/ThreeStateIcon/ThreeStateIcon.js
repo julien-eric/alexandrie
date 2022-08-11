@@ -14,7 +14,11 @@ export const ThreeStateIcon = ({
     if(iconState === ICON_STATE.ERROR) return icons.error;
   }
 
-  return <FontAwesomeIcon className={iconState === ICON_STATE.LOADING ? 'spinning' : ''} icon={getIcon()} />
+  let classes = '';
+  classes += iconState === ICON_STATE.LOADING ? ' spinning' : '';
+  classes += iconState === ICON_STATE.ERROR ? ' text-danger' : '';
+
+  return <FontAwesomeIcon className={classes} icon={getIcon()} />
 }
 
 export const ICON_STATE = {

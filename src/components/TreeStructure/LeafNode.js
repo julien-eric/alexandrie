@@ -3,7 +3,7 @@ import { getS3Link } from '../../utils.js'
 import Button from 'react-bootstrap/Button'
 import Badge from 'react-bootstrap/Badge'
 import { ICON_STATE, ThreeStateIcon } from '../ThreeStateIcon/ThreeStateIcon';
-import { faFilePdf, faSpinner, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faFilePdf, faSpinner, faFileCircleXmark } from '@fortawesome/free-solid-svg-icons'
 
 // Switch to debug
 const showSO = false;
@@ -39,7 +39,7 @@ export const LeafNode = ({
     >
       <span>
         <Button variant="link" size="sm" className='round d-inline' bg="deep-gray">
-          <ThreeStateIcon icons={{ initial: faFilePdf, loading: faSpinner, final: faFilePdf, error: faXmark }} iconState={loading} />
+          <ThreeStateIcon icons={{ initial: faFilePdf, loading: faSpinner, final: faFilePdf, error: faFileCircleXmark }} iconState={loading} />
         </Button>
       </span>
 

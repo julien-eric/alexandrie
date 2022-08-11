@@ -38,15 +38,11 @@ export const FolderNode = ({
     onCollapse
   ) => {
     if (item.children && item.children.length > 0) {
-      return item.isExpanded ? (
-        <Button variant="link" size="sm" onClick={() => onCollapse(item.id)} className='round d-inline text-black' bg="deep-gray">
-          <FontAwesomeIcon icon={faAngleDown} />
+      return(
+        <Button variant="link" size="sm" onClick={() => item.isExpanded ? onCollapse(item.id) : onExpand(item.id)} className='round d-inline text-black' bg="deep-gray">
+          <FontAwesomeIcon icon={item.isExpanded ? faAngleDown : faAngleRight} />
         </Button>
-        ) : (
-        <Button variant="link" size="sm" onClick={() => onExpand(item.id)} className='round d-inline text-black' bg="deep-gray">
-          <FontAwesomeIcon icon={faAngleRight} />
-        </Button>
-      );
+      )
     } else if (item.data.folder) {
       return (<span className='round d-inline text-black' bg="deep-gray">
         -
