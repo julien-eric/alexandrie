@@ -1,7 +1,7 @@
 import React , {useState} from 'react';
 import { CognitoIdentityClient } from '@aws-sdk/client-cognito-identity';
 import { fromCognitoIdentityPool } from '@aws-sdk/credential-provider-cognito-identity';
-import { S3Client, PutObjectCommand, GetObjectCommand, ListObjectsCommand, DeleteObjectCommand, DeleteObjectsCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
 import Form from 'react-bootstrap/Form'
 import Col from 'react-bootstrap/Col'
@@ -26,7 +26,7 @@ const s3 = new S3Client({
 const albumBucketName = S3_BUCKET;
 ///////////////////////
 
-export const UploadImageToS3WithReactS3 = ({
+export const FileUpload = ({
   formData,
   setFormData,
   ...props
@@ -87,4 +87,4 @@ export const UploadImageToS3WithReactS3 = ({
          </Form.Group>)
 }
 
-export default UploadImageToS3WithReactS3;
+export default FileUpload;

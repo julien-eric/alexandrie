@@ -4,7 +4,7 @@ import './Tree.scss'
 import { DownOutlined } from '@ant-design/icons';
 import { AddEntry } from '../Sliders/AddEntry'
 import { PDFViewer } from '../Sliders/PDFViewer'
-import { TreeNode } from './TreeNode'
+import { GenericNode } from './GenericNode'
 import { Slider } from '../Sliders/Slider/Slider.js'
 import { useTranslation } from 'react-i18next'
 
@@ -195,7 +195,7 @@ export const TreeStructure = ({
       ></PDFViewer>
       <Tree
         tree={mergeLocalRemote(treeData, remoteTreeData)}
-        renderItem={(renderItemParams) => <TreeNode renderItemParams={renderItemParams} offsetPerLevel={PADDING_PER_LEVEL} setPdfFile={setPdfFile} handleShow={handleShow}/>}
+        renderItem={(renderItemParams) => <GenericNode renderItemParams={renderItemParams} offsetPerLevel={PADDING_PER_LEVEL} setPdfFile={setPdfFile} handleShow={handleShow}/>}
         onExpand={onExpand}
         onCollapse={onCollapse}
         onDragEnd={onDragEnd}
