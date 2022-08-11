@@ -26,7 +26,7 @@ export const Sidebar = ({
         >
           <Nav.Item as="li">
             <Nav.Link eventKey="pp">
-            <h2 className='fw-bolder'>
+            <h2 className='text-black'>
               {t('general:headings.my-pps')}
             </h2>
             </Nav.Link>

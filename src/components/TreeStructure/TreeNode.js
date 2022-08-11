@@ -14,6 +14,9 @@ import {Buffer} from 'buffer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDown, faAngleRight, faFilePdf, faFolder, faFolderClosed, faHyphen } from '@fortawesome/free-solid-svg-icons'
 
+// Switch to debug
+const showSO = false;
+
 ///////////////////////
 // Set AWS Info
 const REGION ='us-east-1';
@@ -45,7 +48,6 @@ export const TreeNode = ({
   const { t } = useTranslation();
   const { item, onExpand, onCollapse, provided, snapshot } = renderItemParams;
   const [inProp, setInProp] = useState(true);
-  const showSO = false;
 
   const folderCategory = (level) => {
     if(level == 0) return 'Service';
@@ -113,6 +115,14 @@ export const TreeNode = ({
   else classes += ' leaf';
   if(snapshot.isDragging) classes += ' dragging'
 
+  const treeNodeAction = (item) => {
+    if(item.data.folder) {
+      item.isExpanded ? onCollapse(item.id) : onExpand(item.id);
+    } else {
+      getS3Link(item.data.files[0]);
+    }
+  } 
+
   return (
     <CSSTransition in={inProp} timeout={200} classNames="my-node">
 
@@ -121,7 +131,10 @@ export const TreeNode = ({
         {...provided.draggableProps}
         {...provided.dragHandleProps}
       >
-      <div className={classes}>
+      <div 
+        className={classes} 
+        onClick={() => treeNodeAction(item)}
+      >
         <span>{getIcon(item, onExpand, onCollapse)}</span>
         {item.data.folder ?
           <DropdownButton
@@ -139,14 +152,14 @@ export const TreeNode = ({
         }
         <span>
           
+        </span>  
+        <span>{item.data ? item.data.name : ''}</span>
           {item.data.folder ?
-            <Badge bg="primary me-2">
+            <Badge bg="deep2-gray ms-2">
               {levelCategory}
             </Badge> :
             <></>
           }
-        </span>  
-        <span>{item.data ? item.data.name : ''}</span>
           {showSO && item.data.sortOrder !== undefined ?
             <Badge className='size-badge round' bg="deep-gray ms-2">{item.data.sortOrder}</Badge> :
             <></>

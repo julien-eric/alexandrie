@@ -14,6 +14,8 @@
 
   .institution-name{
     border-bottom: solid 1px #e7e7e7;
+    border-right: solid 1px #e7e7e7;
+    background-color: #fcfcfc;
   }
   
   &.active {
@@ -27,24 +29,35 @@
   .list-group {
     
     text-align: left;
+    border-right: solid 1px #e7e7e7;
+    border-bottom: solid 1px #e7e7e7;
+    background-color: $canvas-gray;
+    border-radius: 0px;
+
     
     .list-group-item {
-      margin-top: 5px;
-      // color: #48674F;
-      // margin-top:10px; 
-      height:50px;
-      background-color: #f1f3f4;
+
+      .sidebar-icon {
+        width: 35px;
+        text-align: center;
+      }
+
+      // margin-bottom: 5px;
+      height: 60px;
+      line-height: 40px;
+      background-color: inherit;
       font-size: 16px;;
-      border-radius: 5px;
+      border-radius: 0px;
       
       &.active {
-        background-color: $deep2-gray;
+        color:inherit;
+        border-left: 6px solid $primary;
       }
 
       &:hover {
-        border-radius: 5px;
-        background-color: $deep-gray;
-        color: #FFFFFF;
+        border-radius: 0px;
+        background-color: rgba($secondary, $alpha: 0.3);
+        color: #000000;
       }
     }
   }

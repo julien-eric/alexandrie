@@ -17,12 +17,23 @@
   display: flex;
   width: 100%;
   align-items: stretch;
-  background-color: $canvas-gray;
 }
 
 .input-group {
   .input-group-text {
-    border-radius: 10px 0 0 10px;
+    border-radius: 0 10px 10px 0 !important;
+  }
+}
+
+.lh-group {
+  :focus-within {
+    border-radius: 8px;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(89, 139, 101, .4);
+  }
+  .form-control:focus {
+    -webkit-box-shadow: none;
+    box-shadow: none;
   }
 }
 

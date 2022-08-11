@@ -23,24 +23,26 @@ export const Sidebar = ({
           <i className='text-deep-gray2 align-self-center fs-3 fas fa-angle-right ' />
         </Col>
       </Row>
-      <ListGroup className='pt-3 text-primary fw-bold' defaultActiveKey={location ? location.pathname : '/'}>
-        <ListGroup.Item action active href='/'>
-          <i className='fas fa-home me-3' />
-          {t('menus:headings.my-pps')}
-        </ListGroup.Item>
-        <ListGroup.Item action href='/jobs'>
-          <i className='fas fa-briefcase me-3' />
-          {t('menus:headings.job-types')}
-        </ListGroup.Item>
-        <ListGroup.Item action href='/users'>
-          <i className='fas fa-users me-3' />
-          {t('menus:headings.users')}
-        </ListGroup.Item>
-        <ListGroup.Item action href='/user'>
-          <i className='fas fa-user me-3' />
-          {t('menus:headings.my-account')}
-        </ListGroup.Item>
-      </ListGroup>
+      <Row>
+        <ListGroup className='pe-0 pb-2 text-primary fw-bold' defaultActiveKey={location ? location.pathname : '/'}>
+          <ListGroup.Item action active href='/'>
+            <i className='sidebar-icon fas fa-home' />
+            {t('menus:headings.my-pps')}
+          </ListGroup.Item>
+          <ListGroup.Item action href='/jobs'>
+            <i className='sidebar-icon fas fa-briefcase' />
+            {t('menus:headings.job-types')}
+          </ListGroup.Item>
+          <ListGroup.Item action href='/users'>
+            <i className='sidebar-icon fas fa-users' />
+            {t('menus:headings.users')}
+          </ListGroup.Item>
+          <ListGroup.Item action href='/user'>
+            <i className='sidebar-icon fas fa-user' />
+            {t('menus:headings.my-account')}
+          </ListGroup.Item>
+        </ListGroup>
+      </Row>
     </nav>)
 }
 

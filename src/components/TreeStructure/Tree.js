@@ -62,7 +62,6 @@ export const TreeStructure = ({
   const [remoteTreeData, setRemoteTreeData] = useState();
   const [treeData, setTreeData] = useState();
   const [selected, setSelected] = useState();
-  const [nodeCreation, setNodeCreation] = useState(false);
   const { fetchedData, isLoading, isError } = useTreeData();
   
   //AddEntries
@@ -91,8 +90,6 @@ export const TreeStructure = ({
   
   const onExpand = (itemId) => {
     const result = mutateTree(mergeLocalRemote(treeData, remoteTreeData), itemId, { isExpanded: true });
-    // const item = result.items[itemId]
-
     setRemoteTreeData(result)
     setTreeData(result)
   };
@@ -115,11 +112,14 @@ export const TreeStructure = ({
     newTree.items[draggedEntryId] = {...newTree.items[draggedEntryId], data:{ ...newTree.items[draggedEntryId].data, sortOrder: newSortOrder}}
     setTreeData(newTree)
 
+    let changeParams = {_id: draggedEntryId, sortOrder: newSortOrder};
+    if ( source.parentId !== destination.parentId ) changeParams.parent = destination.parentId;
+
     // await mutate('http://localhost:3000/entries', newTree, false)
     const getResult = async () => {
-      //This doesn't seem right. But a POST request to update one item shouldn't return the complete list no?... 
+      //A Post request to update one item shouldn't return the complete list no?
       //So what is the best practice for that update to return the list?   
-      await poster('http://localhost:3000/entries/sortorder', {_id: draggedEntryId, sortOrder: newSortOrder});
+      await poster('http://localhost:3000/entries/sortorder', changeParams);
       return newTree;
     }
     const options = { optimisticData: newTree, rollbackOnError: true }
@@ -201,6 +201,7 @@ export const TreeStructure = ({
         onDragEnd={onDragEnd}
         // onDragStart={onDragStart}
         offsetPerLevel={PADDING_PER_LEVEL}
+        // isNestingEnabled={true}
         isDragEnabled
       />
     </>

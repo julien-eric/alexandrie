@@ -7,8 +7,7 @@ import Form from 'react-bootstrap/Form'
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 import InputGroup from 'react-bootstrap/InputGroup'
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { ICON_STATE, ThreeStateIcon } from '../ThreeStateIcon/ThreeStateIcon';
 import { faCheck, faSpinner, faCloudArrowUp } from '@fortawesome/free-solid-svg-icons'
 
 ///////////////////////
@@ -33,15 +32,13 @@ export const UploadImageToS3WithReactS3 = ({
   ...props
 }) => {
 
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [loading, setLoading] = useState();
+  const [loading, setLoading] = useState(ICON_STATE.INITIAL);
 
   const handleFileInput = async (e) => {
     e.preventDefault();
     if (!e.target.files.length) {
       return alert('Choose a file to upload first.');
     } else {
-      await setSelectedFile(e.target.files[0]);
       addFile(e.target.files[0])
     }
   }
@@ -54,14 +51,13 @@ export const UploadImageToS3WithReactS3 = ({
         Key: file.name, 
         Body: file
       };
-      setLoading('loading');
+      setLoading(ICON_STATE.LOADING);
       try {
         const data = await s3.send(new PutObjectCommand(uploadParams));
         console.log('Successfully uploaded photo :', data);
         if(data.$metadata.httpStatusCode === 200) {
           setFormData({...formData, file: file.name})
-          setLoading('complete');
-          // await getS3Link(file)
+          setLoading(ICON_STATE.FINAL);
         }
       } catch (err) {
         return alert('There was an error uploading your photo: ', err.message);
@@ -71,27 +67,22 @@ export const UploadImageToS3WithReactS3 = ({
     }
   };  
 
-  const getIcon = () => {
-    if(loading === undefined) return faCloudArrowUp;
-    if(loading === 'loading') return faSpinner;
-    if(loading === 'complete') return faCheck;
-  }
-
   return (<Form.Group as={Row} className='mb-3'>
           <Col className='px-0'>
             <Form.Label htmlFor='inputPassword5'>Fichier</Form.Label>
-            <InputGroup className="mb-3">
-              <Form.Control
-                type='file'
-                id='file'
-                aria-describedby='fileHelpBlock'
-                onChange={handleFileInput}
-              />
-              
-              <InputGroup.Text id="basic-addon2">
-                <FontAwesomeIcon className={loading === 'loading' ? 'spinning' : ''} icon={getIcon()} />
-              </InputGroup.Text>
-            </InputGroup>
+            <div className='lh-group'>
+              <InputGroup className="mb-3 lh-input-group">
+                <Form.Control
+                  type='file'
+                  id='file'
+                  aria-describedby='fileHelpBlock'
+                  onChange={handleFileInput}
+                />
+                <InputGroup.Text id="basic-addon2">
+                  <ThreeStateIcon icons={{ initial: faCloudArrowUp, loading: faSpinner, final: faCheck }} iconState={loading} />
+                </InputGroup.Text>
+              </InputGroup>
+            </div>
           </Col>
          </Form.Group>)
 }
