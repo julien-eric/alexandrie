@@ -3,7 +3,7 @@ import './AddEntry.scss'
 
 import Breadcrumb from 'react-bootstrap/Breadcrumb'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFilePdf, faFolderClosed, faFolderOpen } from '@fortawesome/free-solid-svg-icons'
+import { faFilePdf, faFolderClosed, faFolderOpen } from '@fortawesome/pro-light-svg-icons'
 
 export const AddEntry = ({
   location,

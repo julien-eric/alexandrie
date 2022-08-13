@@ -3,7 +3,7 @@ import { getS3Link } from '../../utils.js'
 import Button from 'react-bootstrap/Button'
 import Badge from 'react-bootstrap/Badge'
 import { ICON_STATE, ThreeStateIcon } from '../ThreeStateIcon/ThreeStateIcon';
-import { faFilePdf, faSpinner, faFileCircleXmark } from '@fortawesome/free-solid-svg-icons'
+import { faFilePdf, faSpinner, faFileCircleXmark } from '@fortawesome/pro-thin-svg-icons'
 
 // Switch to debug
 const showSO = false;

@@ -6,6 +6,9 @@ import ListGroup from 'react-bootstrap/ListGroup'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faHome, faBriefcase, faUsers, faUser } from '@fortawesome/pro-light-svg-icons';
+
 export const Sidebar = ({
   location,
   ...props
@@ -15,30 +18,29 @@ export const Sidebar = ({
   return (
     <nav id='sidebar' className='bg-light px-2'>
       <Row className='d-flex align-items-center institution-name'>
-        <Col className='col-9 pt-2'>
-          <h3 className='text-deep-gray2 mb-0' >ICM</h3>
-          <p className='fs-6 deep-gray2' >Cardiologie Montreal</p>
+        <Col className='col-9 ps-3 py-3'>
+          <h3 className='text-deep-gray2 mb-0'>ICM</h3>
         </Col>
-        <Col className='col-2'>
+        {/* <Col className='col-2'>
           <i className='text-deep-gray2 align-self-center fs-3 fas fa-angle-right ' />
-        </Col>
+        </Col> */}
       </Row>
       <Row>
-        <ListGroup className='pe-0 pb-2 text-primary fw-bold' defaultActiveKey={location ? location.pathname : '/'}>
+        <ListGroup className='pe-0 text-primary fw-bold' defaultActiveKey={location ? location.pathname : '/'}>
           <ListGroup.Item action active href='/'>
-            <i className='sidebar-icon fas fa-home' />
-            {t('menus:headings.my-pps')}
+            <div className='d-inline me-2 sidebar-icon'><FontAwesomeIcon icon={faHome} className='fa-fw' /></div>
+            <p className='d-inline'>{t('menus:headings.my-pps')}</p>
           </ListGroup.Item>
           <ListGroup.Item action href='/jobs'>
-            <i className='sidebar-icon fas fa-briefcase' />
+            <div className='d-inline me-2 sidebar-icon'><FontAwesomeIcon icon={faBriefcase} className='fa-fw' /></div>
             {t('menus:headings.job-types')}
           </ListGroup.Item>
           <ListGroup.Item action href='/users'>
-            <i className='sidebar-icon fas fa-users' />
+            <div className='d-inline me-2 sidebar-icon'><FontAwesomeIcon icon={faUsers} className='fa-fw' /></div>
             {t('menus:headings.users')}
           </ListGroup.Item>
           <ListGroup.Item action href='/user'>
-            <i className='sidebar-icon fas fa-user' />
+            <div className='d-inline me-2 sidebar-icon'><FontAwesomeIcon icon={faUser} className='fa-fw' /></div>
             {t('menus:headings.my-account')}
           </ListGroup.Item>
         </ListGroup>

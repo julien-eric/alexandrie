@@ -14,7 +14,7 @@ export const ThreeStateIcon = ({
     if(iconState === ICON_STATE.ERROR) return icons.error;
   }
 
-  let classes = '';
+  let classes = 'fa-fw';
   classes += iconState === ICON_STATE.LOADING ? ' spinning' : '';
   classes += iconState === ICON_STATE.ERROR ? ' text-danger' : '';
 

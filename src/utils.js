@@ -41,8 +41,7 @@ const getS3Link = async (fileKey) => {
   };
   const command = new GetObjectCommand(getParams);
   const { Body } = await s3.send(command);
-  const result = await streamToData(Body) 
-  console.log('getS3Link', result)
+  const result = await streamToData(Body)
   return result;
 }
 

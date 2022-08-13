@@ -7,7 +7,7 @@ import Badge from 'react-bootstrap/Badge'
 import { useTranslation } from 'react-i18next'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleDown, faAngleRight, faFilePdf, faFolder, faFolderClosed, faHyphen } from '@fortawesome/free-solid-svg-icons'
+import { faAngleDown, faAngleRight, faFilePdf, faFolder, faFolderClosed, faHyphen } from '@fortawesome/pro-light-svg-icons'
 
 // Switch to debug
 const showSO = false;
@@ -40,15 +40,23 @@ export const FolderNode = ({
     if (item.children && item.children.length > 0) {
       return(
         <Button variant="link" size="sm" onClick={() => item.isExpanded ? onCollapse(item.id) : onExpand(item.id)} className='round d-inline text-black' bg="deep-gray">
-          <FontAwesomeIcon icon={item.isExpanded ? faAngleDown : faAngleRight} />
+          <FontAwesomeIcon className='fa-fw' icon={item.isExpanded ? faAngleDown : faAngleRight} />
         </Button>
       )
     } else if (item.data.folder) {
       return (<span className='round d-inline text-black' bg="deep-gray">
-        -
+          <Button variant="link" size="sm" onClick={() => item.isExpanded ? onCollapse(item.id) : onExpand(item.id)} className='round d-inline text-black' bg="deep-gray">
+            <FontAwesomeIcon className='fa-fw' icon={faHyphen} />
+          </Button>
         </span>
       )
     }
+  };
+
+  const handleFolderClick = (e, createFolder) => {
+    console.log('handle')
+    e.preventDefault();
+    handleShow(item.data, createFolder);
   };
 
   return (
@@ -67,8 +75,8 @@ export const FolderNode = ({
           style={{display: 'inline'}}
           id="input-group-dropdown-1"
         >
-          <Dropdown.Item href="#" onClick={() => handleShow(item.data)}>{t('general:actions.create-policy.short')}</Dropdown.Item>
-          <Dropdown.Item href="#" onClick={() => handleShow(item.data, true)}>{t('general:actions.create-level.short')}</Dropdown.Item>
+          <Dropdown.Item href="#" onClick={(e) => handleFolderClick(e)}>{t('general:actions.create-policy.short')}</Dropdown.Item>
+          <Dropdown.Item href="#" onClick={(e) => handleFolderClick(e, true)}>{t('general:actions.create-level.short')}</Dropdown.Item>
         </DropdownButton>
         : <></>
       }

@@ -8,7 +8,9 @@ import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 import InputGroup from 'react-bootstrap/InputGroup'
 import { ICON_STATE, ThreeStateIcon } from '../ThreeStateIcon/ThreeStateIcon';
-import { faCheck, faSpinner, faCloudArrowUp } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+// import { FontAwesomeIcon } from '@fortawesome/fontawesome-svg-core'
+import { faCloudCheck, faSpinner, faCloudArrowUp } from '@fortawesome/pro-light-svg-icons'
 
 ///////////////////////
 // Set AWS Info
@@ -79,7 +81,7 @@ export const FileUpload = ({
                   onChange={handleFileInput}
                 />
                 <InputGroup.Text id="basic-addon2">
-                  <ThreeStateIcon icons={{ initial: faCloudArrowUp, loading: faSpinner, final: faCheck }} iconState={loading} />
+                  <ThreeStateIcon icons={{ initial: faCloudArrowUp, loading: faSpinner, final: faCloudCheck }} iconState={loading} />
                 </InputGroup.Text>
               </InputGroup>
             </div>

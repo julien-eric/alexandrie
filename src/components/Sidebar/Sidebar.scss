@@ -3,7 +3,7 @@
 #sidebar {
   font-family: 'Montserrat', sans-serif !important;
   font-weight: bolder;
-  background-color: #f1f3f4;
+  background-color: $canvas-gray;
   min-width: 250px;
   max-width: 250px;
   min-height: 100vh;
@@ -34,11 +34,11 @@
     background-color: $canvas-gray;
     border-radius: 0px;
 
-    
+
     .list-group-item {
 
       .sidebar-icon {
-        width: 35px;
+        width: 55px;
         text-align: center;
       }
 
@@ -46,12 +46,12 @@
       height: 60px;
       line-height: 40px;
       background-color: inherit;
-      font-size: 16px;;
+      font-size: 14px;
       border-radius: 0px;
       
       &.active {
-        color:inherit;
-        border-left: 6px solid $primary;
+        color:black;
+        border-left: 6px solid $secondary;
       }
 
       &:hover {

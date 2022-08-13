@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { Document, Page } from 'react-pdf/dist/esm/entry.webpack5';
-import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeft, faArrowRight } from '@fortawesome/pro-light-svg-icons'
 
 export const PDFViewer = ({
   show,
@@ -28,9 +28,9 @@ export const PDFViewer = ({
   return (
     <>
       <Modal show={show} onHide={handleClose} dialogClassName='pdf-modal'>
-        <Modal.Header closeButton>
+        {/* <Modal.Header closeButton>
           <Modal.Title>Modal heading</Modal.Title>
-        </Modal.Header>
+        </Modal.Header> */}
         <Modal.Body>
           <Document file={ {data: pdfFile}} onLoadSuccess={onDocumentLoadSuccess}>
             <Page pageNumber={pageNumber} />

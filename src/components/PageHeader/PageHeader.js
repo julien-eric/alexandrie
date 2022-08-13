@@ -14,6 +14,9 @@ export const Sidebar = ({
 
   return (
     <Row className='my-4'>
+        <h2 className='text-black'>
+          {t('general:headings.my-pps')}
+        </h2>
         <Nav
           defaultActiveKey={'pp'}
           className='add-entry'
@@ -24,20 +27,6 @@ export const Sidebar = ({
             }
           }
         >
-          <Nav.Item as="li">
-            <Nav.Link eventKey="pp">
-            <h2 className='text-black'>
-              {t('general:headings.my-pps')}
-            </h2>
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item as="li" disabled>
-            <Nav.Link eventKey="library" disabled>
-              <h4 className='mt-2 border-left'>
-                Bibliothèque
-              </h4>
-            </Nav.Link>
-          </Nav.Item>
         </Nav>
     </Row>)
 }

@@ -86,7 +86,7 @@ export const AddEntry = ({
         }
 
         <Row className='mt-5 text-right'>
-          <Button type='submit' disabled={disabled} className='me-1 d-inlines'>Confirmer</Button>
+          <Button variant='outline-primary' type='submit' disabled={disabled} className='me-1 d-inlines'>Confirmer</Button>
         </Row>
       </Form>
     </>)
