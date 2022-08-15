@@ -9,7 +9,6 @@ import { Slider } from '../Sliders/Slider/Slider.js'
 import { useTranslation } from 'react-i18next'
 
 
-
 import axios from 'axios'
 import useSWR, { useSWRConfig }  from 'swr'
 
@@ -27,7 +26,6 @@ import Tree, {
 const fetcher = url => axios.get(url).then(res => res.data)
 const poster = (url, body) => axios.post(url, body).then(res => res.data)
 
-
 const PADDING_PER_LEVEL = 32;
 
 const useTreeData = () => {
@@ -39,13 +37,58 @@ const useTreeData = () => {
   }
 };
 
-const mergeLocalRemote = (local, remote) => {
-  if(!remote) return
+const filterElement = (itemId, local, remote, filter) => {
+  const currentItem = remote.items[itemId];
+  // console.log('currentItem', currentItem)
+  if(currentItem.data.name === 'root') return true;
+  if(currentItem.data.name.includes(filter)) {
+    return true;
+  } else {
+    if(currentItem.data.parent) {
+      const parentItem = remote.items[currentItem.data.parent];
+      const index = parentItem.children.indexOf(itemId);
+      if(index > -1) {
+        parentItem.children.splice(index, 1);
+        parentItem.data.children.splice(index, 1);
+      }
+    }
+    return false;
+  }
+}
 
+const fixVirtualRoots = (items) => {
+  const newRootItems = []
+  items['1'].children.forEach((rootItemId) => { 
+    if(items[rootItemId]) {
+      newRootItems.push(rootItemId)
+    }
+  });
+  return newRootItems;
+}
+
+const pluckTree = (items) => {}
+
+const mergeLocalRemote = (local, remote, filter) => {
+  if(!remote) return
+  const involvedIds = {} // Will need to keep sequences to show matches down and up the tree.
+  
   const items = {};
   for (const itemId in remote.items) {
-    items[itemId] = {...remote.items[itemId], isExpanded: local && local.items[itemId] ? local.items[itemId].isExpanded : false}
+    
+    // Filter
+    if(filter) {
+      const passesFilter = filterElement(itemId, local, remote, filter);
+      if(!passesFilter) continue;
+    }
+    
+    // Merge Local and Remote (data from remote + isExpanded local)
+    items[itemId] = {...remote.items[itemId], isExpanded: false}
+    if(local && local.items[itemId]) {
+      items[itemId].isExpanded = local.items[itemId].isExpanded || false;
+    }
   }
+  console.log('MergeLocalRemote - Merged and Filtered', items)
+  if(filter) items['1'].children = fixVirtualRoots(items);
   
   return {
     rootId: '1',
@@ -55,6 +98,7 @@ const mergeLocalRemote = (local, remote) => {
 
 export const TreeStructure = ({
   router,
+  filter,
   ...props
 }) => {
   
@@ -108,7 +152,7 @@ export const TreeStructure = ({
     
     const draggedEntryId = remoteTreeData.items[source.parentId].children[source.index];
     const newSortOrder = generateNewSortOrder(source, destination);
-    const newTree = moveItemOnTree(mergeLocalRemote(treeData, remoteTreeData), source, destination);
+    const newTree = moveItemOnTree(mergeLocalRemote(treeData, remoteTreeData, filter), source, destination);
     newTree.items[draggedEntryId] = {...newTree.items[draggedEntryId], data:{ ...newTree.items[draggedEntryId].data, sortOrder: newSortOrder}}
     setTreeData(newTree)
 
@@ -194,7 +238,7 @@ export const TreeStructure = ({
         pdfFile={pdfFile}
       ></PDFViewer>
       <Tree
-        tree={mergeLocalRemote(treeData, remoteTreeData)}
+        tree={mergeLocalRemote(treeData, remoteTreeData, filter)}
         renderItem={(renderItemParams) => <GenericNode renderItemParams={renderItemParams} offsetPerLevel={PADDING_PER_LEVEL} setPdfFile={setPdfFile} handleShow={handleShow}/>}
         onExpand={onExpand}
         onCollapse={onCollapse}

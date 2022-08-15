@@ -26,7 +26,7 @@ export const Sidebar = ({
         </Col> */}
       </Row>
       <Row>
-        <ListGroup className='pe-0 text-primary fw-bold' defaultActiveKey={location ? location.pathname : '/'}>
+        <ListGroup className='pe-0 text-primary' defaultActiveKey={location ? location.pathname : '/'}>
           <ListGroup.Item action active href='/'>
             <div className='d-inline me-2 sidebar-icon'><FontAwesomeIcon icon={faHome} className='fa-fw' /></div>
             <p className='d-inline'>{t('menus:headings.my-pps')}</p>

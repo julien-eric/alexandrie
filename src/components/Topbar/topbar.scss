@@ -1,5 +1,6 @@
-.alx {
-  $search-bg : #E8F0FE;
+
+  $search-bg : #F5F5F5;
+  // $search-bg : #DFDFDF; //hover
   // border-bottom: solid 2px red;
 
   .navbar-brand{
@@ -8,11 +9,15 @@
   }
 
   #alx-nav-search{
+    // border: solid 1px black;
+    // border-left: none;
+    font-size: 13px;
     background: $search-bg;
   }
   
   .input-group-text{
+    // border: solid 1px black;
+    // border-right: none;
     background: $search-bg;
-    // background: #E7FBE0;
   }
-}
+

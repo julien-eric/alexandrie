@@ -80,21 +80,23 @@ export const FolderNode = ({
         </DropdownButton>
         : <></>
       }
-      <span>{item.data ? item.data.name : ''}</span>
-        {item.data.folder ?
-          <Badge bg="deep2-gray ms-2">
-            {levelCategory}
-          </Badge> :
-          <></>
-        }
-        {showSO && item.data.sortOrder !== undefined ?
-          <Badge className='size-badge round' bg="deep-gray ms-2">{item.data.sortOrder}</Badge> :
-          <></>
-        }
-        {item.children.length !== 0 ?
-          <Badge className='size-badge round' bg="deep-gray ms-2">{item.children.length}</Badge> :
-          <></>
-        }
+
+      <span className='text-black'>{item.data ? item.data.name : ''}</span>
+      
+      {item.data.folder ?
+        <Badge bg="secondary text-primary ms-2">
+          {levelCategory}
+        </Badge> :
+        <></>
+      }
+      {showSO && item.data.sortOrder !== undefined ?
+        <Badge className='size-badge round' bg="deep-gray ms-2">{item.data.sortOrder}</Badge> :
+        <></>
+      }
+      {item.children.length !== 0 ?
+        <Badge className='size-badge round' bg="deep-gray ms-2">{item.children.length}</Badge> :
+        <></>
+      }
     </div>
   );
 }
