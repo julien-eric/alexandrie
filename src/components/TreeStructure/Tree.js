@@ -1,12 +1,12 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import './Tree.scss'
 
-import { DownOutlined } from '@ant-design/icons';
 import { AddEntry } from '../Sliders/AddEntry'
 import { PDFViewer } from '../Sliders/PDFViewer'
 import { GenericNode } from './GenericNode'
 import { Slider } from '../Sliders/Slider/Slider.js'
 import { useTranslation } from 'react-i18next'
+import { TreeHeader } from './TreeHeader'
 
 
 import axios from 'axios'
@@ -37,68 +37,84 @@ const useTreeData = () => {
   }
 };
 
-const filterElement = (itemId, local, remote, filter) => {
+const filterElement = (itemId, remote, filter, involvedIds) => {
   const currentItem = remote.items[itemId];
-  // console.log('currentItem', currentItem)
-  if(currentItem.data.name === 'root') return true;
-  if(currentItem.data.name.includes(filter)) {
-    return true;
-  } else {
-    if(currentItem.data.parent) {
-      const parentItem = remote.items[currentItem.data.parent];
-      const index = parentItem.children.indexOf(itemId);
-      if(index > -1) {
-        parentItem.children.splice(index, 1);
-        parentItem.data.children.splice(index, 1);
+  
+  if(currentItem.data.name === 'root') return;
+  
+  if(currentItem.data.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase())) {
+  
+    involvedIds[currentItem.data._id] = true;
+    const getAncestry = (item) => {
+      if(item.data.parent) {
+        involvedIds[item.data.parent] = true;
+        getAncestry(remote.items[item.data.parent]);
       }
     }
-    return false;
+    if(currentItem.data.parent) getAncestry(currentItem);
   }
-}
-
-const fixVirtualRoots = (items) => {
-  const newRootItems = []
-  items['1'].children.forEach((rootItemId) => { 
-    if(items[rootItemId]) {
-      newRootItems.push(rootItemId)
-    }
-  });
-  return newRootItems;
-}
-
-const pluckTree = (items) => {}
+}                                                                                    
 
 const mergeLocalRemote = (local, remote, filter) => {
-  if(!remote) return
-  const involvedIds = {} // Will need to keep sequences to show matches down and up the tree.
+  if(!remote) return  
   
-  const items = {};
+  const items = {}; 
+  const involvedIds = {1:true} // Will need to keep sequences to show matches down and up the tree.
+
+  const mergeProperties = (itemId, remote, local) => {
+      // Merge Local and Remote (data from remote + isExpanded local)
+      let newItem = {...remote.items[itemId], isExpanded: false}
+      if(local && local.items[itemId]) {
+        newItem.isExpanded = local.items[itemId].isExpanded || false;
+      } 
+      return newItem;
+  }
+
   for (const itemId in remote.items) {
-    
+
+    // Restore children from data
+    if(remote.items[itemId].children && remote.items[itemId].data.children) {
+      remote.items[itemId].children = [...remote.items[itemId].data.children];
+    }
+
     // Filter
     if(filter) {
-      const passesFilter = filterElement(itemId, local, remote, filter);
-      if(!passesFilter) continue;
-    }
-    
-    // Merge Local and Remote (data from remote + isExpanded local)
-    items[itemId] = {...remote.items[itemId], isExpanded: false}
-    if(local && local.items[itemId]) {
-      items[itemId].isExpanded = local.items[itemId].isExpanded || false;
+      filterElement(itemId, remote, filter, involvedIds);
+    } else {
+      items[itemId] = mergeProperties(itemId, remote, local);
     }
   }
-  console.log('MergeLocalRemote - Merged and Filtered', items)
-  if(filter) items['1'].children = fixVirtualRoots(items);
-  
+
+  if(filter){
+    for (const [itemId] of Object.entries(involvedIds)) {
+      items[itemId] = mergeProperties(itemId, remote, local);
+      if(items[itemId].children) items[itemId].children = items[itemId].children.filter(child => involvedIds[child]);
+      if(items[itemId].data.parent) {
+          const parentItem = remote.items[items[itemId].data.parent];
+          parentItem.children = parentItem.children.filter(child => involvedIds[child]);
+      }   
+    }
+  }
+
   return {
     rootId: '1',
     items: items
   };
 }
 
+const setCollapsed = (local, remote, collapsed) => {
+  if(!remote) return
+  const items = {};
+
+  for (const itemId in remote.items) {
+    items[itemId] = {...remote.items[itemId], isExpanded: collapsed};
+  }
+
+  return { rootId: '1', items: items };
+}
+
 export const TreeStructure = ({
   router,
-  filter,
   ...props
 }) => {
   
@@ -107,6 +123,7 @@ export const TreeStructure = ({
   const [treeData, setTreeData] = useState();
   const [selected, setSelected] = useState();
   const { fetchedData, isLoading, isError } = useTreeData();
+  const [filter, setFilter] = useState('')
   
   //AddEntries
   const { mutate } = useSWRConfig()
@@ -144,6 +161,13 @@ export const TreeStructure = ({
     setTreeData(result)
   };
   
+  const collapseExpandAll = (action) => {
+    const isExpanded = action === 'expand' ? true : false;
+    const result = mutateTree(setCollapsed(treeData, remoteTreeData, isExpanded), '1', { isExpanded: isExpanded });
+    setRemoteTreeData(result)
+    setTreeData(result)
+  }
+
   // const onDragStart = ( source, destination ) => {
   // };
 
@@ -152,7 +176,7 @@ export const TreeStructure = ({
     
     const draggedEntryId = remoteTreeData.items[source.parentId].children[source.index];
     const newSortOrder = generateNewSortOrder(source, destination);
-    const newTree = moveItemOnTree(mergeLocalRemote(treeData, remoteTreeData, filter), source, destination);
+    const newTree = moveItemOnTree(mergeLocalRemote(treeData, remoteTreeData), source, destination);
     newTree.items[draggedEntryId] = {...newTree.items[draggedEntryId], data:{ ...newTree.items[draggedEntryId].data, sortOrder: newSortOrder}}
     setTreeData(newTree)
 
@@ -218,6 +242,12 @@ export const TreeStructure = ({
   if (isLoading || !remoteTreeData) return "Loading...";
   return (
     <>
+      <TreeHeader
+        filter={filter}
+        setFilter={setFilter}
+        collapseAll={() => collapseExpandAll('collapse')}
+        expandAll={() => collapseExpandAll('expand')}
+      />
       <Slider 
         placement='end'
         title={folder ? t('menus:headings.add-folder') : t('menus:headings.add-policy')}

@@ -11,7 +11,7 @@ import { faAngleDown, faAngleRight, faFilePdf, faFolder, faFolderClosed, faHyphe
 
 // Switch to debug
 const showSO = false;
-
+const showID = false;
 
 export const FolderNode = ({
   selected,
@@ -54,7 +54,6 @@ export const FolderNode = ({
   };
 
   const handleFolderClick = (e, createFolder) => {
-    console.log('handle')
     e.preventDefault();
     handleShow(item.data, createFolder);
   };
@@ -74,6 +73,7 @@ export const FolderNode = ({
           className='folder-button caret-off me-2'
           style={{display: 'inline'}}
           id="input-group-dropdown-1"
+          onClick={(e) => e.stopPropagation()}
         >
           <Dropdown.Item href="#" onClick={(e) => handleFolderClick(e)}>{t('general:actions.create-policy.short')}</Dropdown.Item>
           <Dropdown.Item href="#" onClick={(e) => handleFolderClick(e, true)}>{t('general:actions.create-level.short')}</Dropdown.Item>
@@ -83,14 +83,16 @@ export const FolderNode = ({
 
       <span className='text-black'>{item.data ? item.data.name : ''}</span>
       
-      {item.data.folder ?
-        <Badge bg="secondary text-primary ms-2">
-          {levelCategory}
-        </Badge> :
-        <></>
-      }
+      <Badge bg="canvas-gray text-primary ms-2">
+        {levelCategory}
+      </Badge>
+
       {showSO && item.data.sortOrder !== undefined ?
         <Badge className='size-badge round' bg="deep-gray ms-2">{item.data.sortOrder}</Badge> :
+        <></>
+      }
+      {showID ?
+        <Badge className='size-badge round' bg="deep-gray ms-2">{item.data._id}</Badge> :
         <></>
       }
       {item.children.length !== 0 ?
