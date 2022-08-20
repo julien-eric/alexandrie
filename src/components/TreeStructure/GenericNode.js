@@ -7,13 +7,14 @@ export const GenericNode = ({
   offsetPerLevel,
   setPdfFile,
   handleShow,
+  onSelect,
   ...props
 }) => {
 
   const { item, provided, snapshot } = renderItemParams;
-
   let classes = 'tree-node'
   if(snapshot.isDragging) classes += ' dragging'
+  if(selected === item.data._id) classes += ' selected'
 
   return (
       <div
@@ -21,20 +22,22 @@ export const GenericNode = ({
         {...provided.draggableProps}
         {...provided.dragHandleProps}
       >
-        {item.data.folder ? 
+        {item.data.folder ?
           <FolderNode
             inheritedClasses={classes += ' folder'}
             renderItemParams={renderItemParams}
             offsetPerLevel={offsetPerLevel}
             setPdfFile={setPdfFile}
-            handleShow={handleShow} 
-          />  :
-          <LeafNode
+            handleShow={handleShow}
+            onSelect={onSelect}
+            />  :
+            <LeafNode
             inheritedClasses={classes += ' leaf'} 
             renderItemParams={renderItemParams}
             offsetPerLevel={offsetPerLevel}
             setPdfFile={setPdfFile}
             handleShow={handleShow} 
+            onSelect={onSelect}
           />
         }
     </div>

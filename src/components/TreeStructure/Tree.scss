@@ -23,6 +23,7 @@ $file-height: 36px;
 }
 
 .tree-node {
+  cursor: pointer;
   transition-duration: 0.2s;
   border-radius: 6px;
   font-family: 'Montserrat', sans-serif !important;
@@ -31,6 +32,16 @@ $file-height: 36px;
   margin-bottom: 5px;
   transition-duration: 0.2s;
   font-size: 14px;
+
+
+
+  &.leaf, &.folder {
+    &.selected {
+      background-color: rgba(#F9DEC1, 0.3);
+      border: solid 1px rgba(#F9DEC1, 1);
+      // border-top: solid 2px rgba(#F9DEC1, 1);
+    }
+  }
 
   &.leaf {
     background-color: $secondary-tone;

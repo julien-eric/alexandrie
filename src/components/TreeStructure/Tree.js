@@ -8,25 +8,19 @@ import { Slider } from '../Sliders/Slider/Slider.js'
 import { useTranslation } from 'react-i18next'
 import { TreeHeader } from './TreeHeader'
 
-
 import axios from 'axios'
 import useSWR, { useSWRConfig }  from 'swr'
 
+import { treeReducer, setCollapsed } from './tree-utils.js'
+
 import Tree, {
   mutateTree,
-  moveItemOnTree,
-  RenderItemParams,
-  TreeItem,
-  TreeData,
-  ItemId,
-  TreeSourcePosition,
-  TreeDestinationPosition,
+  moveItemOnTree
 } from '@atlaskit/tree';
 
+const PADDING_PER_LEVEL = 32;
 const fetcher = url => axios.get(url).then(res => res.data)
 const poster = (url, body) => axios.post(url, body).then(res => res.data)
-
-const PADDING_PER_LEVEL = 32;
 
 const useTreeData = () => {
   const { data, error } = useSWR('http://localhost:3000/entries', fetcher)
@@ -37,81 +31,6 @@ const useTreeData = () => {
   }
 };
 
-const filterElement = (itemId, remote, filter, involvedIds) => {
-  const currentItem = remote.items[itemId];
-  
-  if(currentItem.data.name === 'root') return;
-  
-  if(currentItem.data.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase())) {
-  
-    involvedIds[currentItem.data._id] = true;
-    const getAncestry = (item) => {
-      if(item.data.parent) {
-        involvedIds[item.data.parent] = true;
-        getAncestry(remote.items[item.data.parent]);
-      }
-    }
-    if(currentItem.data.parent) getAncestry(currentItem);
-  }
-}                                                                                    
-
-const mergeLocalRemote = (local, remote, filter) => {
-  if(!remote) return  
-  
-  const items = {}; 
-  const involvedIds = {1:true} // Will need to keep sequences to show matches down and up the tree.
-
-  const mergeProperties = (itemId, remote, local) => {
-      // Merge Local and Remote (data from remote + isExpanded local)
-      let newItem = {...remote.items[itemId], isExpanded: false}
-      if(local && local.items[itemId]) {
-        newItem.isExpanded = local.items[itemId].isExpanded || false;
-      } 
-      return newItem;
-  }
-
-  for (const itemId in remote.items) {
-
-    // Restore children from data
-    if(remote.items[itemId].children && remote.items[itemId].data.children) {
-      remote.items[itemId].children = [...remote.items[itemId].data.children];
-    }
-
-    // Filter
-    if(filter) {
-      filterElement(itemId, remote, filter, involvedIds);
-    } else {
-      items[itemId] = mergeProperties(itemId, remote, local);
-    }
-  }
-
-  if(filter){
-    for (const [itemId] of Object.entries(involvedIds)) {
-      items[itemId] = mergeProperties(itemId, remote, local);
-      if(items[itemId].children) items[itemId].children = items[itemId].children.filter(child => involvedIds[child]);
-      if(items[itemId].data.parent) {
-          const parentItem = remote.items[items[itemId].data.parent];
-          parentItem.children = parentItem.children.filter(child => involvedIds[child]);
-      }   
-    }
-  }
-
-  return {
-    rootId: '1',
-    items: items
-  };
-}
-
-const setCollapsed = (local, remote, collapsed) => {
-  if(!remote) return
-  const items = {};
-
-  for (const itemId in remote.items) {
-    items[itemId] = {...remote.items[itemId], isExpanded: collapsed};
-  }
-
-  return { rootId: '1', items: items };
-}
 
 export const TreeStructure = ({
   router,
@@ -150,13 +69,13 @@ export const TreeStructure = ({
 
   
   const onExpand = (itemId) => {
-    const result = mutateTree(mergeLocalRemote(treeData, remoteTreeData), itemId, { isExpanded: true });
+    const result = mutateTree(treeReducer(treeData, remoteTreeData), itemId, { isExpanded: true });
     setRemoteTreeData(result)
     setTreeData(result)
   };
   
   const onCollapse = (itemId) => {
-    const result = mutateTree(mergeLocalRemote(treeData, remoteTreeData), itemId, { isExpanded: false });
+    const result = mutateTree(treeReducer(treeData, remoteTreeData), itemId, { isExpanded: false });
     setRemoteTreeData(result)
     setTreeData(result)
   };
@@ -176,7 +95,7 @@ export const TreeStructure = ({
     
     const draggedEntryId = remoteTreeData.items[source.parentId].children[source.index];
     const newSortOrder = generateNewSortOrder(source, destination);
-    const newTree = moveItemOnTree(mergeLocalRemote(treeData, remoteTreeData), source, destination);
+    const newTree = moveItemOnTree(treeReducer(treeData, remoteTreeData), source, destination);
     newTree.items[draggedEntryId] = {...newTree.items[draggedEntryId], data:{ ...newTree.items[draggedEntryId].data, sortOrder: newSortOrder}}
     setTreeData(newTree)
 
@@ -238,6 +157,11 @@ export const TreeStructure = ({
     }
   }
 
+  const onSelect = (itemId) => {
+    console.log('ItemId', itemId)
+    setSelected(itemId)
+  };
+
   if (isError) return "An error has occurred.";
   if (isLoading || !remoteTreeData) return "Loading...";
   return (
@@ -268,8 +192,17 @@ export const TreeStructure = ({
         pdfFile={pdfFile}
       ></PDFViewer>
       <Tree
-        tree={mergeLocalRemote(treeData, remoteTreeData, filter)}
-        renderItem={(renderItemParams) => <GenericNode renderItemParams={renderItemParams} offsetPerLevel={PADDING_PER_LEVEL} setPdfFile={setPdfFile} handleShow={handleShow}/>}
+        tree={treeReducer(treeData, remoteTreeData, filter)}
+        renderItem={(renderItemParams) => (
+          <GenericNode 
+            renderItemParams={renderItemParams}
+            offsetPerLevel={PADDING_PER_LEVEL}
+            setPdfFile={setPdfFile}
+            handleShow={handleShow}
+            selected={selected}
+            onSelect={onSelect}
+          />
+        )}
         onExpand={onExpand}
         onCollapse={onCollapse}
         onDragEnd={onDragEnd}

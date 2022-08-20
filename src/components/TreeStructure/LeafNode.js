@@ -14,6 +14,7 @@ export const LeafNode = ({
   setPdfFile,
   handleShow,
   inheritedClasses,
+  onSelect,
   ...props
 }) => {
   const { item } = renderItemParams;
@@ -34,8 +35,8 @@ export const LeafNode = ({
   
   return (
     <div 
-      className={inheritedClasses} 
-      onClick={handleFileClick}
+      className={inheritedClasses}
+      onClick={(e) => onSelect(item.data._id)}
     >
       <span>
         <Button variant="link" size="sm" className='round d-inline' bg="deep-gray">

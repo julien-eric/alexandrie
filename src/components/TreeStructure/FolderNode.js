@@ -19,6 +19,7 @@ export const FolderNode = ({
   offsetPerLevel,
   handleShow,
   inheritedClasses,
+  onSelect,
   ...props
 }) => {
   const { t } = useTranslation();
@@ -61,7 +62,7 @@ export const FolderNode = ({
   return (
     <div 
       className={inheritedClasses} 
-      onClick={() => item.isExpanded ? onCollapse(item.id) : onExpand(item.id)}
+      onClick={(e) => onSelect(item.data._id)}
     >
       <span>{getIcon(item, onExpand, onCollapse)}</span>
 

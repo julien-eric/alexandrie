@@ -6,7 +6,7 @@ import Row from 'react-bootstrap/Row'
 import Nav from 'react-bootstrap/Nav'
 import Col from 'react-bootstrap/Col'
 
-export const Sidebar = ({
+export const PageHeader = ({
   title,
   ...props
 }) => {
@@ -31,4 +31,4 @@ export const Sidebar = ({
     </Row>)
 }
 
-export default Sidebar
+export default PageHeader
