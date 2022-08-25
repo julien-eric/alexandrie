@@ -3,55 +3,40 @@ import './AddEntry.scss'
 
 import Breadcrumb from 'react-bootstrap/Breadcrumb'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFilePdf, faFolderClosed, faFolderOpen } from '@fortawesome/pro-light-svg-icons'
+import { faFolderClosed, faFolderOpen, faFolderPlus } from '@fortawesome/pro-light-svg-icons'
+import { faFilePdf } from '@fortawesome/pro-thin-svg-icons'
 
-export const AddEntry = ({
+export const TreeBreadcrumb = ({
   location,
+  tree,
+  item,
+  ancestry,
+  newPolicyName,
   ...props
 }) => {
-
-  const {tree, item, newPolicyName} = props
   const [policyName, setPolicyName] = useState(newPolicyName)
 
   useEffect(() => {
     setPolicyName(newPolicyName);
   });
-
-  const findNode = (data, id) => {
-    
-  }
-  
-  let breadcrumb = []; 
+   
   let breadcrumb2 = [];
-  if(item && item._id) {
-    const element = tree.items[item._id];
-    breadcrumb.push(element);
-    let element2, element3;
-    if(element && element.parent) {
-      element2 = findNode(tree, element.parent)
-      breadcrumb = [element2].concat(breadcrumb);
-    }
-    if(element2 && element2.parent) {
-      element3 = findNode(tree, element2.parent)
-      breadcrumb = [element3].concat(breadcrumb);
-    }
-  }
 
   if(policyName) {
     breadcrumb2.push({data:{name: policyName, id: '999'}});
   }
 
-  const targetIcon = props.folder ? faFolderClosed : faFilePdf;
+  const targetIcon = props.folder ? faFolderPlus : faFilePdf;
 
   return (
     <>
-      <Breadcrumb className='mt-2'>
-        {breadcrumb.map(
+      <Breadcrumb className='mt-2 text-break'>
+        {ancestry.map(
           (item, index) => {
             const active = item && item.data.name === policyName;
             return(
               <Breadcrumb.Item href="#" active={active} key={item.data._id}>
-                {index === 0 ? <FontAwesomeIcon className='text-primary me-2' icon={faFolderOpen} /> : <></>}
+                {index === 0 ? <FontAwesomeIcon className='text-primary text-break me-2' icon={faFolderOpen} /> : <></>}
                 {item.data.name}
               </Breadcrumb.Item>
             )
@@ -69,4 +54,4 @@ export const AddEntry = ({
     </>)
 }
 
-export default AddEntry
+export default TreeBreadcrumb

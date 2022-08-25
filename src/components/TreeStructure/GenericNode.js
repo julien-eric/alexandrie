@@ -31,7 +31,7 @@ export const GenericNode = ({
             handleShow={handleShow}
             onSelect={onSelect}
             />  :
-            <LeafNode
+          <LeafNode
             inheritedClasses={classes += ' leaf'} 
             renderItemParams={renderItemParams}
             offsetPerLevel={offsetPerLevel}

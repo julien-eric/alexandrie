@@ -7,6 +7,7 @@ import Form from 'react-bootstrap/Form'
 import FormControl from 'react-bootstrap/FormControl'
 import InputGroup from 'react-bootstrap/InputGroup'
 import Button from 'react-bootstrap/Button'
+import ButtonGroup from 'react-bootstrap/ButtonGroup'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faClose, faArrowsToDottedLine, faArrowsFromDottedLine, faUserCheck } from '@fortawesome/pro-light-svg-icons';
@@ -38,12 +39,14 @@ export const TreeHeader = ({ filter, setFilter, collapseAll, expandAll, ...props
       <Button onClick={collapseAll} variant='canvas-gray' size='sm' className='col-auto px-3'>
         <FontAwesomeIcon className='fa-fw' icon={faUserCheck}/>
       </Button>
-      <Button onClick={collapseAll} variant='canvas-gray' size='sm' className='col-auto px-3 ms-2'>
-        <FontAwesomeIcon className='fa-fw' icon={faArrowsToDottedLine}/>
-      </Button>
-      <Button onClick={expandAll} variant='canvas-gray' size='sm' className='col-auto px-3 ms-2'>
-        <FontAwesomeIcon className='fa-fw' icon={faArrowsFromDottedLine}/>
-      </Button>
+        <ButtonGroup aria-label="Basic example" className='col-auto px-3'>
+          <Button onClick={collapseAll} variant='canvas-gray' size='sm' className='px-3'>
+            <FontAwesomeIcon className='fa-fw' icon={faArrowsToDottedLine}/>
+          </Button>
+          <Button onClick={expandAll} variant='canvas-gray' size='sm' className='px-3'>
+            <FontAwesomeIcon className='fa-fw' icon={faArrowsFromDottedLine}/>
+          </Button>
+        </ButtonGroup>
     </Row>
   )
 }

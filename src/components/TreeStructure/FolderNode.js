@@ -7,7 +7,7 @@ import Badge from 'react-bootstrap/Badge'
 import { useTranslation } from 'react-i18next'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleDown, faAngleRight, faFilePdf, faFolder, faFolderClosed, faHyphen } from '@fortawesome/pro-light-svg-icons'
+import { faAngleDown, faAngleRight, faFilePdf, faFolderClosed, faHyphen } from '@fortawesome/pro-light-svg-icons'
 
 // Switch to debug
 const showSO = false;
@@ -61,8 +61,8 @@ export const FolderNode = ({
 
   return (
     <div 
-      className={inheritedClasses} 
-      onClick={(e) => onSelect(item.data._id)}
+      className={inheritedClasses}
+      onClick={() => item.isExpanded ? onCollapse(item.id) : onExpand(item.id)}
     >
       <span>{getIcon(item, onExpand, onCollapse)}</span>
 

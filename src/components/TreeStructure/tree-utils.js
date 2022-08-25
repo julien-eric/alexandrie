@@ -81,8 +81,27 @@ export const setCollapsed = (local, remote, collapsed) => {
   return { rootId: '1', items: items };
 }
 
+export const getAncestryArray = (itemId, tree) => {
+  let ancestryArray = []
+  if(itemId) {
+    const element = tree.items[itemId];
+    ancestryArray.push(element);
+    let element2, element3;
+    if(element && element.data.parent) {
+      element2 = tree.items[element.data.parent]
+      ancestryArray = [element2].concat(ancestryArray);
+    }
+    if(element2 && element2.data.parent) {
+      element3 = tree.items[element2.data.parent]
+      ancestryArray = [element3].concat(ancestryArray);
+    }
+  }
+  return ancestryArray;
+}
+
 export default {
   filterElement:filterElement,
   treeReducer: treeReducer,
-  setCollapsed:setCollapsed
+  setCollapsed:setCollapsed,
+  getAncestryArray:getAncestryArray
 }

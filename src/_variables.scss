@@ -45,7 +45,7 @@ $offcanvas-bg-color: $canvas-gray;
 $offcanvas-vertical-height: 30vh;
 
 $form-label-margin-bottom:              .5rem;
-$form-label-font-size:                  1rem;
+$form-label-font-size:                  0.8rem;
 $form-label-font-weight:                bold;
 // $form-label-font-style:                 null;
 // $form-label-color:                      null;
@@ -55,6 +55,7 @@ $form-label-font-weight:                bold;
 }
 $breadcrumb-divider-color:          $primary;
 $breadcrumb-active-color:           $primary;
+$breadcrumb-font-size:           0.8rem;
 
 //Badges
 $badge-border-radius:               3px;

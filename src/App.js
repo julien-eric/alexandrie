@@ -16,7 +16,7 @@ export const App = ({
       <Topbar />
       <div className='wrapper'>
         <Sidebar location={useLocation} />
-        <Container className='ms-5' fluid>
+        <Container className='ms-5 pe-0' fluid>
           {props.children}
         </Container>
       </div>

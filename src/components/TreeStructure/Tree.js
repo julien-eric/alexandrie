@@ -1,17 +1,14 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react'
+import React, { useLayoutEffect, useState } from 'react'
 import './Tree.scss'
 
-import { AddEntry } from '../Sliders/AddEntry'
-import { PDFViewer } from '../Sliders/PDFViewer'
 import { GenericNode } from './GenericNode'
-import { Slider } from '../Sliders/Slider/Slider.js'
 import { useTranslation } from 'react-i18next'
 import { TreeHeader } from './TreeHeader'
 
 import axios from 'axios'
 import useSWR, { useSWRConfig }  from 'swr'
 
-import { treeReducer, setCollapsed } from './tree-utils.js'
+import { treeReducer, setCollapsed, getAncestryArray } from './tree-utils.js'
 
 import Tree, {
   mutateTree,
@@ -31,38 +28,24 @@ const useTreeData = () => {
   }
 };
 
-
 export const TreeStructure = ({
   router,
+  setPdfFile,
+  handleShow,
+  selected,
+  setSelected,
   ...props
 }) => {
   
   const { t } = useTranslation()
   const [remoteTreeData, setRemoteTreeData] = useState();
   const [treeData, setTreeData] = useState();
-  const [selected, setSelected] = useState();
   const { fetchedData, isLoading, isError } = useTreeData();
   const [filter, setFilter] = useState('')
   
   //AddEntries
   const { mutate } = useSWRConfig()
-  const [showSlider, setShowSlider] = useState(false);
-  const [showPdfViewer, setShowPdfViewer] = useState(false);
-  const [folder, setFolder] = useState(false);
 
-  //PdfViewer
-  const [pdfFile, setPdfFile] = useState();
-  
-  const handleShow = (item, folder = false) => {
-    setShowSlider(item);
-    if (folder) setFolder(true)
-  }
-  
-  const handleClose = async () => {
-    await mutate('http://localhost:3000/entries')
-    setShowSlider(false);
-  }
-  
   useLayoutEffect(() => {
     setRemoteTreeData(fetchedData);
   }, [fetchedData]);
@@ -102,10 +85,10 @@ export const TreeStructure = ({
     let changeParams = {_id: draggedEntryId, sortOrder: newSortOrder};
     if ( source.parentId !== destination.parentId ) changeParams.parent = destination.parentId;
 
-    // await mutate('http://localhost:3000/entries', newTree, false)
+    await mutate('http://localhost:3000/entries', newTree, false)
     const getResult = async () => {
       //A Post request to update one item shouldn't return the complete list no?
-      //So what is the best practice for that update to return the list?   
+      //So what is the best practice for that update to return the list?
       await poster('http://localhost:3000/entries/sortorder', changeParams);
       return newTree;
     }
@@ -158,7 +141,6 @@ export const TreeStructure = ({
   }
 
   const onSelect = (itemId) => {
-    console.log('ItemId', itemId)
     setSelected(itemId)
   };
 
@@ -172,25 +154,6 @@ export const TreeStructure = ({
         collapseAll={() => collapseExpandAll('collapse')}
         expandAll={() => collapseExpandAll('expand')}
       />
-      <Slider 
-        placement='end'
-        title={folder ? t('menus:headings.add-folder') : t('menus:headings.add-policy')}
-        show={showSlider}
-        handleClose={handleClose}
-      >
-        <AddEntry
-          item={showSlider}
-          tree={remoteTreeData}
-          folder={folder}
-          setFolder={setFolder}
-          handleClose={handleClose}
-        />
-      </Slider>
-      <PDFViewer
-        show={!!pdfFile}
-        setPdfFile={setPdfFile}
-        pdfFile={pdfFile}
-      ></PDFViewer>
       <Tree
         tree={treeReducer(treeData, remoteTreeData, filter)}
         renderItem={(renderItemParams) => (
@@ -198,7 +161,7 @@ export const TreeStructure = ({
             renderItemParams={renderItemParams}
             offsetPerLevel={PADDING_PER_LEVEL}
             setPdfFile={setPdfFile}
-            handleShow={handleShow}
+            handleShow={(item, folder) => handleShow(item, getAncestryArray(item._id, remoteTreeData), folder)}
             selected={selected}
             onSelect={onSelect}
           />
@@ -206,10 +169,10 @@ export const TreeStructure = ({
         onExpand={onExpand}
         onCollapse={onCollapse}
         onDragEnd={onDragEnd}
-        // onDragStart={onDragStart}
         offsetPerLevel={PADDING_PER_LEVEL}
-        // isNestingEnabled={true}
         isDragEnabled
+        // onDragStart={onDragStart}
+        // isNestingEnabled={true}
       />
     </>
   );
