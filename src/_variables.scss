@@ -79,11 +79,29 @@ $offcanvas-border-width:            1px;
 
 $modal-content-color:               white;
 $modal-content-bg:                  rgba(black, 0);
-$modal-xl: 100%;
-$modal-lg: 100%;
-$modal-md: 100%;
-$modal-sm: 100%;
+// $modal-xl: 100%;
+// $modal-lg: 100%;
+// $modal-md: 100%;
+// $modal-sm: 100%;
 .modal-bg {
-  backdrop-filter: blur(5px);
+  // backdrop-filter: blur(5px);
+  // -webkit-backface-visibility: hidden;
+  // -webkit-perspective: 1000;
+  // -webkit-transform: translate3d(0,0,0);
+  // -webkit-transform: translateZ(0);
+  // backface-visibility: hidden;
+  // perspective: 1000;
+  // transform: translate3d(0,0,0);
+  // transform: translateZ(0);
+}
+.annotationLayer {
+  height: 10px;
+}
+.react-pdf__Page__canvas {
+  border-radius: 3px;
+}
+
+.react-pdf__Page{
+  scroll-margin-top: 10px;
 }
 // $modal-backdrop-bg:                  white;
