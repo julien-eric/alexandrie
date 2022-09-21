@@ -9,10 +9,6 @@ import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDown, faAngleRight, faFilePdf, faFolderClosed, faHyphen } from '@fortawesome/pro-light-svg-icons'
 
-// Switch to debug
-const showSO = false;
-const showID = false;
-
 export const FolderNode = ({
   selected,
   renderItemParams,
@@ -20,6 +16,7 @@ export const FolderNode = ({
   handleShow,
   inheritedClasses,
   onSelect,
+  debug,
   ...props
 }) => {
   const { t } = useTranslation();
@@ -88,11 +85,11 @@ export const FolderNode = ({
         {levelCategory}
       </Badge>
 
-      {showSO && item.data.sortOrder !== undefined ?
+      {debug.showSO && item.data.sortOrder !== undefined ?
         <Badge className='size-badge round' bg="deep-gray ms-2">{item.data.sortOrder}</Badge> :
         <></>
       }
-      {showID ?
+      {debug.showID ?
         <Badge className='size-badge round' bg="deep-gray ms-2">{item.data._id}</Badge> :
         <></>
       }

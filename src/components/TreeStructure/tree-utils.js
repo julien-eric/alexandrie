@@ -23,7 +23,7 @@ export const filterElement = (itemId, remote, filter, involvedIds) => {
   }
 }                                                                                    
 
-export const treeReducer = (local, remote, filter) => {
+export const treeReducer = (local, remote, filter, forceLocal) => {
   if(!remote) return  
   
   const items = {}; 
@@ -31,7 +31,12 @@ export const treeReducer = (local, remote, filter) => {
 
   const mergeProperties = (itemId, remote, local) => {
       // Merge Local and Remote (data from remote + isExpanded local)
-      let newItem = {...remote.items[itemId], isExpanded: false}
+      let newItem;
+      if(forceLocal) {
+        newItem = {...local.items[itemId], isExpanded: false}
+      } else {
+        newItem = {...remote.items[itemId], isExpanded: false}
+      }
       if(local && local.items[itemId]) {
         newItem.isExpanded = local.items[itemId].isExpanded || false;
       } 
@@ -41,7 +46,7 @@ export const treeReducer = (local, remote, filter) => {
   for (const itemId in remote.items) {
 
     // Restore children from data
-    if(remote.items[itemId].children && remote.items[itemId].data.children) {
+    if(!forceLocal && remote.items[itemId].children && remote.items[itemId].data.children) {
       remote.items[itemId].children = [...remote.items[itemId].data.children];
     }
 
@@ -99,9 +104,47 @@ export const getAncestryArray = (itemId, tree) => {
   return ancestryArray;
 }
 
+const getChildFromParent = (tree, parentId, index) => {
+  return tree.items[tree.items[parentId].children[index]];
+}
+
+export const generateNewSortOrder = (tree, source, destination) => {
+  const DEFAULT_DIFF = 1000;
+
+  const getMiddleSortOrder = (pos1, pos2) => {
+    if(pos1.sortOrder !== undefined && pos2.sortOrder !== undefined) {
+      return Math.ceil((pos1.sortOrder + pos2.sortOrder)/2);
+    }
+    return -1;
+  }
+
+  if(destination.index > 0 && destination.index < tree.items[destination.parentId].children.length - 1) {
+    if(source.index < destination.index) {
+      return getMiddleSortOrder(
+          getChildFromParent(tree, destination.parentId, destination.index).data,
+          getChildFromParent(tree, destination.parentId, destination.index+1).data
+        );
+      } else {
+        return getMiddleSortOrder(
+          getChildFromParent(tree, destination.parentId, destination.index-1).data,
+          getChildFromParent(tree, destination.parentId, destination.index).data
+        );
+      }
+  }
+  if(destination.index === 0) {
+    const ogFirstChild = getChildFromParent(tree, destination.parentId, 0).data;
+    return ogFirstChild.sortOrder - DEFAULT_DIFF;
+  }
+  if(destination.index === tree.items[destination.parentId].children.length - 1) {
+    const parentEntry = tree.items[destination.parentId];
+    return getChildFromParent(tree, destination.parentId, parentEntry.children.length - 1).data.sortOrder + DEFAULT_DIFF
+  }
+}
+
 export default {
   filterElement:filterElement,
   treeReducer: treeReducer,
   setCollapsed:setCollapsed,
-  getAncestryArray:getAncestryArray
+  getAncestryArray:getAncestryArray,
+  generateNewSortOrder:generateNewSortOrder
 }

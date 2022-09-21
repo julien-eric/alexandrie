@@ -5,9 +5,6 @@ import Badge from 'react-bootstrap/Badge'
 import { ICON_STATE, ThreeStateIcon } from '../ThreeStateIcon/ThreeStateIcon';
 import { faFilePdf, faSpinner, faFileCircleXmark } from '@fortawesome/pro-thin-svg-icons'
 
-// Switch to debug
-const showSO = false;
-
 export const LeafNode = ({
   selected,
   renderItemParams,
@@ -15,6 +12,7 @@ export const LeafNode = ({
   handleShow,
   inheritedClasses,
   onSelect,
+  debug,
   ...props
 }) => {
   const { item } = renderItemParams;
@@ -23,6 +21,7 @@ export const LeafNode = ({
   const handleFileClick = async (e) => {
     e.preventDefault();
     setLoading(ICON_STATE.LOADING);
+    onSelect(item.data._id);
     if(item.data.files !== undefined && item.data.files[0]) {
       const link = await getS3Link(item.data.files[0]);
       setPdfFile(link)
@@ -36,7 +35,7 @@ export const LeafNode = ({
   return (
     <div 
       className={inheritedClasses}
-      onClick={(e) => onSelect(item.data._id)}
+      onClick={handleFileClick}
     >
       <span>
         <Button variant="link" size="sm" className='round d-inline' bg="deep-gray">
@@ -46,11 +45,14 @@ export const LeafNode = ({
 
       <span>{item.data ? item.data.name : ''}</span>
       
-      {showSO && item.data.sortOrder !== undefined ?
+      {debug.showSO && item.data.sortOrder !== undefined ?
         <Badge className='size-badge round' bg="deep-gray ms-2">{item.data.sortOrder}</Badge> :
         <></>
       }
-
+      {debug.showID ?
+        <Badge className='size-badge round' bg="deep-gray ms-2">{item.data._id}</Badge> :
+        <></>
+      }
     </div>
   );
 }

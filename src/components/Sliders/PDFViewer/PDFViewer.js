@@ -27,33 +27,28 @@ export const PDFViewer = ({
 
   return (
     <>
-      <Modal show={show} onHide={handleClose} dialogClassName='pdf-modal'>
-        {/* <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
-        </Modal.Header> */}
-        <Modal.Body>
+      <Modal show={show} onHide={handleClose} dialogClassName='pdf-modal' className='modal-bg'>
+        <Modal.Body className='pdf-height'>
           <Document file={ {data: pdfFile}} onLoadSuccess={onDocumentLoadSuccess}>
             <Page pageNumber={pageNumber} />
           </Document>
-        </Modal.Body>
-        <Modal.Footer>
           { numPages !== null && 
             <>
-              <Button variant="secondary" onClick={() => setPageNumber(pageNumber - 1)} disabled={pageNumber === 1}>
+              <Button size='sm' variant="secondary" onClick={() => setPageNumber(pageNumber - 1)} disabled={pageNumber === 1}>
                 <FontAwesomeIcon icon={faArrowLeft} />
               </Button>
-              <Button variant="secondary" onClick={() => setPageNumber(pageNumber + 1)} disabled={pageNumber === numPages}>
+              <Button size='sm' variant="secondary" onClick={() => setPageNumber(pageNumber + 1)} disabled={pageNumber === numPages}>
                 <FontAwesomeIcon icon={faArrowRight} />
               </Button>
             </>
           }
-          <Button variant="secondary" onClick={handleClose}>
+          <Button size='sm' variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleClose}>
+          {/* <Button variant="primary" onClick={handleClose}>
             Save Changes
-          </Button>
-        </Modal.Footer>
+          </Button> */}
+        </Modal.Body>
       </Modal>
     </>
   );

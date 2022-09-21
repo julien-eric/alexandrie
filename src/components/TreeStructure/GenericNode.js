@@ -11,10 +11,16 @@ export const GenericNode = ({
   ...props
 }) => {
 
+  // Switch to debug
+  const debug = {
+    showID: false,
+    showSO: false 
+  }
+
   const { item, provided, snapshot } = renderItemParams;
-  let classes = 'tree-node'
-  if(snapshot.isDragging) classes += ' dragging'
-  if(selected === item.data._id) classes += ' selected'
+  let classes = 'tree-node';
+  if(snapshot.isDragging) classes += ' dragging';
+  if(selected === item.data._id) classes += ' selected ';
 
   return (
       <div
@@ -30,14 +36,16 @@ export const GenericNode = ({
             setPdfFile={setPdfFile}
             handleShow={handleShow}
             onSelect={onSelect}
+            debug={debug}
             />  :
-          <LeafNode
+            <LeafNode
             inheritedClasses={classes += ' leaf'} 
             renderItemParams={renderItemParams}
             offsetPerLevel={offsetPerLevel}
             setPdfFile={setPdfFile}
             handleShow={handleShow} 
             onSelect={onSelect}
+            debug={debug}
           />
         }
     </div>

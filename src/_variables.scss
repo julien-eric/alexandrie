@@ -76,3 +76,14 @@ $offcanvas-border-width:            1px;
 // $offcanvas-bg-color:                $modal-content-bg;
 // $offcanvas-color:                   $modal-content-color;
 // $offcanvas-box-shadow:              $modal-content-box-shadow-xs;
+
+$modal-content-color:               white;
+$modal-content-bg:                  rgba(black, 0);
+$modal-xl: 100%;
+$modal-lg: 100%;
+$modal-md: 100%;
+$modal-sm: 100%;
+.modal-bg {
+  backdrop-filter: blur(5px);
+}
+// $modal-backdrop-bg:                  white;
