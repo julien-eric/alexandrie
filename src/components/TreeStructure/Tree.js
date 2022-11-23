@@ -4,6 +4,7 @@ import './Tree.scss'
 import { GenericNode } from './GenericNode'
 import { useTranslation } from 'react-i18next'
 import { TreeHeader } from './TreeHeader'
+import { useAuth0 } from '@auth0/auth0-react';
 
 import axios from 'axios'
 import useSWR, { useSWRConfig }  from 'swr'
@@ -16,16 +17,27 @@ import Tree, {
 } from '@atlaskit/tree';
 
 const PADDING_PER_LEVEL = 32;
-const fetcher = url => axios.get(url).then(res => res.data);
+const fetcher = (url, token) => axios.get(url, token).then(res => res.data);
 const poster = (url, body) => axios.post(url, body).then(res => res.data);
 
-const useTreeData = () => {
-  const { data, error } = useSWR('http://localhost:3000/entries', fetcher);
-  return {
-    fetchedData: data,
-    isLoading: !error && !data,
-    isError: error
-  };
+const useTreeData = async (getAccessToken) => {
+  const token = await getAccessToken();
+  console.log('token', token);
+  if(token) {
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
+    const { data, error } = await axios.get('https://localhost:3000/entries', config);
+    console.log('heyo', data)
+    // const { data, error } = useSWR(['https://localhost:3000/entries', token], fetcher);
+    return {
+      fetchedData: data,
+      isLoading: !error && !data,
+      isError: error
+    };
+  } else {
+    return {};
+  }
 };
 
 export const TreeStructure = ({
@@ -37,13 +49,36 @@ export const TreeStructure = ({
   ...props
 }) => {
 
+  const { getAccessTokenSilently } = useAuth0();
   const { t } = useTranslation()
   const [remoteTreeData, setRemoteTreeData] = useState();
   const [treeData, setTreeData] = useState();
-  const { fetchedData, isLoading, isError } = useTreeData();
+  const [fetchedData, setFetchedData] = useState();
+  let isLoading, isError;
   const [filter, setFilter] = useState('');
 
   const { mutate } = useSWRConfig()
+
+  const getToken = async (fetchToken) => {
+    return await fetchToken(); 
+  }
+
+  // const { data, error } = useSWR(['https://localhost:3000/entries', getToken(getAccessTokenSilently)], fetcher);
+  // console.log('data', data)
+
+  useEffect(() => {
+    (async () => {
+      try {
+        console.log('fetching');
+        const token = await getAccessTokenSilently();
+        const config = { headers: { Authorization: `Bearer ${token}` }};
+        const { data, error } = await axios.get('https://localhost:3000/entries', config);
+        setFetchedData(data);
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+  }, [getAccessTokenSilently]);
 
   useLayoutEffect(() => {
     setRemoteTreeData(fetchedData);
@@ -73,11 +108,7 @@ export const TreeStructure = ({
     
     const draggedEntryId = remoteTreeData.items[source.parentId].children[source.index];
     const newSortOrder = generateNewSortOrder(remoteTreeData, source, destination);
-    const newTree = moveItemOnTree(treeReducer(treeData, remoteTreeData, undefined, true), source, destination);
-
-    console.log('parent ch item', newTree.items[destination.parentId].children);
-    console.log('parent ch data', newTree.items[destination.parentId].data.children);
-    
+    const newTree = moveItemOnTree(treeReducer(treeData, remoteTreeData, undefined, true), source, destination); 
     //SEEMS GOOD WHEN NEW-SO IS LOWER THAN AFTER --- DISCREPANCY BETWEEN LIBRARY INDEXING AND BE RESORTING
     // Fixes sortOrder for dragged item
     newTree.items[draggedEntryId] = {...newTree.items[draggedEntryId], data:{ ...newTree.items[draggedEntryId].data, sortOrder: newSortOrder}}
@@ -85,10 +116,6 @@ export const TreeStructure = ({
     // Fixes children order in parent item
     newTree.items[destination.parentId] = {...newTree.items[destination.parentId], data:{ ...newTree.items[destination.parentId].data, children: newTree.items[destination.parentId].children}}
     // newTree.items[destination.parentId] = {...newTree.items[destination.parentId], children: newTree.items[destination.parentId].data.children}
-    console.log('parent ch item', newTree.items[destination.parentId].children);
-    console.log('parent ch data', newTree.items[destination.parentId].data.children);
-    console.log('==============================');
-
 
     // setTreeData(newTree)
     // setRemoteTreeData(newTree)
@@ -96,17 +123,16 @@ export const TreeStructure = ({
     let changeParams = {_id: draggedEntryId, sortOrder: newSortOrder};
     if ( source.parentId !== destination.parentId ) changeParams.parent = destination.parentId;
 
-    await mutate('http://localhost:3000/entries', newTree, false)
+    await mutate('https://localhost:3000/entries', newTree, false)
     const getResult = async (entries) => {
-      // console.log('entries', entries);
       //A Post request to update one item shouldn't return the complete list no?
       //So what is the best practice for that update to return the list?
-      await poster('http://localhost:3000/entries/sortorder', changeParams);
+      await poster('https://localhost:3000/entries/sortorder', changeParams);
       return newTree;
     }
     const options = { rollbackOnError: true }
     try {
-      mutate('http://localhost:3000/entries', getResult, options)
+      mutate('https://localhost:3000/entries', getResult, options)
     } catch (error) {
       console.log('error', error);
     }
@@ -148,7 +174,6 @@ export const TreeStructure = ({
       />
     </>
   );
-  
 }
 
 export default TreeStructure

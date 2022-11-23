@@ -37,7 +37,7 @@ export const AddEntry = ({
     e.preventDefault();
     let entry = {parent: ancestry[ancestry.length - 1].data._id, ...formData};
     if(folder) entry.folder = true;
-    const result = await poster('http://localhost:3000/entries', entry);
+    const result = await poster('https://localhost:3000/entries', entry);
     if(result._id) {handleClose()}
   };
 

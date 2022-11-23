@@ -7,7 +7,6 @@ import Col from 'react-bootstrap/Col'
 import { AddEntry } from '../components/Sliders/AddEntry'
 import { PageHeader } from '../components/PageHeader'
 import { Tree } from '../components/TreeStructure'
-import { PDFViewer } from '../components/Sliders/PDFViewer'
 import { useSWRConfig }  from 'swr'
 
 export const MyPps = ({ ...props }) => {
@@ -26,18 +25,12 @@ export const MyPps = ({ ...props }) => {
   }
 
   const handleClose = async () => {
-    await mutate('http://localhost:3000/entries');
+    await mutate('https://localhost:3000/entries');
     setExpanded(false);
   }
 
   return (
-    <App router={props.router}>
-
-      <PDFViewer
-        show={!!pdfFile}
-        setPdfFile={setPdfFile}
-        pdfFile={pdfFile}
-      ></PDFViewer>
+    <App router={props.router} pdfFile={pdfFile} setPdfFile={setPdfFile}>
 
       <div className='wrapper2'>
         <Row className='w-100 me-2'>

@@ -48,14 +48,16 @@
 }
 
 .pdf-height {
-  max-width: 1080px;
+  max-width: $lh-modal-width;
+  width: $lh-modal-width - 100px;
   margin: auto;
   transition-property: all;
   transition-duration: 0.7s;
 }
 
 .reader-helper {
-  position: absolute;
-  top: 20px;
-  right: -45px;
+  position: fixed;
+  top: 50px;
+  
+  right: calc((100% - #{$lh-modal-width})/2);
 }
