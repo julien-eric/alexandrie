@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState, useMemo } from 'react'
 import './Tree.scss'
 
 import { GenericNode } from './GenericNode'
@@ -17,28 +17,14 @@ import Tree, {
 } from '@atlaskit/tree';
 
 const PADDING_PER_LEVEL = 32;
-const fetcher = (url, token) => axios.get(url, token).then(res => res.data);
-const poster = (url, body) => axios.post(url, body).then(res => res.data);
-
-const useTreeData = async (getAccessToken) => {
-  const token = await getAccessToken();
-  console.log('token', token);
-  if(token) {
-    const config = {
-      headers: { Authorization: `Bearer ${token}` }
-    };
-    const { data, error } = await axios.get('https://localhost:3000/entries', config);
-    console.log('heyo', data)
-    // const { data, error } = useSWR(['https://localhost:3000/entries', token], fetcher);
-    return {
-      fetchedData: data,
-      isLoading: !error && !data,
-      isError: error
-    };
-  } else {
-    return {};
+const config = (token) => ({
+  headers: {
+    'Authorization': 'Bearer ' + token
   }
-};
+});
+
+const fetcher = (url, token) => axios.get(url, config(token)).then(res => res.data);
+const poster = (url, body, token) => axios.post(url, body, config(token)).then(res => res.data);
 
 export const TreeStructure = ({
   router,
@@ -53,36 +39,20 @@ export const TreeStructure = ({
   const { t } = useTranslation()
   const [remoteTreeData, setRemoteTreeData] = useState();
   const [treeData, setTreeData] = useState();
-  const [fetchedData, setFetchedData] = useState();
-  let isLoading, isError;
   const [filter, setFilter] = useState('');
 
   const { mutate } = useSWRConfig()
-
-  const getToken = async (fetchToken) => {
-    return await fetchToken(); 
-  }
-
-  // const { data, error } = useSWR(['https://localhost:3000/entries', getToken(getAccessTokenSilently)], fetcher);
-  // console.log('data', data)
-
-  useEffect(() => {
-    (async () => {
-      try {
-        console.log('fetching');
-        const token = await getAccessTokenSilently();
-        const config = { headers: { Authorization: `Bearer ${token}` }};
-        const { data, error } = await axios.get('https://localhost:3000/entries', config);
-        setFetchedData(data);
-      } catch (e) {
-        console.error(e);
-      }
-    })();
-  }, [getAccessTokenSilently]);
+  const [token, setToken] = useState();
+  const tokenPromise = useMemo(async () => getAccessTokenSilently(), []);
+  tokenPromise.then((token) => {
+    setToken(token);
+  })
+  
+  const { data, error } = useSWR(token ? ['https://localhost:3000/entries', token] : null, fetcher);
 
   useLayoutEffect(() => {
-    setRemoteTreeData(fetchedData);
-  }, [fetchedData]);
+    setRemoteTreeData(data);
+  }, [data]);
 
   const onExpand = (itemId) => {
     const result = mutateTree(treeReducer(treeData, remoteTreeData), itemId, { isExpanded: true });
@@ -123,16 +93,16 @@ export const TreeStructure = ({
     let changeParams = {_id: draggedEntryId, sortOrder: newSortOrder};
     if ( source.parentId !== destination.parentId ) changeParams.parent = destination.parentId;
 
-    await mutate('https://localhost:3000/entries', newTree, false)
+    await mutate(['https://localhost:3000/entries', token], newTree, false)
     const getResult = async (entries) => {
       //A Post request to update one item shouldn't return the complete list no?
       //So what is the best practice for that update to return the list?
-      await poster('https://localhost:3000/entries/sortorder', changeParams);
+      await poster('https://localhost:3000/entries/sortorder', changeParams, token);
       return newTree;
     }
     const options = { rollbackOnError: true }
     try {
-      mutate('https://localhost:3000/entries', getResult, options)
+      mutate(['https://localhost:3000/entries', token], getResult, options)
     } catch (error) {
       console.log('error', error);
     }
@@ -142,8 +112,8 @@ export const TreeStructure = ({
     setSelected(itemId);
   };
 
-  if (isError) return "An error has occurred.";
-  if (isLoading || !remoteTreeData) return "Loading...";
+  if (error) return "An error has occurred.";
+  if ((!error && !data) || !remoteTreeData) return "Loading...";
   return (
     <>
       <TreeHeader
