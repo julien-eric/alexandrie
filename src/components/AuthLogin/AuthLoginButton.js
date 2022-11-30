@@ -1,22 +1,12 @@
 import React from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-
-export const LoginButton = () => {
-  const { loginWithRedirect } = useAuth0();  
-  return <button onClick={() => loginWithRedirect()}>Log In</button>;
-};
-
-export const LogoutButton = () => {
-  const { logout } = useAuth0();
-
-  return (
-    <button onClick={() => logout({ returnTo: window.location.origin })}>
-      Log Out
-    </button>
-  );
-};
+import './AuthLogin.scss';
+import NavDropdown from 'react-bootstrap/NavDropdown';
+import Nav from 'react-bootstrap/Nav';
 
 export const Profile = () => {
+  const { loginWithRedirect } = useAuth0();
+  const { logout } = useAuth0();
   const { user, isAuthenticated, isLoading } = useAuth0();
 
   if (isLoading) {
@@ -24,12 +14,20 @@ export const Profile = () => {
   }
 
   return (
-    isAuthenticated && (
-      <div>
-        <img src={user.picture} alt={user.name} />
-        <h2>{user.name}</h2>
-        <p>{user.email}</p>
-      </div>
-    )
+    isAuthenticated ? (
+      <>
+        <Nav.Link href="#link" className="pe-0">
+          <img className="fluid rounded-circle" width="40" src={user.picture} alt={user.name} />
+        </Nav.Link>
+        <NavDropdown title={user.name} id="basic-nav-dropdown">
+          <NavDropdown.Item href="#">{user.email}</NavDropdown.Item>
+          <NavDropdown.Item href="#">Language</NavDropdown.Item>
+          <NavDropdown.Item href="#" onClick={() => logout({ returnTo: window.location.origin })}>Log Out</NavDropdown.Item>
+        </NavDropdown>
+      </>
+    ) : <>
+      <Nav.Link href="#link" onClick={() => loginWithRedirect()}>Login</Nav.Link>
+    </>
+
   );
 };
