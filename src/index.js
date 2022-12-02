@@ -17,10 +17,10 @@ export default withAuthenticationRequired(PrivateRoute, {
 ReactDOM.render(
   <Auth0Provider
     domain="dev-alexandrie.us.auth0.com"
-    clientId="uyCPpwmrOqRUiATboaOVVxDqN79KS0c6"
+    clientId="jLcgHMBNaAXR9rjJukc4o5XLfccnwidw"
     redirectUri={window.location.origin}
-    audience="https://dev-alexandrie.us.auth0.com/api/v2/"
-    scope="read:policies write:policies"
+    audience="https://alexandrie.auth"
+    scope="read:policies write:policies read:entries"
   >
     <Router>
       <Routes>

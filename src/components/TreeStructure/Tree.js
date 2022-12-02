@@ -98,6 +98,7 @@ export const TreeStructure = ({
       //A Post request to update one item shouldn't return the complete list no?
       //So what is the best practice for that update to return the list?
       await poster('https://localhost:3000/entries/sortorder', changeParams, token);
+      // await fetcher('https://localhost:3000/robot-sort', token);
       return newTree;
     }
     const options = { rollbackOnError: true }

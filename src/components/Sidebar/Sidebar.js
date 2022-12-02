@@ -42,10 +42,6 @@ export const Sidebar = ({
             <div className='d-inline sidebar-icon'><FontAwesomeIcon icon={faUsers} className='fa-fw' /></div>
             <p className='ms-2 sidebar-item-label d-inline'>{t('menus:headings.users')}</p>
           </ListGroup.Item>
-          <ListGroup.Item action href='/user'>
-            <div className='d-inline  sidebar-icon'><FontAwesomeIcon icon={faUser} className='fa-fw' /></div>
-            <p className='ms-2 sidebar-item-label d-inline'>{t('menus:headings.my-account')}</p>
-          </ListGroup.Item>
         </ListGroup>
       </Row>
       <div className='project-bar'>
