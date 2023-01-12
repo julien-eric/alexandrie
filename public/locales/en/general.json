@@ -2,7 +2,7 @@
   "headings": {
     "welcome": "Welcome2",
     "my-pps": "My Policies and Procedures",
-    "job-types": "Roles"
+    "roles": "Roles"
   },
   "buttons": {
     "add-user": "Add User"

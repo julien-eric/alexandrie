@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useLocation } from 'react-router-dom'
 import './Sidebar.scss'
 
 import ListGroup from 'react-bootstrap/ListGroup'
@@ -11,11 +12,11 @@ import { faBooks, faHome, faGear, faBriefcase, faUsers, faUser, faAnglesLeft, fa
 import Button from 'react-bootstrap/Button'
 
 export const Sidebar = ({
-  location,
   ...props
 }) => {
   const { t } = useTranslation()
   const [expanded, setExpanded] = useState(true);
+  const location = useLocation()
 
   const toggleExpanded = () => {
     setExpanded(!expanded);
@@ -30,18 +31,18 @@ export const Sidebar = ({
       </Row>
       <Row>
         <ListGroup className='pe-0 text-primary' defaultActiveKey={location ? location.pathname : '/'}>
-          <ListGroup.Item action active href='/'>
+          <ListGroup.Item action href='/'>
             <div className='d-inline sidebar-icon'><FontAwesomeIcon icon={faBookOpenCover} className='fa-fw' /></div>
             <p className=' ms-2 sidebar-item-label d-inline'>{t('menus:headings.my-pps')}</p>
           </ListGroup.Item>
-          <ListGroup.Item action href='/jobs'>
+          <ListGroup.Item action href='/roles'>
             <div className='d-inline sidebar-icon'><FontAwesomeIcon icon={faBriefcase} className='fa-fw' /></div>
-            <p className='ms-2 sidebar-item-label d-inline'>{t('menus:headings.job-types')}</p>
+            <p className='ms-2 sidebar-item-label d-inline'>{t('menus:headings.roles')}</p>
           </ListGroup.Item>
-          <ListGroup.Item action href='/users'>
+          {/* <ListGroup.Item action href='/users'>
             <div className='d-inline sidebar-icon'><FontAwesomeIcon icon={faUsers} className='fa-fw' /></div>
             <p className='ms-2 sidebar-item-label d-inline'>{t('menus:headings.users')}</p>
-          </ListGroup.Item>
+          </ListGroup.Item> */}
         </ListGroup>
       </Row>
       <div className='project-bar'>

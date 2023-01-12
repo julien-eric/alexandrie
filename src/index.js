@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './i18n'
 import './index.css';
 import MyPps from './views/MyPps'
-import JobTypes from './views/JobTypes'
+import Roles from './views/Roles'
 import { Route, Routes, BrowserRouter as Router } from 'react-router-dom' // react-router v4/v5
 import reportWebVitals from './reportWebVitals';
 import { Auth0Provider, withAuthenticationRequired } from "@auth0/auth0-react";
@@ -25,7 +25,7 @@ ReactDOM.render(
     <Router>
       <Routes>
         <Route exact path='/' element={<MyPps/>} />
-        <Route exact path='/jobs' element={<JobTypes/>} />
+        <Route exact path='/roles' element={<Roles/>} />
         <Route exact path='/login' element={<MyPps/>} />
       </Routes>
     </Router>

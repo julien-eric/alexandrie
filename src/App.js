@@ -6,7 +6,6 @@ import './App.scss'
 import { Topbar } from './components/Topbar'
 import { Sidebar } from './components/Sidebar'
 import Container from 'react-bootstrap/Container'
-import { useLocation } from 'react-router-dom'
 import { PDFViewer } from './components/Sliders/PDFViewer'
 import { SplashPage } from './components/SplashPage'
 
@@ -31,7 +30,7 @@ export const App = ({
         />
         <Topbar />
         <div className='wrapper'>
-          <Sidebar location={useLocation} />
+          <Sidebar />
           <Container className='ms-5 pe-0' fluid>
             {props.children}
           </Container>

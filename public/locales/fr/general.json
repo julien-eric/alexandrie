@@ -2,7 +2,7 @@
   "headings": {
     "welcome": "Bienvenue",
     "my-pps": "Bibliothèque",
-    "job-types": "Types d'emploi"
+    "roles": "Types d'emploi"
   },
   "buttons": {
     "add-user": "Add User"
