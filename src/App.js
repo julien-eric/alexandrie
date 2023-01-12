@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo } from 'react'
 import { useAuth0 } from "@auth0/auth0-react";
 
 import './App.scss'
@@ -16,8 +16,10 @@ export const App = ({
   setPdfFile,
   ...props
 }) => {
-  const { loginWithRedirect } = useAuth0();
-  const { isAuthenticated, isLoading } = useAuth0();
+  const { getAccessTokenSilently, isAuthenticated } = useAuth0();
+
+  const tokenPromise = useMemo(async () => getAccessTokenSilently(), []);
+  tokenPromise.then((token) => { localStorage.setItem('accessToken', token) });
 
   return (
     isAuthenticated ? (

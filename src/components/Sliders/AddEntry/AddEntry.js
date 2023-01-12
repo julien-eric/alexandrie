@@ -14,7 +14,13 @@ import EntryBreadCrumb from './Breadcrumb'
 import FileUpload from '../../FileUpload/FileUpload.js';
 
 import axios from 'axios'
-const poster = (url, body) => axios.post(url, body).then(res => res.data)
+const buildTokenInfo = (token) => 
+({
+  headers: {
+    'Authorization': 'Bearer ' + token
+  }  
+});
+const poster = (url, body, token) => axios.post(url, body, buildTokenInfo(token)).then(res => res.data);
 
 export const AddEntry = ({
   location,
@@ -37,7 +43,7 @@ export const AddEntry = ({
     e.preventDefault();
     let entry = {parent: ancestry[ancestry.length - 1].data._id, ...formData};
     if(folder) entry.folder = true;
-    const result = await poster('https://localhost:3000/entries', entry);
+    const result = await poster('https://localhost:3000/entries', entry, localStorage.getItem('accessToken'));
     if(result._id) {handleClose()}
   };
 

@@ -26,6 +26,7 @@ ReactDOM.render(
       <Routes>
         <Route exact path='/' element={<MyPps/>} />
         <Route exact path='/jobs' element={<JobTypes/>} />
+        <Route exact path='/login' element={<MyPps/>} />
       </Routes>
     </Router>
   </Auth0Provider>,

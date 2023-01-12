@@ -1,10 +1,9 @@
-import React, { useEffect, useLayoutEffect, useState, useMemo } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import './Tree.scss'
 
 import { GenericNode } from './GenericNode'
 import { useTranslation } from 'react-i18next'
 import { TreeHeader } from './TreeHeader'
-import { useAuth0 } from '@auth0/auth0-react';
 
 import axios from 'axios'
 import useSWR, { useSWRConfig }  from 'swr'
@@ -17,14 +16,15 @@ import Tree, {
 } from '@atlaskit/tree';
 
 const PADDING_PER_LEVEL = 32;
-const config = (token) => ({
+const buildTokenInfo = (token) => 
+({
   headers: {
     'Authorization': 'Bearer ' + token
-  }
+  }  
 });
 
-const fetcher = (url, token) => axios.get(url, config(token)).then(res => res.data);
-const poster = (url, body, token) => axios.post(url, body, config(token)).then(res => res.data);
+const fetcher = (url, token) => axios.get(url, buildTokenInfo(token)).then(res => res.data);
+const poster = (url, body, token) => axios.post(url, body, buildTokenInfo(token)).then(res => res.data);
 
 export const TreeStructure = ({
   router,
@@ -35,21 +35,16 @@ export const TreeStructure = ({
   ...props
 }) => {
 
-  const { getAccessTokenSilently } = useAuth0();
   const { t } = useTranslation()
   const [remoteTreeData, setRemoteTreeData] = useState();
   const [treeData, setTreeData] = useState();
   const [filter, setFilter] = useState('');
 
   const { mutate } = useSWRConfig()
-  const [token, setToken] = useState();
-  const tokenPromise = useMemo(async () => getAccessTokenSilently(), []);
-  tokenPromise.then((token) => {
-    setToken(token);
-  })
+  const token = localStorage.getItem('accessToken');
   
-  const { data, error } = useSWR(token ? ['https://localhost:3000/entries', token] : null, fetcher);
-
+  const { data, error } = useSWR(token !== undefined ? ['https://localhost:3000/entries', token] : null, fetcher);
+  
   useLayoutEffect(() => {
     setRemoteTreeData(data);
   }, [data]);
