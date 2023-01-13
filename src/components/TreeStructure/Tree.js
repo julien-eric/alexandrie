@@ -4,6 +4,7 @@ import './Tree.scss'
 import { GenericNode } from './GenericNode'
 import { useTranslation } from 'react-i18next'
 import { TreeHeader } from './TreeHeader'
+import { buildTokenInfo } from '../../utils.js'
 
 import axios from 'axios'
 import useSWR, { useSWRConfig }  from 'swr'
@@ -16,18 +17,14 @@ import Tree, {
 } from '@atlaskit/tree';
 
 const PADDING_PER_LEVEL = 32;
-const buildTokenInfo = (token) => 
-({
-  headers: {
-    'Authorization': 'Bearer ' + token
-  }  
-});
 
 const fetcher = (url, token) => axios.get(url, buildTokenInfo(token)).then(res => res.data);
 const poster = (url, body, token) => axios.post(url, body, buildTokenInfo(token)).then(res => res.data);
 
 export const TreeStructure = ({
   router,
+
+  apiRoute,
   setPdfFile,
   handleShow,
   selected,
@@ -43,7 +40,7 @@ export const TreeStructure = ({
   const { mutate } = useSWRConfig()
   const token = localStorage.getItem('accessToken');
   
-  const { data, error } = useSWR(token !== undefined ? ['https://localhost:3000/entries', token] : null, fetcher);
+  const { data, error } = useSWR(token !== undefined ? [`https://localhost:3000/${apiRoute}`, token] : null, fetcher);
   
   useLayoutEffect(() => {
     setRemoteTreeData(data);
@@ -88,17 +85,17 @@ export const TreeStructure = ({
     let changeParams = {_id: draggedEntryId, sortOrder: newSortOrder};
     if ( source.parentId !== destination.parentId ) changeParams.parent = destination.parentId;
 
-    await mutate(['https://localhost:3000/entries', token], newTree, false)
-    const getResult = async (entries) => {
+    await mutate([`https://localhost:3000/${apiRoute}`, token], newTree, false)
+    const getResult = async (results) => {
       //A Post request to update one item shouldn't return the complete list no?
       //So what is the best practice for that update to return the list?
-      await poster('https://localhost:3000/entries/sortorder', changeParams, token);
+      await poster(`https://localhost:3000/${apiRoute}/sortorder`, changeParams, token);
       // await fetcher('https://localhost:3000/robot-sort', token);
       return newTree;
     }
     const options = { rollbackOnError: true }
     try {
-      mutate(['https://localhost:3000/entries', token], getResult, options)
+      mutate([`https://localhost:3000/${apiRoute}`, token], getResult, options)
     } catch (error) {
       console.log('error', error);
     }
@@ -121,7 +118,8 @@ export const TreeStructure = ({
       <Tree
         tree={treeReducer(treeData, remoteTreeData, filter)}
         renderItem={(renderItemParams) => (
-          <GenericNode 
+          <GenericNode
+            apiRoute={apiRoute}
             renderItemParams={renderItemParams}
             offsetPerLevel={PADDING_PER_LEVEL}
             setPdfFile={setPdfFile}

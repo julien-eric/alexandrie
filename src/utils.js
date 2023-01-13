@@ -45,6 +45,14 @@ const getS3Link = async (fileKey) => {
   return result;
 }
 
+const buildTokenInfo = (token) => 
+({
+  headers: {
+    'Authorization': 'Bearer ' + token
+  }  
+});
+
 export {
-  getS3Link
+  getS3Link,
+  buildTokenInfo
 }

@@ -3,6 +3,7 @@ import { LeafNode, FolderNode } from '../TreeStructure';
 
 export const GenericNode = ({
   selected,
+  apiRoute,
   renderItemParams,
   offsetPerLevel,
   setPdfFile,
@@ -30,6 +31,7 @@ export const GenericNode = ({
       >
         {item.data.folder ?
           <FolderNode
+            apiRoute={apiRoute}
             inheritedClasses={classes += ' folder'}
             renderItemParams={renderItemParams}
             offsetPerLevel={offsetPerLevel}
@@ -37,8 +39,9 @@ export const GenericNode = ({
             handleShow={handleShow}
             onSelect={onSelect}
             debug={debug}
-            />  :
-            <LeafNode
+          />  :
+          <LeafNode
+            apiRoute={apiRoute}
             inheritedClasses={classes += ' leaf'} 
             renderItemParams={renderItemParams}
             offsetPerLevel={offsetPerLevel}

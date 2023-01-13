@@ -37,6 +37,7 @@ export const MyPps = ({ ...props }) => {
           <Col className='tree-root'>
             <PageHeader />
             <Tree 
+              apiRoute={'entries'}
               setPdfFile={setPdfFile} 
               handleShow={handleShow}
               selected={selected}

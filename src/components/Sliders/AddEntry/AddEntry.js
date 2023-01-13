@@ -9,17 +9,12 @@ import Form from 'react-bootstrap/Form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faX } from '@fortawesome/pro-light-svg-icons';
 import Button from 'react-bootstrap/Button'
+import { buildTokenInfo } from '../../../utils.js'
 
 import EntryBreadCrumb from './Breadcrumb'
 import FileUpload from '../../FileUpload/FileUpload.js';
 
 import axios from 'axios'
-const buildTokenInfo = (token) => 
-({
-  headers: {
-    'Authorization': 'Bearer ' + token
-  }  
-});
 const poster = (url, body, token) => axios.post(url, body, buildTokenInfo(token)).then(res => res.data);
 
 export const AddEntry = ({

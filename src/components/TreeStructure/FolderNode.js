@@ -7,10 +7,11 @@ import Badge from 'react-bootstrap/Badge'
 import { useTranslation } from 'react-i18next'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleDown, faAngleRight, faFilePdf, faFolderClosed, faHyphen } from '@fortawesome/pro-light-svg-icons'
+import { faAngleDown, faAngleRight, faFilePdf, faFolderClosed, faHyphen, faBriefcase } from '@fortawesome/pro-light-svg-icons'
 
 export const FolderNode = ({
   selected,
+  apiRoute,
   renderItemParams,
   offsetPerLevel,
   handleShow,
@@ -66,7 +67,7 @@ export const FolderNode = ({
       {item.data.folder ?
         <DropdownButton
           variant="link"
-          title={item.data.folder ? <FontAwesomeIcon className='text-primary' icon={faFolderClosed} /> : <FontAwesomeIcon icon={faFilePdf} />}
+          title={apiRoute === 'entries' ? <FontAwesomeIcon className='text-primary' icon={faFolderClosed} /> : <FontAwesomeIcon icon={faBriefcase} />}
           size="sm"
           className='folder-button caret-off me-2'
           style={{display: 'inline'}}
