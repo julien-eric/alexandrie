@@ -19,6 +19,10 @@ export const TreeHeader = ({ filter, setFilter, collapseAll, expandAll, ...props
     setFilter(eventFilterInput.target.value);
   }
 
+  const toggleShowUserPolicies = () => {
+    console.log('this will flag the api call to request only entries which match the users roles');
+  }
+
   return (
     <Row className='mb-4'>
       <Form className='col-4'>
@@ -36,7 +40,7 @@ export const TreeHeader = ({ filter, setFilter, collapseAll, expandAll, ...props
           </InputGroup>
         </div>
       </Form>
-      <Button onClick={collapseAll} variant='canvas-gray' size='sm' className='col-auto px-3'>
+      <Button onClick={toggleShowUserPolicies} variant='canvas-gray' size='sm' className='col-auto px-3'>
         <FontAwesomeIcon className='fa-fw' icon={faUserCheck}/>
       </Button>
         <ButtonGroup aria-label="Basic example" className='col-auto px-3'>
