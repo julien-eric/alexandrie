@@ -9,16 +9,14 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { buildTokenInfo } from '../../../utils.js'
 
-import './AddEntry.scss'
-
 import { Slider } from '../Slider'
-import EntryBreadCrumb from './Breadcrumb'
+// import EntryBreadCrumb from './Breadcrumb'
 import FileUpload from '../../FileUpload/FileUpload.js';
 
 import axios from 'axios'
 const poster = (url, body, token) => axios.post(url, body, buildTokenInfo(token)).then(res => res.data);
 
-export const AddEntry = ({
+export const RoleDetails = ({
   location,
   expanded,
   folder,
@@ -46,7 +44,7 @@ export const AddEntry = ({
   const disabled = !folder && (formData.name === '' || formData.file === '');
 
   return (
-    <Slider expanded={expanded} handleClose={handleClose} title={'Ajouter une politique'}>
+    <Slider expanded={expanded} handleClose={handleClose} title={'Ajouter un rôle'}>
 
       <Row>
         <Col>
@@ -84,12 +82,12 @@ export const AddEntry = ({
                 value={formData.name}
                 onChange={(e) => setFormData({...formData, name: e.target.value})}
               />
-              <EntryBreadCrumb
+              {/* <EntryBreadCrumb
                 folder={folder}
                 item={props.item}
                 ancestry={ancestry || []}
                 newPolicyName={formData.name}
-              />
+              /> */}
             </Form.Group>
 
             {!folder && 
@@ -110,4 +108,4 @@ export const AddEntry = ({
     </Slider>)
 }
 
-export default AddEntry
+export default RoleDetails

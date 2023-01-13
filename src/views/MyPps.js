@@ -17,7 +17,7 @@ export const MyPps = ({ ...props }) => {
   const [folder, setFolder] = useState(false);
   const { mutate } = useSWRConfig()
 
-  const handleShow = (newEntryParent, ancestry, folder = false) => {
+  const handleShowAddEntry = (newEntryParent, ancestry, folder = false) => {
     setExpanded(true);
     if (folder) setFolder(true)
     setAncestry(ancestry)
@@ -39,7 +39,7 @@ export const MyPps = ({ ...props }) => {
             <Tree 
               apiRoute={'entries'}
               setPdfFile={setPdfFile} 
-              handleShow={handleShow}
+              handleShow={handleShowAddEntry}
               selected={selected}
               setSelected={setSelected}
             />

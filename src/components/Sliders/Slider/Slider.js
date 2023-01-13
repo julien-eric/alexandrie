@@ -1,32 +1,39 @@
 import React, { useState } from 'react'
-import './Slider.scss'
-import Offcanvas from 'react-bootstrap/Offcanvas'
+import { useTranslation } from 'react-i18next'
 
-export const Slider = ({
-  location,
+import './Slider.scss'
+
+import Col from 'react-bootstrap/Col'
+import Row from 'react-bootstrap/Row'
+import Button from 'react-bootstrap/Button'
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faX } from '@fortawesome/pro-light-svg-icons';
+
+export const AddEntry = ({
+  expanded,
+  handleClose,
+  title,
   ...props
 }) => {
-
   return (
-    <>
-      <Offcanvas 
-        show={props.show !== false && props.show !== undefined}
-        onHide={props.handleClose}
-        placement={props.placement}
-        // backdrop={false}
-      >
-        <Offcanvas.Header closeButton>
-          <Offcanvas.Title>
-            <h2 className='fw-bold'>
-              {props.title}
-            </h2>
-          </Offcanvas.Title>
-        </Offcanvas.Header>
-        <Offcanvas.Body className='pt-0'>
-          {props.children}
-        </Offcanvas.Body>
-      </Offcanvas>
-    </>)
+    <div id='righthand' className={`${expanded === true ? 'expanded' : 'collapsed'} px-5`}>
+      <div id='righthand-level'>
+        <Row className='py-4'>
+          <Col className='col-10 d-inline-flex align-items-center'>
+            <h3 className='text-black'>
+              {title}
+            </h3>
+          </Col>
+          <Col className='col-2 d-inline-flex align-items-center'>
+            <Button variant='link' onClick={handleClose}>
+              <FontAwesomeIcon icon={faX}/>
+            </Button>
+          </Col>
+        </Row>
+        {props.children}
+      </div>
+    </div>)
 }
 
-export default Slider
+export default AddEntry

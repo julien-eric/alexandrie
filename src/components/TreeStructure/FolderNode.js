@@ -7,7 +7,8 @@ import Badge from 'react-bootstrap/Badge'
 import { useTranslation } from 'react-i18next'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleDown, faAngleRight, faFilePdf, faFolderClosed, faHyphen, faBriefcase } from '@fortawesome/pro-light-svg-icons'
+import { FolderNodeAction } from './FolderNodeAction'
+import { faAngleDown, faAngleRight, faFolderClosed, faHyphen, faBriefcase } from '@fortawesome/pro-light-svg-icons'
 
 export const FolderNode = ({
   selected,
@@ -21,7 +22,7 @@ export const FolderNode = ({
   ...props
 }) => {
   const { t } = useTranslation();
-  const { item, onExpand, onCollapse, provided, snapshot } = renderItemParams;
+  const { item, onExpand, onCollapse, provided } = renderItemParams;
 
   const folderCategory = (level) => {
     if(level == 0) return 'Service';
@@ -64,21 +65,10 @@ export const FolderNode = ({
     >
       <span>{getIcon(item, onExpand, onCollapse)}</span>
 
-      {item.data.folder ?
-        <DropdownButton
-          variant="link"
-          title={apiRoute === 'entries' ? <FontAwesomeIcon className='text-primary' icon={faFolderClosed} /> : <FontAwesomeIcon icon={faBriefcase} />}
-          size="sm"
-          className='folder-button caret-off me-2'
-          style={{display: 'inline'}}
-          id="input-group-dropdown-1"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <Dropdown.Item href="#" onClick={(e) => handleFolderClick(e)}>{t('general:actions.create-policy.short')}</Dropdown.Item>
-          <Dropdown.Item href="#" onClick={(e) => handleFolderClick(e, true)}>{t('general:actions.create-level.short')}</Dropdown.Item>
-        </DropdownButton>
-        : <></>
-      }
+      <FolderNodeAction
+        apiRoute={apiRoute}
+        handleFolderClick={handleFolderClick}
+      />
 
       <span className='text-black'>{item.data ? item.data.name : ''}</span>
       

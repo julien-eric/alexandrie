@@ -5,8 +5,10 @@ import { useTranslation } from 'react-i18next'
 import { PageHeader } from '../components/PageHeader'
 import { Tree } from '../components/TreeStructure'
 
+import { RoleDetails } from '../components/Sliders/RoleDetails'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import { useSWRConfig }  from 'swr'
 
 export const Roles = ({ ...props }) => {
   const { t } = useTranslation();
@@ -15,6 +17,19 @@ export const Roles = ({ ...props }) => {
   const [selected, setSelected] = useState();
   const [ancestry, setAncestry] = useState([]);
   const [folder, setFolder] = useState(false);
+  const { mutate } = useSWRConfig()
+
+  const handleShowRoleDetails = (newEntryParent, ancestry, folder = false) => {
+    setExpanded(true);
+    if (folder) setFolder(true)
+    setAncestry(ancestry)
+    setSelected(newEntryParent._id)
+  }
+
+  const handleClose = async () => {
+    await mutate('https://localhost:3000/roles');
+    setExpanded(false);
+  }
 
   return (
     <App router={props.router} pdfFile={pdfFile} setPdfFile={setPdfFile}>
@@ -27,9 +42,18 @@ export const Roles = ({ ...props }) => {
               apiRoute={'roles'}
               selected={selected}
               setSelected={setSelected}
+              handleShow={handleShowRoleDetails}
+              handleClose={handleClose}
             />
           </Col>
         </Row>
+          <RoleDetails
+            expanded={expanded}
+            folder={folder}
+            ancestry={ancestry}
+            setFolder={setFolder}
+            handleClose={handleClose}
+          />
       </div>
 
     </App>
