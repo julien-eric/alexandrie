@@ -24,7 +24,6 @@ export const filterElement = (itemId, remote, filter, involvedIds) => {
 }      
 
 export const getLineage = (itemId, tree, excludeSelf) => {
-  console.log('tree', tree)
   
   const element = tree.items[itemId]; 
 

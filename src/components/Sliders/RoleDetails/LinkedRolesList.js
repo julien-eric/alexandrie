@@ -7,23 +7,17 @@ import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 import Badge from 'react-bootstrap/Badge'
 import { Button } from 'react-bootstrap'
-// import Label from 'react-bootstrap/Label'
-import ListGroup, {ListGroupItem } from 'react-bootstrap/ListGroup'
+import ListGroup from 'react-bootstrap/ListGroup'
 
 export const RoleDetails = ({
   linkedPolicies,
   ...props
 }) => {
   const { t } = useTranslation()
-
-  // const linkedPolicies = [
-  //   {name: 'Commun : Ressources humaines', sub: 'Parent : RH', count: '12'},
-  //   {name: 'Anasthésie Générale', sub: 'Parent : Commun : Ressources humaines', count: '18'}
-  // ]
+  console.log('linkedPolicies', linkedPolicies)
 
   return (<>
-    {/* <Label>Linked Role List</Label> */}
-    <ListGroup className='mb-3' as="ol" numbered>
+    <ListGroup className='' as="ol" numbered>
       {
         linkedPolicies.map((policy, index) => {
           return (

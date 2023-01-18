@@ -7,5 +7,8 @@
     "my-account": "My Account",
     "add-policy": "Add a Policy",
     "add-folder": "Ajouter une politique"
+  },
+  "actions": {
+    "apply": "Apply"
   }
 }

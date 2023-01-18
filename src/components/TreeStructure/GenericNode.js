@@ -5,7 +5,7 @@ export const GenericNode = ({
   selected,
   onSelect,
   apiRoute,
-  treeSelectionMode,
+  nodeSelectionMode,
   renderItemParams,
   offsetPerLevel,
   setPdfFile,
@@ -33,7 +33,7 @@ export const GenericNode = ({
         {item.data.folder ?
           <FolderNode
             apiRoute={apiRoute}
-            treeSelectionMode={treeSelectionMode}
+            nodeSelectionMode={nodeSelectionMode}
             inheritedClasses={classes += ' folder'}
             renderItemParams={renderItemParams}
             offsetPerLevel={offsetPerLevel}
@@ -45,7 +45,7 @@ export const GenericNode = ({
           />  :
           <LeafNode
             apiRoute={apiRoute}
-            treeSelectionMode={treeSelectionMode}
+            nodeSelectionMode={nodeSelectionMode}
             inheritedClasses={classes += ' leaf'} 
             renderItemParams={renderItemParams}
             offsetPerLevel={offsetPerLevel}

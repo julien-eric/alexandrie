@@ -9,8 +9,10 @@ import { FolderNodeAction } from './FolderNodeAction'
 import { faAngleDown, faAngleRight, faFolderClosed, faHyphen, faBriefcase, faSquareCheck, faSquare } from '@fortawesome/pro-light-svg-icons'
 import { ICON_STATE, ThreeStateIcon } from '../ThreeStateIcon/ThreeStateIcon';
 
+
 export const FolderNode = ({
   apiRoute,
+  nodeSelectionMode,
   renderItemParams,
   offsetPerLevel,
   handleShow,
@@ -72,14 +74,17 @@ export const FolderNode = ({
       className={inheritedClasses}
       onClick={onClick}
     >
-      <span className='ps-2 pe-2' onClick={(e) => {
-        e.stopPropagation();
-        onSelect()
-      }}>
-        {
-            selected ? <FontAwesomeIcon icon={faSquareCheck} /> : <FontAwesomeIcon icon={faSquare} />
-        }
-      </span>
+      {nodeSelectionMode ? 
+        <span className='ps-2 pe-2' onClick={(e) => {
+          e.stopPropagation();
+          onSelect()
+        }}>
+          {
+              selected ? <FontAwesomeIcon icon={faSquareCheck} /> : <FontAwesomeIcon icon={faSquare} />
+          }
+        </span>
+        :<></>
+      }
 
       <span>{getIcon(item, onExpand, onCollapse)}</span>
 
@@ -104,10 +109,10 @@ export const FolderNode = ({
         <Badge className='size-badge round' bg="deep-gray ms-2">{item.data._id}</Badge> :
         <></>
       }
-      {item.children.length !== 0 ?
+      {/* {item.children.length !== 0 ?
         <Badge className='size-badge round' bg="deep-gray ms-2">{item.children.length}</Badge> :
         <></>
-      }
+      } */}
     </div>
   );
 }

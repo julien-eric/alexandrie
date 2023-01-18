@@ -2,13 +2,15 @@
   "headings": {
     "welcome": "Bienvenue",
     "my-pps": "Bibliothèque",
-    "roles": "Types d'emploi"
+    "roles": "Types d'emploi",
+    "linking-policy-modal-header" : "Associer des politiques à"
   },
   "buttons": {
     "add-user": "Add User"
   },
   "messages": {
-    "delete-users": "Are you sure you want to delete the following users?"
+    "delete-users": "Are you sure you want to delete the following users?",
+    "number-of-linked-policies" : " nouvelle(s) politique(s) seront associées avec ce rôle"
   },
   "actions": {
     "create-user": {

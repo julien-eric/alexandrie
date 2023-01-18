@@ -25,7 +25,7 @@ export const TreeStructure = ({
   router,
 
   apiRoute,
-  treeSelectionMode,
+  nodeSelectionMode,
   setPdfFile,
   handleShow,
   selected,
@@ -180,7 +180,7 @@ export const TreeStructure = ({
         renderItem={(renderItemParams) => (
           <GenericNode
             apiRoute={apiRoute}
-            treeSelectionMode={treeSelectionMode}
+            nodeSelectionMode={nodeSelectionMode}
             renderItemParams={renderItemParams}
             offsetPerLevel={PADDING_PER_LEVEL}
             setPdfFile={setPdfFile}

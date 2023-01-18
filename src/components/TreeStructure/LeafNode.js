@@ -12,6 +12,7 @@ import { faSquareCheck, faSquare } from '@fortawesome/pro-light-svg-icons'
 export const LeafNode = ({
   selected,
   apiRoute,
+  nodeSelectionMode,
   renderItemParams,
   setPdfFile,
   handleShow,
@@ -42,12 +43,16 @@ export const LeafNode = ({
       className={inheritedClasses}
       onClick={handleFileClick}
     >
-      <span className='ps-2 pe-2' onClick={(e) => {
-        e.stopPropagation();
-        onSelect()
-      }}>
-        { selected ? <FontAwesomeIcon icon={faSquareCheck} /> : <FontAwesomeIcon icon={faSquare} />}
-      </span>
+      {nodeSelectionMode ? 
+        <span className='ps-2 pe-2' onClick={(e) => {
+          e.stopPropagation();
+          onSelect()
+        }}>
+          { selected ? <FontAwesomeIcon icon={faSquareCheck} /> : <FontAwesomeIcon icon={faSquare} />}
+        </span>
+        : <></>  
+      }
+
       <span>
         <Button variant="link" size="sm" className='round d-inline' bg="deep-gray">
           <ThreeStateIcon icons={{ initial: faFilePdf, loading: faSpinner, final: faFilePdf, error: faFileCircleXmark }} iconState={loading} />

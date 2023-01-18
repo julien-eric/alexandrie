@@ -2,13 +2,15 @@
   "headings": {
     "welcome": "Welcome2",
     "my-pps": "My Policies and Procedures",
-    "roles": "Roles"
+    "roles": "Roles",
+    "linking-policy-modal-header" : "Linking Policies to"
   },
   "buttons": {
     "add-user": "Add User"
   },
   "messages": {
-    "delete-users": "Are you sure you want to delete the following users?"
+    "delete-users": "Are you sure you want to delete the following users?",
+    "number-of-linked-policies" : " new policie(s) will be linked to this role"
   },
   "actions": {
     "create-user": {

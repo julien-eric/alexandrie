@@ -15,18 +15,18 @@ export const Roles = ({ ...props }) => {
   const { t } = useTranslation();
   const [pdfFile, setPdfFile] = useState();
   const [expanded, setExpanded] = useState(false);
-  const [selected, setSelected] = useState();
+  const [showPolicySelection, setShowPolicySelection] = useState(false);
+  const [selectedRole, setSelectedRole] = useState();
   const [ancestry, setAncestry] = useState([]);
   const [folder, setFolder] = useState(false);
   const { mutate } = useSWRConfig()
   
-  const selectPolicyMode = true;
 
   const handleShowRoleDetails = (newEntryParent, ancestry, folder = false) => {
     setExpanded(true);
     if (folder) setFolder(true)
     setAncestry(ancestry)
-    setSelected(newEntryParent._id)
+    setSelectedRole(newEntryParent)
   }
 
   const handleClose = async () => {
@@ -34,12 +34,17 @@ export const Roles = ({ ...props }) => {
     setExpanded(false);
   }
 
+
   return (
     <App router={props.router} pdfFile={pdfFile} setPdfFile={setPdfFile}>
 
-      <PolicySelection
-        show={selectPolicyMode}
-      />
+      { showPolicySelection ? 
+          <PolicySelection
+            show={!!showPolicySelection}
+            setShowPolicySelection={setShowPolicySelection}
+            role={selectedRole}
+          /> : <></>
+      }
 
       <div className='wrapper2'>
         <Row className='w-100 me-2'>
@@ -47,8 +52,8 @@ export const Roles = ({ ...props }) => {
             <PageHeader />
             <Tree 
               apiRoute={'roles'}
-              selected={selected}
-              setSelected={setSelected}
+              selected={selectedRole ? selectedRole._id : undefined}
+              setSelected={setSelectedRole}
               handleShow={handleShowRoleDetails}
               handleClose={handleClose}
             />
@@ -59,6 +64,7 @@ export const Roles = ({ ...props }) => {
             folder={folder}
             ancestry={ancestry}
             setFolder={setFolder}
+            setShowPolicySelection={setShowPolicySelection}
             handleClose={handleClose}
           />
       </div>
