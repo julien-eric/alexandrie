@@ -3,12 +3,13 @@ import { LeafNode, FolderNode } from '../TreeStructure';
 
 export const GenericNode = ({
   selected,
+  onSelect,
   apiRoute,
+  treeSelectionMode,
   renderItemParams,
   offsetPerLevel,
   setPdfFile,
   handleShow,
-  onSelect,
   ...props
 }) => {
 
@@ -21,7 +22,7 @@ export const GenericNode = ({
   const { item, provided, snapshot } = renderItemParams;
   let classes = 'tree-node';
   if(snapshot.isDragging) classes += ' dragging';
-  if(selected === item.data._id) classes += ' selected ';
+  if(selected && selected.indexOf(item.data._id) !== -1) classes += ' selected ';
 
   return (
       <div
@@ -32,22 +33,26 @@ export const GenericNode = ({
         {item.data.folder ?
           <FolderNode
             apiRoute={apiRoute}
+            treeSelectionMode={treeSelectionMode}
             inheritedClasses={classes += ' folder'}
             renderItemParams={renderItemParams}
             offsetPerLevel={offsetPerLevel}
             setPdfFile={setPdfFile}
             handleShow={handleShow}
-            onSelect={onSelect}
+            onSelect={() => onSelect(item)}
+            selected={selected && selected.indexOf(item.data._id) !== -1}
             debug={debug}
           />  :
           <LeafNode
             apiRoute={apiRoute}
+            treeSelectionMode={treeSelectionMode}
             inheritedClasses={classes += ' leaf'} 
             renderItemParams={renderItemParams}
             offsetPerLevel={offsetPerLevel}
             setPdfFile={setPdfFile}
             handleShow={handleShow} 
-            onSelect={onSelect}
+            onSelect={() => onSelect(item)}
+            selected={selected && selected.indexOf(item.data._id) !== -1}
             debug={debug}
           />
         }

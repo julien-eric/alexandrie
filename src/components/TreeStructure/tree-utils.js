@@ -21,7 +21,25 @@ export const filterElement = (itemId, remote, filter, involvedIds) => {
     }
     if(currentItem.data.parent) getAncestry(currentItem);
   }
-}                                                                                    
+}      
+
+export const getLineage = (itemId, tree, excludeSelf) => {
+  console.log('tree', tree)
+  
+  const element = tree.items[itemId]; 
+
+  let lineage = [];
+  const traverse = (item) => {
+    if(!excludeSelf) lineage.push(item.data._id)
+    if(item.data.children && item.data.children.length > 0) {
+      item.data.children.forEach((childElementId) => {
+        traverse(tree.items[childElementId]);
+      })
+    }
+  }
+  traverse(element, excludeSelf);
+  return [...lineage];
+}
 
 export const treeReducer = (local, remote, filter, forceLocal) => {
   if(!remote) return  
@@ -144,6 +162,7 @@ export const generateNewSortOrder = (tree, source, destination) => {
 export default {
   filterElement:filterElement,
   treeReducer: treeReducer,
+  getLineage: getLineage,
   setCollapsed:setCollapsed,
   getAncestryArray:getAncestryArray,
   generateNewSortOrder:generateNewSortOrder

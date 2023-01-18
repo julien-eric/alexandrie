@@ -77,9 +77,12 @@ $offcanvas-border-width:            1px;
 // $offcanvas-color:                   $modal-content-color;
 // $offcanvas-box-shadow:              $modal-content-box-shadow-xs;
 
+$lh-tree-modal: 1180px;
 $lh-modal-width: 1180px;
-$modal-content-color:               white;
-$modal-content-bg:                  rgba(black, 0);
+// $modal-content-color:               white;
+// $modal-content-bg:                  rgba(black, 0);
+$modal-content-color:               black;
+$modal-content-bg:                  rgb(255, 255, 255);
 // $modal-xl: 100%;
 // $modal-lg: 100%;
 // $modal-md: 100%;

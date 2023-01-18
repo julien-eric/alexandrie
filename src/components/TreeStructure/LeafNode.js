@@ -2,8 +2,12 @@ import React, { useState } from 'react'
 import { getS3Link } from '../../utils.js'
 import Button from 'react-bootstrap/Button'
 import Badge from 'react-bootstrap/Badge'
+import Form from 'react-bootstrap/Form'
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { ICON_STATE, ThreeStateIcon } from '../ThreeStateIcon/ThreeStateIcon';
-import { faFilePdf, faSpinner, faFileCircleXmark, faBriefcase } from '@fortawesome/pro-thin-svg-icons'
+import { faFilePdf, faSpinner, faFileCircleXmark } from '@fortawesome/pro-thin-svg-icons'
+import { faSquareCheck, faSquare } from '@fortawesome/pro-light-svg-icons'
 
 export const LeafNode = ({
   selected,
@@ -21,16 +25,16 @@ export const LeafNode = ({
 
   const handleFileClick = async (e) => {
     e.preventDefault();
-    setLoading(ICON_STATE.LOADING);
-    onSelect(item.data._id);
-    if(item.data.files !== undefined && item.data.files[0]) {
-      const link = await getS3Link(item.data.files[0]);
-      setPdfFile(link)
-      setLoading(ICON_STATE.FINAL);
-    } else {
-      setLoading(ICON_STATE.ERROR);
-      setTimeout(() => {setLoading(ICON_STATE.INITIAL)}, 1000)
-    }
+    // setLoading(ICON_STATE.LOADING);
+    // onSelect(item.data._id);
+    // if(item.data.files !== undefined && item.data.files[0]) {
+    //   const link = await getS3Link(item.data.files[0]);
+    //   setPdfFile(link)
+    //   setLoading(ICON_STATE.FINAL);
+    // } else {
+    //   setLoading(ICON_STATE.ERROR);
+    //   setTimeout(() => {setLoading(ICON_STATE.INITIAL)}, 1000)
+    // }
   }
   
   return (
@@ -38,6 +42,12 @@ export const LeafNode = ({
       className={inheritedClasses}
       onClick={handleFileClick}
     >
+      <span className='ps-2 pe-2' onClick={(e) => {
+        e.stopPropagation();
+        onSelect()
+      }}>
+        { selected ? <FontAwesomeIcon icon={faSquareCheck} /> : <FontAwesomeIcon icon={faSquare} />}
+      </span>
       <span>
         <Button variant="link" size="sm" className='round d-inline' bg="deep-gray">
           <ThreeStateIcon icons={{ initial: faFilePdf, loading: faSpinner, final: faFilePdf, error: faFileCircleXmark }} iconState={loading} />

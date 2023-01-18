@@ -9,7 +9,7 @@ import { buildTokenInfo } from '../../utils.js'
 import axios from 'axios'
 import useSWR, { useSWRConfig }  from 'swr'
 
-import { treeReducer, setCollapsed, getAncestryArray, generateNewSortOrder } from './tree-utils.js'
+import { treeReducer, getLineage, setCollapsed, getAncestryArray, generateNewSortOrder } from './tree-utils.js'
 
 import Tree, {
   mutateTree,
@@ -25,10 +25,12 @@ export const TreeStructure = ({
   router,
 
   apiRoute,
+  treeSelectionMode,
   setPdfFile,
   handleShow,
   selected,
   setSelected,
+  changeSelection,
   ...props
 }) => {
 
@@ -36,7 +38,6 @@ export const TreeStructure = ({
   const [remoteTreeData, setRemoteTreeData] = useState();
   const [treeData, setTreeData] = useState();
   const [filter, setFilter] = useState('');
-
   const { mutate } = useSWRConfig()
   const token = localStorage.getItem('accessToken');
   
@@ -101,8 +102,67 @@ export const TreeStructure = ({
     }
   };
 
-  const onSelect = (itemId) => {
-    setSelected(itemId);
+  const onSelect = (item) => {
+    
+    const union = (array1, array2) => {
+      return Array.from(new Set(array1.concat(array2)));
+    }
+
+    const hasChildren = item.data.folder && item.data.children && item.data.children.length > 0;
+    let newSelection = [...selected];
+
+    if(hasChildren) {
+
+      const selfIndex = selected.indexOf(item.data._id);
+      const selfSelected = selfIndex !== -1;
+      
+      const lineage = getLineage(item.data._id, treeData)
+      const allChildrenSelected = newSelection.length >0 && lineage.every((selectedItemId) => {
+        return newSelection.includes(selectedItemId);
+      });
+      const someChildrenSelected = !allChildrenSelected && lineage.some((selectedItemId) => {
+        return newSelection.includes(selectedItemId);
+      });
+
+      if(allChildrenSelected) {
+        if(selfSelected) {
+          newSelection = newSelection.filter((selectedItemId) => {
+            return !lineage.includes(selectedItemId);
+          });
+        } else {
+          newSelection = [...newSelection, item.data._id]
+        }
+      }
+      
+      if(someChildrenSelected) {
+        newSelection = union(newSelection, lineage);
+      }
+
+      if(!someChildrenSelected) {
+        if(selfSelected) {
+          newSelection = newSelection.filter(selectedItemId =>
+            selectedItemId !== item.data._id
+          );
+        } else {
+          newSelection = [...lineage]
+        }
+      }
+
+    } else {
+      
+      const itemIndex = newSelection.indexOf(item.data._id);
+      
+      if(itemIndex === -1) {
+        newSelection = [...newSelection, item.data._id]
+      } else {
+        newSelection = newSelection.filter(selectedItemId =>
+          selectedItemId !== item.data._id
+        );
+      }
+    }
+
+    setSelected(newSelection);
+    
   };
 
   if (error) return "An error has occurred.";
@@ -120,11 +180,13 @@ export const TreeStructure = ({
         renderItem={(renderItemParams) => (
           <GenericNode
             apiRoute={apiRoute}
+            treeSelectionMode={treeSelectionMode}
             renderItemParams={renderItemParams}
             offsetPerLevel={PADDING_PER_LEVEL}
             setPdfFile={setPdfFile}
             handleShow={(item, folder) => handleShow(item, getAncestryArray(item._id, remoteTreeData), folder)}
             selected={selected}
+            setSelected={setSelected}
             onSelect={onSelect}
           />
         )}

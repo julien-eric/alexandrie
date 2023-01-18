@@ -1,7 +1,9 @@
 import RoleDetails from './RoleDetails'
+import LinkedRolesList from './LinkedRolesList'
 
 export {
-  RoleDetails
+  RoleDetails,
+  LinkedRolesList
 }
 
 export default RoleDetails

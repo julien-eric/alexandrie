@@ -10,7 +10,7 @@ import Button from 'react-bootstrap/Button'
 import { buildTokenInfo } from '../../../utils.js'
 
 import { Slider } from '../Slider'
-// import EntryBreadCrumb from './Breadcrumb'
+import { LinkedRolesList } from '../RoleDetails'
 import FileUpload from '../../FileUpload/FileUpload.js';
 
 import axios from 'axios'
@@ -44,64 +44,34 @@ export const RoleDetails = ({
   const disabled = !folder && (formData.name === '' || formData.file === '');
 
   return (
-    <Slider expanded={expanded} handleClose={handleClose} title={'Ajouter un rôle'}>
-
-      <Row>
-        <Col>
-          <Nav
-            justify  
-            variant='pull'
-            defaultActiveKey={tab}
-            className='add-entry mb-3'
-            as="ul"
-            onSelect={(selectedKey) => {
-                setTab(selectedKey);
-                props.setFolder(selectedKey === 'folder');
-              }
-            }
-          >
-            <Nav.Item as="li">
-              <Nav.Link eventKey="policy">Politique</Nav.Link>
-            </Nav.Item>
-            <Nav.Item as="li">
-              <Nav.Link eventKey="folder">Répertoire</Nav.Link>
-            </Nav.Item>
-          </Nav>
-        </Col>
-      </Row>
+    <Slider expanded={expanded} handleClose={handleClose} title={'Role Details'}>
 
       <Row>
         <Col>
           <Form onSubmit={handleSubmit} >
+
             <Form.Group as={Row} className='mb-3'>
               <Form.Label className='ps-0' htmlFor='inputPassword5'>{t('general:inputs.policy-name.label')}</Form.Label>
               <Form.Control
                 type='text'
                 id='name'
                 aria-describedby='passwordHelpBlock'
-                value={formData.name}
+                value={ancestry[0] ? ancestry[0].data.name : ''}
                 onChange={(e) => setFormData({...formData, name: e.target.value})}
               />
-              {/* <EntryBreadCrumb
-                folder={folder}
-                item={props.item}
-                ancestry={ancestry || []}
-                newPolicyName={formData.name}
-              /> */}
             </Form.Group>
 
-            {!folder && 
-              <FileUpload
-                formData={formData}
-                setFormData={setFormData}
-              />
-            }
-
-            <Row className='mt-5 justify-content-end'>
-              <Col className='col-6 text-end me-0 pe-0'>
-                <Button variant='primary' type='submit' size='md' disabled={disabled} className='me-1 d-inline'>Confirmer</Button>
-              </Col>
+            <Row className='mb-3'>
+              {/* <Col className='col-12'> */}
+                {/* <LinkedRolesList
+                policies={[{name: 'Commun : Ressources humaines', sub: 'Parent : RH', count: '12'},
+                    {name: 'Anasthésie Générale', sub: 'Parent : Commun : Ressources humaines', count: '18'}
+                  ]}
+                /> */}
+                {/* <Button variant='primary' type='submit' size='md' className='me-1 d-inline'>Link Policies</Button> */}
+              {/* </Col> */}
             </Row>
+
           </Form>
         </Col>
       </Row>

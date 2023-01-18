@@ -22,6 +22,10 @@
     "create-level": {
       "short": "Créer repertoire",
       "standard": "Ajouter un nouveau répertoire"
+    },
+    "role-details": {
+      "short": "Voir Détails",
+      "standard": "Voir Details du rôle"
     }
   },
   "inputs": {

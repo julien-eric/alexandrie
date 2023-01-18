@@ -14,6 +14,10 @@ export const FolderNodeAction = ({
 }) => {
   const { t } = useTranslation();
 
+  const actions = apiRoute === 'entries' ? 
+    ['create-policy', 'create-level'] :
+    ['role-details'];
+
   return (
     <DropdownButton
       variant="link"
@@ -24,8 +28,13 @@ export const FolderNodeAction = ({
       id="input-group-dropdown-1"
       onClick={(e) => e.stopPropagation()}
     >
-      <Dropdown.Item href="#" onClick={(e) => handleFolderClick(e)}>{t('general:actions.create-policy.short')}</Dropdown.Item>
-      <Dropdown.Item href="#" onClick={(e) => handleFolderClick(e, true)}>{t('general:actions.create-level.short')}</Dropdown.Item>
+      {actions.map(
+        (action, index) => {
+          return(
+            <Dropdown.Item href="#" key={index} onClick={(e) => handleFolderClick(e)}>{t(`general:actions.${action}.short`)}</Dropdown.Item>
+          )
+        }
+      )} 
     </DropdownButton>
   );
 }

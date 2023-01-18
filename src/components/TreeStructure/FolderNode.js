@@ -1,23 +1,22 @@
 import React, { useState } from 'react'
 
-import Dropdown from 'react-bootstrap/Dropdown'
-import DropdownButton from 'react-bootstrap/DropdownButton'
 import Button from 'react-bootstrap/Button'
 import Badge from 'react-bootstrap/Badge'
 import { useTranslation } from 'react-i18next'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { FolderNodeAction } from './FolderNodeAction'
-import { faAngleDown, faAngleRight, faFolderClosed, faHyphen, faBriefcase } from '@fortawesome/pro-light-svg-icons'
+import { faAngleDown, faAngleRight, faFolderClosed, faHyphen, faBriefcase, faSquareCheck, faSquare } from '@fortawesome/pro-light-svg-icons'
+import { ICON_STATE, ThreeStateIcon } from '../ThreeStateIcon/ThreeStateIcon';
 
 export const FolderNode = ({
-  selected,
   apiRoute,
   renderItemParams,
   offsetPerLevel,
   handleShow,
   inheritedClasses,
   onSelect,
+  selected,
   debug,
   ...props
 }) => {
@@ -54,21 +53,42 @@ export const FolderNode = ({
   };
 
   const handleFolderClick = (e, createFolder) => {
-    e.preventDefault();
+    // e.preventDefault();
     handleShow(item.data, createFolder);
   };
+
+  const onClick = (e) => {
+    if (e.type === 'click' && e.clientX !== 0 && e.clientY !== 0) {
+      if(item.isExpanded) {
+        return onCollapse(item.id);
+      } else {
+        return onExpand(item.id);
+      } 
+    }
+  }
 
   return (
     <div 
       className={inheritedClasses}
-      onClick={() => item.isExpanded ? onCollapse(item.id) : onExpand(item.id)}
+      onClick={onClick}
     >
+      <span className='ps-2 pe-2' onClick={(e) => {
+        e.stopPropagation();
+        onSelect()
+      }}>
+        {
+            selected ? <FontAwesomeIcon icon={faSquareCheck} /> : <FontAwesomeIcon icon={faSquare} />
+        }
+      </span>
+
       <span>{getIcon(item, onExpand, onCollapse)}</span>
 
       <FolderNodeAction
         apiRoute={apiRoute}
+        actions= {['Show Politics']}
         handleFolderClick={handleFolderClick}
       />
+
 
       <span className='text-black'>{item.data ? item.data.name : ''}</span>
       

@@ -1,0 +1,13 @@
+@import '../../../variables';
+
+.policy-selection-modal {
+  // max-width: $lh-tree-modal;
+  // width: $lh-tree-modal - 100px;
+  margin: auto;
+  transition-property: all;
+  transition-duration: 0.7s;
+  .modal-dialog {
+    max-width:1080px;
+  }
+}
+

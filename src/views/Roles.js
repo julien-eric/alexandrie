@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import { PageHeader } from '../components/PageHeader'
 import { Tree } from '../components/TreeStructure'
+import { PolicySelection } from '../components/Sliders/PolicySelection'
 
 import { RoleDetails } from '../components/Sliders/RoleDetails'
 import Row from 'react-bootstrap/Row'
@@ -18,6 +19,8 @@ export const Roles = ({ ...props }) => {
   const [ancestry, setAncestry] = useState([]);
   const [folder, setFolder] = useState(false);
   const { mutate } = useSWRConfig()
+  
+  const selectPolicyMode = true;
 
   const handleShowRoleDetails = (newEntryParent, ancestry, folder = false) => {
     setExpanded(true);
@@ -33,6 +36,10 @@ export const Roles = ({ ...props }) => {
 
   return (
     <App router={props.router} pdfFile={pdfFile} setPdfFile={setPdfFile}>
+
+      <PolicySelection
+        show={selectPolicyMode}
+      />
 
       <div className='wrapper2'>
         <Row className='w-100 me-2'>

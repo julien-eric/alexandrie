@@ -22,6 +22,10 @@
     "create-level": {
       "short": "Create Level",
       "standard": "Create a New Level"
+    },
+    "role-details": {
+      "short": "See Details",
+      "standard": "See Role Details"
     }
   },
   "inputs": {
