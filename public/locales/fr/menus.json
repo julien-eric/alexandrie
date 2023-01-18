@@ -9,6 +9,7 @@
     "add-folder": "Ajouter un répertoire"
   },
   "actions": {
-    "apply": "Appliquer"
+    "apply": "Appliquer",
+    "link-policies": "Lier politiques"
   }
 }

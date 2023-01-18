@@ -6,9 +6,10 @@
     "users": "Users",
     "my-account": "My Account",
     "add-policy": "Add a Policy",
-    "add-folder": "Ajouter une politique"
+    "add-folder": "Add a folder"
   },
   "actions": {
-    "apply": "Apply"
+    "apply": "Apply",
+    "link-policies": "Link Policies"
   }
 }

@@ -44,7 +44,7 @@ export const LeafNode = ({
       onClick={handleFileClick}
     >
       {nodeSelectionMode ? 
-        <span className='ps-2 pe-2' onClick={(e) => {
+        <span className='p-2' onClick={(e) => {
           e.stopPropagation();
           onSelect()
         }}>

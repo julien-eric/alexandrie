@@ -67,7 +67,7 @@ export const RoleDetails = ({
                     {name: 'Anasthésie Générale', count: '18'}
                   ]}
                 />
-                <Button variant='primary' type='submit' size='md' className='me-1 d-inline' onClick={() => setShowPolicySelection(true)}></Button>
+                <Button variant='primary' type='submit' size='md' className='mt-2 me-1 d-inline' onClick={() => setShowPolicySelection(true)}>{t('menus:actions.link-policies')}</Button>
               </Col>
             </Row>
 

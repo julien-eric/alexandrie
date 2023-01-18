@@ -10,9 +10,12 @@ import Col from 'react-bootstrap/Col'
 import Button from 'react-bootstrap/Button';
 
 import { Tree } from '../../../components/TreeStructure'
-import { LinkedRolesList } from '../RoleDetails'
+import { buildTokenInfo } from '../../../utils.js'
 
 import './PolicySelection.scss'
+
+import axios from 'axios'
+const poster = (url, body, token) => axios.post(url, body, buildTokenInfo(token)).then(res => res.data);
 
 export const PolicySelection = ({
   show,
@@ -24,6 +27,11 @@ export const PolicySelection = ({
   const [selected, setSelected] = useState([]);
   const handleClose = () => {
     setShowPolicySelection(false);
+  }
+
+  const applyNewPolicies = async () => {
+    const result = await poster('https://localhost:3000/roles', {role: role._id, entryIds: selected }, localStorage.getItem('accessToken'));
+    console.log('result', result)
   }
 
   return (
@@ -49,7 +57,7 @@ export const PolicySelection = ({
                 <span>{`${selected.length} ${t('general:messages.number-of-linked-policies')}`}</span>
               </Col>
               <Col className='col-6 pe-0 d-flex justify-content-end'>
-                <Button className='btn btn-primary btn-md' onClick={() => {}}>
+                <Button className='btn btn-primary btn-md' onClick={applyNewPolicies}>
                     {t('menus:actions.apply')}
                 </Button>
               </Col>

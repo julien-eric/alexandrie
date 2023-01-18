@@ -10,7 +10,7 @@
   },
   "messages": {
     "delete-users": "Are you sure you want to delete the following users?",
-    "number-of-linked-policies" : " nouvelle(s) politique(s) seront associées avec ce rôle"
+    "number-of-linked-policies" : " nouvelle(s) politique(s) seront associées à ce rôle"
   },
   "actions": {
     "create-user": {
