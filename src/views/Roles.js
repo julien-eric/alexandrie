@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 
 import { PageHeader } from '../components/PageHeader'
 import { Tree } from '../components/TreeStructure'
-import { PolicySelection } from '../components/Sliders/PolicySelection'
 
 import { RoleDetails } from '../components/Sliders/RoleDetails'
 import Row from 'react-bootstrap/Row'
@@ -15,7 +14,6 @@ export const Roles = ({ ...props }) => {
   const { t } = useTranslation();
   const [pdfFile, setPdfFile] = useState();
   const [expanded, setExpanded] = useState(false);
-  const [showPolicySelection, setShowPolicySelection] = useState(false);
   const [selectedRole, setSelectedRole] = useState();
   const [ancestry, setAncestry] = useState([]);
   const [folder, setFolder] = useState(false);
@@ -38,14 +36,6 @@ export const Roles = ({ ...props }) => {
   return (
     <App router={props.router} pdfFile={pdfFile} setPdfFile={setPdfFile}>
 
-      { showPolicySelection ? 
-          <PolicySelection
-            show={!!showPolicySelection}
-            setShowPolicySelection={setShowPolicySelection}
-            role={selectedRole}
-          /> : <></>
-      }
-
       <div className='wrapper2'>
         <Row className='w-100 me-2'>
           <Col className='tree-root'>
@@ -59,14 +49,18 @@ export const Roles = ({ ...props }) => {
             />
           </Col>
         </Row>
-          <RoleDetails
-            expanded={expanded}
-            folder={folder}
-            ancestry={ancestry}
-            setFolder={setFolder}
-            setShowPolicySelection={setShowPolicySelection}
-            handleClose={handleClose}
-          />
+          {
+            selectedRole ?
+              <RoleDetails
+                expanded={expanded}
+                folder={folder}
+                ancestry={ancestry}
+                setFolder={setFolder}
+                role={selectedRole}
+                handleClose={handleClose}
+              />
+            : <></>
+          }
       </div>
 
     </App>

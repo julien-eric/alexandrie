@@ -81,30 +81,34 @@
     background-color: $canvas-gray;
     border-radius: 0px;
 
-    .list-group-item {
+    a {
 
-      .sidebar-icon {
-        width: 55px;
-        margin-left: 0px;
-        transition-property: all;
-        transition-duration: 0.6s;
-      }
-
-      height: 60px;
-      line-height: 40px;
-      background-color: inherit;
-      font-size: 14px;
-      border-radius: 0px;
-      
-      &.active {
-        color:black;
-        border-left: 6px solid $primary;
-      }
-
-      &:hover {
+      text-decoration: none;
+      .list-group-item {
+  
+        .sidebar-icon {
+          width: 55px;
+          margin-left: 0px;
+          transition-property: all;
+          transition-duration: 0.6s;
+        }
+  
+        height: 60px;
+        line-height: 40px;
+        background-color: inherit;
+        font-size: 14px;
         border-radius: 0px;
-        background-color: rgba($secondary, $alpha: 0.3);
-        color: #000000;
+        
+        &.active {
+          color:black;
+          border-left: 6px solid $primary;
+        }
+  
+        &:hover {
+          border-radius: 0px;
+          background-color: rgba($secondary, $alpha: 0.3);
+          color: #000000;
+        }
       }
     }
   }

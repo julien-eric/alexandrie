@@ -12,7 +12,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faClose, faArrowsToDottedLine, faArrowsFromDottedLine, faUserCheck } from '@fortawesome/pro-light-svg-icons';
 
-export const TreeHeader = ({ filter, setFilter, collapseAll, expandAll, ...props }) => {
+export const TreeHeader = ({ filter, setFilter, collapseAll, expandAll, nodeSelectionMode, fetchPersonalPolicies, setFetchPersonalPolicies, ...props }) => {
   const { t } = useTranslation()
 
   const filterPP = (eventFilterInput) => {
@@ -20,11 +20,18 @@ export const TreeHeader = ({ filter, setFilter, collapseAll, expandAll, ...props
   }
 
   const toggleShowUserPolicies = () => {
-    console.log('this will flag the api call to request only entries which match the users roles');
+    setFetchPersonalPolicies(!fetchPersonalPolicies);
   }
 
   return (
     <Row className='mb-4'>
+      {
+        nodeSelectionMode ? 
+          <Button onClick={toggleShowUserPolicies} variant={fetchPersonalPolicies ? 'primary' : 'canvas-gray'} size='sm' className='col-auto px-3 ms-2 '>
+            <FontAwesomeIcon className='fa-fw' icon={faUserCheck}/>
+          </Button>
+        :<></>
+      }
       <Form className='col-4'>
         <div className='lh-group'>
           <InputGroup className='col-12'>
@@ -40,9 +47,6 @@ export const TreeHeader = ({ filter, setFilter, collapseAll, expandAll, ...props
           </InputGroup>
         </div>
       </Form>
-      <Button onClick={toggleShowUserPolicies} variant='canvas-gray' size='sm' className='col-auto px-3'>
-        <FontAwesomeIcon className='fa-fw' icon={faUserCheck}/>
-      </Button>
         <ButtonGroup aria-label="Basic example" className='col-auto px-3'>
           <Button onClick={collapseAll} variant='canvas-gray' size='sm' className='px-3'>
             <FontAwesomeIcon className='fa-fw' icon={faArrowsToDottedLine}/>

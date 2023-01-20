@@ -38,10 +38,13 @@ export const TreeStructure = ({
   const [remoteTreeData, setRemoteTreeData] = useState();
   const [treeData, setTreeData] = useState();
   const [filter, setFilter] = useState('');
+  const [fetchPersonalPolicies, setFetchPersonalPolicies] = useState(nodeSelectionMode ? false : true);
   const { mutate } = useSWRConfig()
   const token = localStorage.getItem('accessToken');
   
-  const { data, error } = useSWR(token !== undefined ? [`https://localhost:3000/${apiRoute}`, token] : null, fetcher);
+
+  const fetchEntriesUrl = `https://localhost:3000/${apiRoute}${fetchPersonalPolicies ? '?user=true' : ''}`
+  const { data, error } = useSWR(token !== undefined ? [fetchEntriesUrl, token] : null, fetcher);
   
   useLayoutEffect(() => {
     setRemoteTreeData(data);
@@ -174,6 +177,9 @@ export const TreeStructure = ({
         setFilter={setFilter}
         collapseAll={() => collapseExpandAll('collapse')}
         expandAll={() => collapseExpandAll('expand')}
+        nodeSelectionMode={nodeSelectionMode}
+        fetchPersonalPolicies={fetchPersonalPolicies}
+        setFetchPersonalPolicies={setFetchPersonalPolicies}
       />
       <Tree
         tree={treeReducer(treeData, remoteTreeData, filter)}

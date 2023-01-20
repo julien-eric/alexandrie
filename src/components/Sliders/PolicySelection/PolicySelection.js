@@ -20,19 +20,22 @@ const poster = (url, body, token) => axios.post(url, body, buildTokenInfo(token)
 export const PolicySelection = ({
   show,
   role,
+  rolePolicies,
   setShowPolicySelection,
   ...props
 }) => {
   const { t } = useTranslation();
-  const [selected, setSelected] = useState([]);
+  const [selected, setSelected] = useState(rolePolicies || []);
   const handleClose = () => {
     setShowPolicySelection(false);
   }
 
-  const applyNewPolicies = async () => {
+  const token = localStorage.getItem('accessToken');
+
+  const applyNewPolicies = async (e) => {
     const result = await poster('https://localhost:3000/roles', {role: role._id, entryIds: selected }, localStorage.getItem('accessToken'));
-    console.log('result', result)
   }
+
 
   return (
     <>
@@ -43,7 +46,7 @@ export const PolicySelection = ({
         <Modal.Body className=''>
           <Tree 
             apiRoute={'entries'}
-            nodeSelectionMode={true}
+            nodeSelectionMode={role._id}
             setPdfFile={()=>{}} 
             handleShow={()=>{}}
             selected={selected}

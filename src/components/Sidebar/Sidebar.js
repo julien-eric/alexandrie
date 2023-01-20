@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useLocation } from 'react-router-dom'
+import { useLocation, Link } from 'react-router-dom'
 import './Sidebar.scss'
 
 import ListGroup from 'react-bootstrap/ListGroup'
@@ -31,18 +31,18 @@ export const Sidebar = ({
       </Row>
       <Row>
         <ListGroup className='pe-0 text-primary' defaultActiveKey={location ? location.pathname : '/'}>
-          <ListGroup.Item action href='/'>
-            <div className='d-inline sidebar-icon'><FontAwesomeIcon icon={faBookOpenCover} className='fa-fw' /></div>
-            <p className=' ms-2 sidebar-item-label d-inline'>{t('menus:headings.my-pps')}</p>
-          </ListGroup.Item>
-          <ListGroup.Item action href='/roles'>
-            <div className='d-inline sidebar-icon'><FontAwesomeIcon icon={faBriefcase} className='fa-fw' /></div>
-            <p className='ms-2 sidebar-item-label d-inline'>{t('menus:headings.roles')}</p>
-          </ListGroup.Item>
-          {/* <ListGroup.Item action href='/users'>
-            <div className='d-inline sidebar-icon'><FontAwesomeIcon icon={faUsers} className='fa-fw' /></div>
-            <p className='ms-2 sidebar-item-label d-inline'>{t('menus:headings.users')}</p>
-          </ListGroup.Item> */}
+          <Link to={"/"}>
+            <ListGroup.Item as='div' action href='/'>
+              <div className='d-inline sidebar-icon'><FontAwesomeIcon icon={faBookOpenCover} className='fa-fw' /></div>
+              <p className=' ms-2 sidebar-item-label d-inline'>{t('menus:headings.my-pps')}</p>
+            </ListGroup.Item>
+          </Link>
+          <Link to={"/roles"}>
+            <ListGroup.Item as='div' action href='/roles'>
+              <div className='d-inline sidebar-icon'><FontAwesomeIcon icon={faBriefcase} className='fa-fw' /></div>
+              <p className='ms-2 sidebar-item-label d-inline'>{t('menus:headings.roles')}</p>
+            </ListGroup.Item>
+          </Link>
         </ListGroup>
       </Row>
       <div className='project-bar'>
