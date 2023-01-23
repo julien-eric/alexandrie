@@ -12,7 +12,16 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faClose, faArrowsToDottedLine, faArrowsFromDottedLine, faUserCheck } from '@fortawesome/pro-light-svg-icons';
 
-export const TreeHeader = ({ filter, setFilter, collapseAll, expandAll, nodeSelectionMode, fetchPersonalPolicies, setFetchPersonalPolicies, ...props }) => {
+export const TreeHeader = ({ 
+  filter,
+  setFilter,
+  collapseAll,
+  expandAll,
+  nodeSelectionMode,
+  fetchPersonalPolicies,
+  setFetchPersonalPolicies, 
+  ...props
+}) => {
   const { t } = useTranslation()
 
   const filterPP = (eventFilterInput) => {
@@ -26,7 +35,7 @@ export const TreeHeader = ({ filter, setFilter, collapseAll, expandAll, nodeSele
   return (
     <Row className='mb-4'>
       {
-        nodeSelectionMode ? 
+        !nodeSelectionMode ? 
           <Button onClick={toggleShowUserPolicies} variant={fetchPersonalPolicies ? 'primary' : 'canvas-gray'} size='sm' className='col-auto px-3 ms-2 '>
             <FontAwesomeIcon className='fa-fw' icon={faUserCheck}/>
           </Button>

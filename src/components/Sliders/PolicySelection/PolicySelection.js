@@ -1,5 +1,5 @@
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Container from 'react-bootstrap/Container'
 import { useTranslation } from 'react-i18next'
@@ -26,6 +26,8 @@ export const PolicySelection = ({
 }) => {
   const { t } = useTranslation();
   const [selected, setSelected] = useState(rolePolicies || []);
+  const [newEntries, setNewEntries] = useState();
+  const [changes, setChanges] = useState([]);
   const handleClose = () => {
     setShowPolicySelection(false);
   }
@@ -33,9 +35,29 @@ export const PolicySelection = ({
   const token = localStorage.getItem('accessToken');
 
   const applyNewPolicies = async (e) => {
-    const result = await poster('https://localhost:3000/roles', {role: role._id, entryIds: selected }, localStorage.getItem('accessToken'));
+    const result = await poster('https://localhost:3000/roles', {role: role._id, addition: newEntries, entryIds: changes }, localStorage.getItem('accessToken'));
   }
 
+  useEffect(() => {
+    if(rolePolicies === selected) {
+      setChanges([])
+    } else {
+
+      const newElements = selected.filter((entry) => {
+            return rolePolicies.indexOf(entry) === -1;
+      });
+      if(newElements.length > 0) {
+        setChanges(newElements);
+        setNewEntries(true);
+      } else {
+        const removedElements = rolePolicies.filter((entry) => {
+          return selected.indexOf(entry) === -1;
+        });
+        setChanges(removedElements);
+        setNewEntries(false);
+      }
+    }
+  }, [selected]);
 
   return (
     <>
@@ -57,7 +79,7 @@ export const PolicySelection = ({
           <Container fluid>
             <Row className=''>
               <Col className='col-6 d-flex justify-content-between align-items-center'>
-                <span>{`${selected.length} ${t('general:messages.number-of-linked-policies')}`}</span>
+                <span>{`${changes.length} ${t('general:messages.number-of-linked-policies')}`}</span>
               </Col>
               <Col className='col-6 pe-0 d-flex justify-content-end'>
                 <Button className='btn btn-primary btn-md' onClick={applyNewPolicies}>
