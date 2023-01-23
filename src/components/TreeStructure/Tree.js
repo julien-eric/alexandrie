@@ -173,6 +173,7 @@ export const TreeStructure = ({
   return (
     <>
       <TreeHeader
+        apiRoute={apiRoute}
         filter={filter}
         setFilter={setFilter}
         collapseAll={() => collapseExpandAll('collapse')}

@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faClose, faArrowsToDottedLine, faArrowsFromDottedLine, faUserCheck } from '@fortawesome/pro-light-svg-icons';
 
 export const TreeHeader = ({ 
+  apiRoute,
   filter,
   setFilter,
   collapseAll,
@@ -35,7 +36,7 @@ export const TreeHeader = ({
   return (
     <Row className='mb-4'>
       {
-        !nodeSelectionMode ? 
+        apiRoute === 'entries' && !nodeSelectionMode ? 
           <Button onClick={toggleShowUserPolicies} variant={fetchPersonalPolicies ? 'primary' : 'canvas-gray'} size='sm' className='col-auto px-3 ms-2 '>
             <FontAwesomeIcon className='fa-fw' icon={faUserCheck}/>
           </Button>

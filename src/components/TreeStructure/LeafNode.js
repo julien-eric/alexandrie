@@ -26,16 +26,17 @@ export const LeafNode = ({
 
   const handleFileClick = async (e) => {
     e.preventDefault();
-    // setLoading(ICON_STATE.LOADING);
-    // onSelect(item.data._id);
-    // if(item.data.files !== undefined && item.data.files[0]) {
-    //   const link = await getS3Link(item.data.files[0]);
-    //   setPdfFile(link)
-    //   setLoading(ICON_STATE.FINAL);
-    // } else {
-    //   setLoading(ICON_STATE.ERROR);
-    //   setTimeout(() => {setLoading(ICON_STATE.INITIAL)}, 1000)
-    // }
+    if(apiRoute === 'entries') {
+      setLoading(ICON_STATE.LOADING);
+      if(item.data.files !== undefined && item.data.files[0]) {
+        const link = await getS3Link(item.data.files[0]);
+        setPdfFile(link)
+        setLoading(ICON_STATE.FINAL);
+      } else {
+        setLoading(ICON_STATE.ERROR);
+        setTimeout(() => {setLoading(ICON_STATE.INITIAL)}, 1000)
+      }
+    }
   }
   
   return (
