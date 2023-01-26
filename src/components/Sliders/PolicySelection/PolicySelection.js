@@ -21,7 +21,7 @@ export const PolicySelection = ({
   show,
   role,
   rolePolicies,
-  setShowPolicySelection,
+  togglePolicySelection,
   ...props
 }) => {
   const { t } = useTranslation();
@@ -29,13 +29,16 @@ export const PolicySelection = ({
   const [newEntries, setNewEntries] = useState();
   const [changes, setChanges] = useState([]);
   const handleClose = () => {
-    setShowPolicySelection(false);
+    togglePolicySelection(false);
   }
 
   const token = localStorage.getItem('accessToken');
 
   const applyNewPolicies = async (e) => {
     const result = await poster('https://localhost:3000/roles', {role: role._id, addition: newEntries, entryIds: changes }, localStorage.getItem('accessToken'));
+    if(result.acknowledged) {
+      handleClose();
+    }
   }
 
   useEffect(() => {
@@ -78,10 +81,13 @@ export const PolicySelection = ({
         <Modal.Footer>
           <Container fluid>
             <Row className=''>
-              <Col className='col-6 d-flex justify-content-between align-items-center'>
-                <span>{`${changes.length} ${t('general:messages.number-of-linked-policies')}`}</span>
-              </Col>
-              <Col className='col-6 pe-0 d-flex justify-content-end'>
+                <Col className='col-9 d-flex justify-content-between align-items-center'>
+                  {
+                    changes.length > 0 && 
+                    <span>{`${changes.length} ${t('general:messages.number-of-linked-policies')}`}</span>
+                  }
+                </Col>
+              <Col className='col-3 pe-0 d-flex justify-content-end'>
                 <Button className='btn btn-primary btn-md' onClick={applyNewPolicies}>
                     {t('menus:actions.apply')}
                 </Button>

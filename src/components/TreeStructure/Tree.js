@@ -5,6 +5,8 @@ import { GenericNode } from './GenericNode'
 import { useTranslation } from 'react-i18next'
 import { TreeHeader } from './TreeHeader'
 import { buildTokenInfo } from '../../utils.js'
+import Col from 'react-bootstrap/Col'
+import Row from 'react-bootstrap/Row'
 
 import axios from 'axios'
 import useSWR, { useSWRConfig }  from 'swr'
@@ -42,7 +44,6 @@ export const TreeStructure = ({
   const { mutate } = useSWRConfig()
   const token = localStorage.getItem('accessToken');
   
-
   const fetchEntriesUrl = `https://localhost:3000/${apiRoute}${fetchPersonalPolicies ? '?user=true' : ''}`
   const { data, error } = useSWR(token !== undefined ? [fetchEntriesUrl, token] : null, fetcher);
   
@@ -167,7 +168,6 @@ export const TreeStructure = ({
     setSelected(newSelection);
     
   };
-
   if (error) return "An error has occurred.";
   if ((!error && !data) || !remoteTreeData) return "Loading...";
   return (
@@ -182,6 +182,11 @@ export const TreeStructure = ({
         fetchPersonalPolicies={fetchPersonalPolicies}
         setFetchPersonalPolicies={setFetchPersonalPolicies}
       />
+      <Row className='mb-3'>
+        <Col className='col-12'>
+          <small className='text-deep-gray2 fw-normal'>{t('general:messages.number-of-displayed-policies', {number:Object.keys(data.items).length, total:111})}</small>
+        </Col>
+      </Row>
       <Tree
         tree={treeReducer(treeData, remoteTreeData, filter)}
         renderItem={(renderItemParams) => (

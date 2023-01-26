@@ -10,8 +10,10 @@ import { buildTokenInfo } from '../../../utils.js'
 
 import { Slider } from '../Slider'
 import { LinkedRolesList } from '../RoleDetails'
-import useSWR  from 'swr'
+import useSWR, { useSWRConfig }  from 'swr'
 import { PolicySelection } from '../PolicySelection/PolicySelection'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEye } from '@fortawesome/pro-light-svg-icons';
 
 import axios from 'axios'
 const fetcher = (url, token) => axios.get(url, buildTokenInfo(token)).then(res => res.data);
@@ -32,25 +34,14 @@ export const RoleDetails = ({
   const [showPolicySelection, setShowPolicySelection] = useState(false);
   const token = localStorage.getItem('accessToken');
   const apiRoute = 'entries';
+  const { mutate } = useSWRConfig()
 
   const [formData, setFormData] = useState({
-    name: '',
-    file: ''
+    name: ancestry[0] ? ancestry[0].data.name : ''
   })
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log('handlesubmit roledetails')
-    let entry = {parent: ancestry[ancestry.length - 1].data._id, ...formData};
-    if(folder) entry.folder = true;
-    const result = await poster('https://localhost:3000/entries', entry, localStorage.getItem('accessToken'));
-    if(result._id) {handleClose()}
-  };
-
-  const disabled = !folder && (formData.name === '' || formData.file === '');
-
   const { data, error } = useSWR(token !== undefined ? [`https://localhost:3000/${apiRoute}?role=${role._id}`, token] : null, fetcher);
-  
+
   const reduceItems = (items, onlyIds) => {
     if(items['1']) delete items['1'];
     const roleAffectedPolicies = [];
@@ -59,48 +50,75 @@ export const RoleDetails = ({
     }
     return roleAffectedPolicies;
   }
+
+  const togglePolicySelection = (show) => {
+    if(show) {
+      setShowPolicySelection(true);
+    } else {
+      setShowPolicySelection(false);
+      mutate([`https://localhost:3000/${apiRoute}?role=${role._id}`, token], false)
+    }
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    let roleInfo = {...role, ...formData};
+    console.log('roleInfo', roleInfo)
+    const result = await poster(`https://localhost:3000/roles/${roleInfo._id}`, { role: roleInfo }, localStorage.getItem('accessToken'));
+    if(result._id) {handleClose()}
+  };
+
   return (
     <>
       { showPolicySelection ? 
         <PolicySelection
           show={!!showPolicySelection}
-          setShowPolicySelection={setShowPolicySelection}
+          togglePolicySelection={togglePolicySelection}
           role={role}
           rolePolicies={reduceItems(data.items, true)}
         /> : <></>
       }
       <Slider expanded={expanded} handleClose={handleClose} title={'Role Details'}>
 
-        <Row>
-          <Col>
-            <Form onSubmit={handleSubmit} >
-
-              <Form.Group as={Row} className='mb-3'>
+        <Form onSubmit={handleSubmit} >
+          <Row>
+            <Col>
+              <Form.Group className='mb-3'>
                 <Form.Label className='ps-0' htmlFor='inputPassword5'>{t('general:inputs.policy-name.label')}</Form.Label>
                 <Form.Control
                   type='text'
                   id='name'
                   aria-describedby='passwordHelpBlock'
-                  value={ancestry[0] ? ancestry[0].data.name : ''}
+                  value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
-                />
+                  />
               </Form.Group>
+            </Col>
+          </Row>
 
-              <Row className=''>
-                <Col className='col-12'>
-                  {
-                    data ?
-                    <LinkedRolesList
-                      linkedPolicies={reduceItems(data.items, false)}
-                    /> : <></>
-                  }
-                  <Button variant='primary' size='md' className='mt-2 me-1 d-inline' onClick={() => setShowPolicySelection(true)}>{t('menus:actions.link-policies')}</Button>
-                </Col>
-              </Row>
+          <Row className=''>
+            <Col as={'div'} className='d-grid col-12'>
+              <Form.Label className='ps-0' htmlFor='inputPassword5'>{t('general:messages.policies')}</Form.Label>
+              {/* {
+                data ?
+                <LinkedRolesList
+                  linkedPolicies={reduceItems(data.items, false)}
+                /> : <></>
+              } */}
+              <Button variant='deep-gray' size='md' className='' onClick={() => setShowPolicySelection(true)}>
+                <FontAwesomeIcon className='fa-fw me-1' icon={faEye} />
+                {t('general:messages.display-policies')}
+              </Button>
+            </Col>
+          </Row>
 
-            </Form>
-          </Col>
-        </Row>
+          <Row className='mt-5 justify-content-end'>
+            <Col className='col-6 text-end me-0 pe-0'>
+              <Button variant='primary' type='submit' size='md' className='me-1 d-inline'>Confirmer</Button>
+            </Col>
+          </Row>
+
+        </Form>
       </Slider>
     </>)
 }

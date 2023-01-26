@@ -41,6 +41,9 @@ export const FileUpload = ({
     if (!e.target.files.length) {
       return alert('Choose a file to upload first.');
     } else {
+      const name = e.target.files[0].name;
+      const extension = name.substring(name.lastIndexOf('.') + 1, name.length);
+      if (extension !== 'pdf') return alert('Please select a pdf file to upload');
       addFile(e.target.files[0])
     }
   }
@@ -76,6 +79,7 @@ export const FileUpload = ({
               <InputGroup className="mb-3 lh-input-group">
                 <Form.Control
                   type='file'
+                  accept=".pdf"
                   id='file'
                   aria-describedby='fileHelpBlock'
                   onChange={handleFileInput}

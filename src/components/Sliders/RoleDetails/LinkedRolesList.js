@@ -14,7 +14,7 @@ export const RoleDetails = ({
           return (
             <ListGroup.Item as="li" className="d-flex justify-content-between align-items-start" key={index}>
               <div className="ms-2 me-auto">
-                <div>{policy.name}</div>
+                <small>{policy.name}</small>
                 {/* <small>{policy.sub}</small> */}
               </div>
               {/* <Badge bg="primary" pill>
