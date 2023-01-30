@@ -5,14 +5,21 @@ import Modal from 'react-bootstrap/Modal';
 
 import Row from 'react-bootstrap/Row'
 import { Document, Page } from 'react-pdf/dist/esm/entry.webpack5';
-import { faArrowUp, faArrowDown, faSeal } from '@fortawesome/pro-light-svg-icons'
+import { faArrowUp, faArrowDown, faSeal, faBadge } from '@fortawesome/pro-light-svg-icons'
+import { faBadgeCheck } from '@fortawesome/pro-solid-svg-icons'
+
+import axios from 'axios'
+import useSWR, { useSWRConfig }  from 'swr'
+import { buildTokenInfo } from '../../../utils.js'
 
 import './PDFViewer.scss'
 
+const poster = (url, body, token) => axios.post(url, body, buildTokenInfo(token)).then(res => res.data);
+
 export const PDFViewer = ({
   show,
-  setPdfFile,
-  pdfFile,
+  setFileSelection,
+  fileSelection,
   ...props
 }) => {
   const DIR = {
@@ -21,11 +28,12 @@ export const PDFViewer = ({
   }
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
+  const { mutate } = useSWRConfig();
 
   const handleClose = () => {
     setPageNumber(1);
     setNumPages(null);
-    setPdfFile();
+    setFileSelection({});
   }
   
   const onDocumentLoadSuccess = ({ numPages }) => {
@@ -57,12 +65,17 @@ export const PDFViewer = ({
     }
   }
 
+  const hasRead = async (read) => {
+    await poster(`https://localhost:3000/entries/${fileSelection.entryId}/reads/${read}`, {}, localStorage.getItem('accessToken'));
+    await mutate([`https://localhost:3000/entries`, localStorage.getItem('accessToken')], false)
+  };
+
   return (
     <>
 
       <Modal show={show} onHide={handleClose} dialogClassName='pdf-modal' className='modal-bg'>
         <Modal.Body className='pdf-height'>
-          <Document file={ {data: pdfFile}} onLoadSuccess={onDocumentLoadSuccess}>
+          <Document file={ {data: fileSelection.pdfFile}} onLoadSuccess={onDocumentLoadSuccess}>
             {Array.from(new Array(numPages), (el, index) => (
               <Page key={`page_${index + 1}`} pageNumber={index + 1} />
             ))}
@@ -79,8 +92,8 @@ export const PDFViewer = ({
               </Button>
             </Row>
             <Row>
-              <Button className='p-3 btn btn-canvas-gray btn-sm'>
-                <FontAwesomeIcon className='fa-fw' icon={faSeal} />
+              <Button className='p-3 btn btn-canvas-gray btn-sm' onClick={() => hasRead(true)}>
+                <FontAwesomeIcon icon={fileSelection.read ? faBadgeCheck : faBadge} />
               </Button>
             </Row>
           </div>

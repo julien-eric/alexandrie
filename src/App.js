@@ -6,13 +6,10 @@ import './App.scss'
 import { Topbar } from './components/Topbar'
 import { Sidebar } from './components/Sidebar'
 import Container from 'react-bootstrap/Container'
-import { PDFViewer } from './components/Sliders/PDFViewer'
 import { SplashPage } from './components/SplashPage'
 
 export const App = ({
   router,
-  pdfFile,
-  setPdfFile,
   ...props
 }) => {
   const { getAccessTokenSilently, isAuthenticated } = useAuth0();
@@ -23,11 +20,6 @@ export const App = ({
   return (
     isAuthenticated ? (
       <>
-        <PDFViewer
-          show={!!pdfFile}
-          setPdfFile={setPdfFile}
-          pdfFile={pdfFile}
-        />
         <Topbar />
         <div className='wrapper'>
           <Sidebar />

@@ -35,6 +35,10 @@ $file-height: 36px;
   transition-duration: 0.2s;
   font-size: 14px;
 
+  .read-badge {
+    opacity: 15%;
+    transition-duration: 0.3s;
+  }
 
 
   &.leaf, &.folder {
@@ -69,6 +73,10 @@ $file-height: 36px;
     background-color: rgba(#F9DEC1, 1);
     .size-badge {
       opacity: 1;
+    }
+
+    .read-badge {
+      opacity: 100%;
     }
   }
   

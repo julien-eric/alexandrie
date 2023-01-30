@@ -13,7 +13,8 @@
     "number-of-linked-policies" : " changes will be made to this role's linked policies",
     "number-of-displayed-policies" : "Showing {{number}}/{{total}} policies.",
     "policies" : "Policies",
-    "display-policies" : "Display Policies"
+    "display-policies" : "See Linked Policies",
+    "clear-filters" : "Clear Filters"
   },
   "actions": {
     "create-user": {

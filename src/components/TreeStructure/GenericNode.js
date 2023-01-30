@@ -8,7 +8,7 @@ export const GenericNode = ({
   nodeSelectionMode,
   renderItemParams,
   offsetPerLevel,
-  setPdfFile,
+  setFileSelection,
   handleShow,
   ...props
 }) => {
@@ -37,7 +37,7 @@ export const GenericNode = ({
             inheritedClasses={classes += ' folder'}
             renderItemParams={renderItemParams}
             offsetPerLevel={offsetPerLevel}
-            setPdfFile={setPdfFile}
+            setFileSelection={setFileSelection}
             handleShow={handleShow}
             onSelect={() => onSelect(item)}
             selected={selected && selected.indexOf(item.data._id) !== -1}
@@ -49,7 +49,7 @@ export const GenericNode = ({
             inheritedClasses={classes += ' leaf'} 
             renderItemParams={renderItemParams}
             offsetPerLevel={offsetPerLevel}
-            setPdfFile={setPdfFile}
+            setFileSelection={setFileSelection}
             handleShow={handleShow} 
             onSelect={() => onSelect(item)}
             selected={selected && selected.indexOf(item.data._id) !== -1}

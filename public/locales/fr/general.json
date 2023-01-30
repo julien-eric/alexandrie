@@ -13,7 +13,8 @@
     "number-of-linked-policies" : " modification(s) seront apportées aux politiques associées à ce rôle",
     "number-of-displayed-policies" : "{{number}}/{{total}} politiques sont affichées.",
     "policies" : "Politiques",
-    "display-policies" : "Visionner Politiques"
+    "display-policies" : "Voir politiques associées",
+    "clear-filters" : "Tout afficher"
   },
   "actions": {
     "create-user": {

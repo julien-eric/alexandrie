@@ -12,7 +12,6 @@ import { useSWRConfig }  from 'swr'
 
 export const Roles = ({ ...props }) => {
   const { t } = useTranslation();
-  const [pdfFile, setPdfFile] = useState();
   const [expanded, setExpanded] = useState(false);
   const [selectedRole, setSelectedRole] = useState();
   const [ancestry, setAncestry] = useState([]);
@@ -34,7 +33,7 @@ export const Roles = ({ ...props }) => {
 
 
   return (
-    <App router={props.router} pdfFile={pdfFile} setPdfFile={setPdfFile}>
+    <App router={props.router}>
 
       <div className='wrapper2'>
         <Row className='w-100 me-2'>

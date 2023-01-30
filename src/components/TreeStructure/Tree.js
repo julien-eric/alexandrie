@@ -1,6 +1,8 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import './Tree.scss'
 
+import { PDFViewer } from '../../components/Sliders/PDFViewer'
+
 import { GenericNode } from './GenericNode'
 import { useTranslation } from 'react-i18next'
 import { TreeHeader } from './TreeHeader'
@@ -10,6 +12,7 @@ import Row from 'react-bootstrap/Row'
 
 import axios from 'axios'
 import useSWR, { useSWRConfig }  from 'swr'
+import { ICON_STATE } from './ReadFilter.js'
 
 import { treeReducer, getLineage, setCollapsed, getAncestryArray, generateNewSortOrder } from './tree-utils.js'
 
@@ -28,7 +31,6 @@ export const TreeStructure = ({
 
   apiRoute,
   nodeSelectionMode,
-  setPdfFile,
   handleShow,
   selected,
   setSelected,
@@ -38,8 +40,10 @@ export const TreeStructure = ({
 
   const { t } = useTranslation()
   const [remoteTreeData, setRemoteTreeData] = useState();
+  const [fileSelection, setFileSelection] = useState({});
   const [treeData, setTreeData] = useState();
   const [filter, setFilter] = useState('');
+  const [readFilter, setReadFilter] = useState(ICON_STATE.ALL);
   const [fetchPersonalPolicies, setFetchPersonalPolicies] = useState(nodeSelectionMode ? false : true);
   const { mutate } = useSWRConfig()
   const token = localStorage.getItem('accessToken');
@@ -70,12 +74,17 @@ export const TreeStructure = ({
     setTreeData(result)
   }
 
+  const clearFilters = () => {
+    setFilter('');
+    setReadFilter(ICON_STATE.ALL);
+  }
+  
   const onDragEnd = async ( source, destination ) => {
     if (!destination) { return; }
     
     const draggedEntryId = remoteTreeData.items[source.parentId].children[source.index];
     const newSortOrder = generateNewSortOrder(remoteTreeData, source, destination);
-    const newTree = moveItemOnTree(treeReducer(treeData, remoteTreeData, undefined, true), source, destination); 
+    const newTree = moveItemOnTree(treeReducer(treeData, remoteTreeData, undefined, undefined, true), source, destination); 
     //SEEMS GOOD WHEN NEW-SO IS LOWER THAN AFTER --- DISCREPANCY BETWEEN LIBRARY INDEXING AND BE RESORTING
     // Fixes sortOrder for dragged item
     newTree.items[draggedEntryId] = {...newTree.items[draggedEntryId], data:{ ...newTree.items[draggedEntryId].data, sortOrder: newSortOrder}}
@@ -170,8 +179,15 @@ export const TreeStructure = ({
   };
   if (error) return "An error has occurred.";
   if ((!error && !data) || !remoteTreeData) return "Loading...";
+  const reducedTree = treeReducer(treeData, remoteTreeData, filter, readFilter);
+  console.log('readFilter', readFilter)
   return (
     <>
+      <PDFViewer
+        show={!!fileSelection.pdfFile}
+        setFileSelection={setFileSelection}
+        fileSelection={fileSelection}
+      />
       <TreeHeader
         apiRoute={apiRoute}
         filter={filter}
@@ -181,21 +197,24 @@ export const TreeStructure = ({
         nodeSelectionMode={nodeSelectionMode}
         fetchPersonalPolicies={fetchPersonalPolicies}
         setFetchPersonalPolicies={setFetchPersonalPolicies}
+        readFilter={readFilter}
+        setReadFilter={setReadFilter}
       />
       <Row className='mb-3'>
         <Col className='col-12'>
-          <small className='text-deep-gray2 fw-normal'>{t('general:messages.number-of-displayed-policies', {number:Object.keys(data.items).length, total:111})}</small>
+          <small className='text-deep-gray2 fw-normal'>{t('general:messages.number-of-displayed-policies', {number:Object.keys(reducedTree.items).length-1, total:Object.keys(data.items).length-1})}</small>
+          { Object.keys(reducedTree.items).length !== Object.keys(data.items).length ? <small><a className='ms-2 text-deep-gray2 fw-normal' href='#' onClick={clearFilters}>{t('general:messages.clear-filters')}</a></small> : <></>}
         </Col>
       </Row>
       <Tree
-        tree={treeReducer(treeData, remoteTreeData, filter)}
+        tree={reducedTree}
         renderItem={(renderItemParams) => (
           <GenericNode
             apiRoute={apiRoute}
             nodeSelectionMode={nodeSelectionMode}
             renderItemParams={renderItemParams}
             offsetPerLevel={PADDING_PER_LEVEL}
-            setPdfFile={setPdfFile}
+            setFileSelection={setFileSelection}
             handleShow={(item, folder) => handleShow(item, getAncestryArray(item._id, remoteTreeData), folder)}
             selected={selected}
             setSelected={setSelected}

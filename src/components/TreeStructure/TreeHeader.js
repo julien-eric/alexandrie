@@ -11,16 +11,19 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faClose, faArrowsToDottedLine, faArrowsFromDottedLine, faUserCheck } from '@fortawesome/pro-light-svg-icons';
+import ReadFilter from './ReadFilter'
 
 export const TreeHeader = ({ 
   apiRoute,
   filter,
   setFilter,
+  readFilter,
+  setReadFilter,
   collapseAll,
   expandAll,
   nodeSelectionMode,
   fetchPersonalPolicies,
-  setFetchPersonalPolicies, 
+  setFetchPersonalPolicies,
   ...props
 }) => {
   const { t } = useTranslation()
@@ -57,7 +60,7 @@ export const TreeHeader = ({
           </InputGroup>
         </div>
       </Form>
-        <ButtonGroup aria-label="Basic example" className='col-auto px-3'>
+        <ButtonGroup aria-label="Basic example" className='col-auto ps-1 pe-3'>
           <Button onClick={collapseAll} variant='canvas-gray' size='sm' className='px-3'>
             <FontAwesomeIcon className='fa-fw' icon={faArrowsToDottedLine}/>
           </Button>
@@ -65,6 +68,7 @@ export const TreeHeader = ({
             <FontAwesomeIcon className='fa-fw' icon={faArrowsFromDottedLine}/>
           </Button>
         </ButtonGroup>
+        <ReadFilter readFilter={readFilter} setReadFilter={setReadFilter} />
     </Row>
   )
 }
