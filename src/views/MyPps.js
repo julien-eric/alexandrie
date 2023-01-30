@@ -10,7 +10,6 @@ import { Tree } from '../components/TreeStructure'
 import { useSWRConfig }  from 'swr'
 
 export const MyPps = ({ ...props }) => {
-  const [pdfFile, setPdfFile] = useState();
   const [expanded, setExpanded] = useState(false);
   const [selected, setSelected] = useState();
   const [ancestry, setAncestry] = useState([]);
@@ -30,7 +29,7 @@ export const MyPps = ({ ...props }) => {
   }
 
   return (
-    <App router={props.router} pdfFile={pdfFile} setPdfFile={setPdfFile}>
+    <App router={props.router}>
 
       <div className='wrapper2'>
         <Row className='w-100 me-2'>
@@ -38,7 +37,6 @@ export const MyPps = ({ ...props }) => {
             <PageHeader />
             <Tree 
               apiRoute={'entries'}
-              setPdfFile={setPdfFile} 
               handleShow={handleShowAddEntry}
               selected={selected}
               setSelected={setSelected}
