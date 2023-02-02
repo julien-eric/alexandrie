@@ -39,6 +39,10 @@ $file-height: 36px;
     opacity: 15%;
     transition-duration: 0.3s;
   }
+  .manager-options{
+    opacity: 0%;
+    transition-duration: 0.3s;
+  }
 
 
   &.leaf, &.folder {
@@ -77,6 +81,11 @@ $file-height: 36px;
 
     .read-badge {
       opacity: 100%;
+    }
+
+    .manager-options{
+      opacity: 100%;
+      transition-duration: 0.3s;
     }
   }
   

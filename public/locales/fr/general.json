@@ -2,7 +2,7 @@
   "headings": {
     "welcome": "Bienvenue",
     "my-pps": "Bibliothèque",
-    "roles": "Types d'emploi",
+    "roles": "Types d'emplois",
     "linking-policy-modal-header" : "Associer des politiques à"
   },
   "buttons": {
@@ -10,11 +10,18 @@
   },
   "messages": {
     "delete-users": "Are you sure you want to delete the following users?",
+    "confirm": "Confirmer",
     "number-of-linked-policies" : " modification(s) seront apportées aux politiques associées à ce rôle",
     "number-of-displayed-policies" : "{{number}}/{{total}} politiques sont affichées.",
     "policies" : "Politiques",
     "display-policies" : "Voir politiques associées",
-    "clear-filters" : "Tout afficher"
+    "clear-filters" : "Tout afficher",
+    "create" : "Créer",
+    "add-policy" : "Ajouter une politique",
+    "policy" : "Politique",
+    "folder" : "Répertoire",
+    "file" : "Fichier",
+    "upload-new-file" : "Téléverser un nouveau fichier"
   },
   "actions": {
     "create-user": {
@@ -36,10 +43,16 @@
   },
   "inputs": {
     "policy-name": {
-      "label": "Name",
-      "placeholder": "Nom",
-      "helper": "Enter a name for the new policy",
-      "error": "Nom"
+      "label": "Titre",
+      "placeholder": "Titre de la politique",
+      "helper": "Entrer un nom pour cette nouvelle politique",
+      "error": "Erreur"
+    },
+    "assign-folder": {
+      "label": "Destination",
+      "placeholder": "Assigner à un répertoire",
+      "helper": "Choisir un répertoire parent dans la bibliothèque de politiques",
+      "error": "Erreur"
     }
   }
 }

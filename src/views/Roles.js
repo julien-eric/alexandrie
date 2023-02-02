@@ -11,19 +11,15 @@ import Col from 'react-bootstrap/Col'
 import { useSWRConfig }  from 'swr'
 
 export const Roles = ({ ...props }) => {
-  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const [selectedRole, setSelectedRole] = useState();
-  const [ancestry, setAncestry] = useState([]);
-  const [folder, setFolder] = useState(false);
   const { mutate } = useSWRConfig()
   
 
-  const handleShowRoleDetails = (newEntryParent, ancestry, folder = false) => {
+  const handleShowRoleDetails = (role) => {
+    console.log('role', role)
     setExpanded(true);
-    if (folder) setFolder(true)
-    setAncestry(ancestry)
-    setSelectedRole(newEntryParent)
+    setSelectedRole(role)
   }
 
   const handleClose = async () => {
@@ -43,8 +39,8 @@ export const Roles = ({ ...props }) => {
               apiRoute={'roles'}
               selected={selectedRole ? selectedRole._id : undefined}
               setSelected={setSelectedRole}
-              handleShow={handleShowRoleDetails}
               handleClose={handleClose}
+              showDetails={handleShowRoleDetails}
             />
           </Col>
         </Row>
@@ -52,9 +48,6 @@ export const Roles = ({ ...props }) => {
             selectedRole ?
               <RoleDetails
                 expanded={expanded}
-                folder={folder}
-                ancestry={ancestry}
-                setFolder={setFolder}
                 role={selectedRole}
                 handleClose={handleClose}
               />

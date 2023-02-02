@@ -12,10 +12,13 @@ export const App = ({
   router,
   ...props
 }) => {
-  const { getAccessTokenSilently, isAuthenticated } = useAuth0();
+  const { getAccessTokenSilently, isAuthenticated, user } = useAuth0();
 
   const tokenPromise = useMemo(async () => getAccessTokenSilently(), []);
-  tokenPromise.then((token) => { localStorage.setItem('accessToken', token) });
+  tokenPromise.then((token) => { 
+    localStorage.setItem('accessToken', token) 
+    localStorage.setItem('alexandrie-auth/roles', user['alexandrie-auth/roles']) 
+  });
 
   return (
     isAuthenticated ? (

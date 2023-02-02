@@ -8,7 +8,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBooks, faHome, faGear, faBriefcase, faUsers, faUser, faAnglesLeft, faBookOpenCover } from '@fortawesome/pro-light-svg-icons';
+import { faGear, faBriefcase, faAnglesLeft, faBookOpenCover } from '@fortawesome/pro-light-svg-icons';
 import Button from 'react-bootstrap/Button'
 
 export const Sidebar = ({
@@ -25,8 +25,19 @@ export const Sidebar = ({
   return (
     <nav id='sidebar' className={`${expanded === true ? 'expanded' : 'collapsed'} bg-light px-2`}>
       <Row className='d-flex align-items-center institution-name' onClick={toggleExpanded}>
-        <Col className='col-9 ps-3 py-3'>
+        <Col className='col-3 ps-3 py-3'>
+          <img
+            src='./icmlogo.jpg'
+            width='40'
+            height='40'
+            className='d-inline-block align-top'
+            alt='React Bootstrap logo'
+          />
+          {/* <h3 className='text-deep-gray2 mb-0'>ICM</h3> */}
+        </Col>
+        <Col className='col-9 ps-3 py-3 sidebar-item-label'>
           <h3 className='text-deep-gray2 mb-0'>ICM</h3>
+          <small className='text-deep-gray2 mb-0'>Institut Cardio MTL</small>
         </Col>
       </Row>
       <Row>

@@ -2,6 +2,10 @@ import React, { useState } from 'react'
 
 import Button from 'react-bootstrap/Button'
 import Badge from 'react-bootstrap/Badge'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+
+import ExtraActions from './ExtraActions.js'
 import { useTranslation } from 'react-i18next'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -12,10 +16,10 @@ import { ICON_STATE, ThreeStateIcon } from '../ThreeStateIcon/ThreeStateIcon';
 
 export const FolderNode = ({
   apiRoute,
-  nodeSelectionMode,
+  selectMode,
   renderItemParams,
   offsetPerLevel,
-  handleShow,
+  showEntryDetails,
   inheritedClasses,
   onSelect,
   selected,
@@ -54,11 +58,6 @@ export const FolderNode = ({
     }
   };
 
-  const handleFolderClick = (e, createFolder) => {
-    // e.preventDefault();
-    handleShow(item.data, createFolder);
-  };
-
   const onClick = (e) => {
     if (e.type === 'click' && e.clientX !== 0 && e.clientY !== 0) {
       if(item.isExpanded) {
@@ -70,50 +69,56 @@ export const FolderNode = ({
   }
 
   return (
-    <div 
+    <Row 
       className={inheritedClasses}
       onClick={onClick}
     >
-      {nodeSelectionMode ? 
-        <span className='p-2' onClick={(e) => {
-          e.stopPropagation();
-          onSelect()
-        }}>
-          {
-              selected ? <FontAwesomeIcon icon={faSquareCheck} /> : <FontAwesomeIcon icon={faSquare} />
-          }
-        </span>
-        :<></>
-      }
+      <Col className='col-auto text-start'>
+        {selectMode ? 
+          <span className='p-2' onClick={(e) => {
+            e.stopPropagation();
+            onSelect()
+          }}>
+            {
+                selected ? <FontAwesomeIcon icon={faSquareCheck} /> : <FontAwesomeIcon icon={faSquare} />
+            }
+          </span>
+          :<></>
+        }
 
-      <span>{getIcon(item, onExpand, onCollapse)}</span>
+        <span>{getIcon(item, onExpand, onCollapse)}</span>
 
-      <FolderNodeAction
-        apiRoute={apiRoute}
-        actions= {['Show Politics']}
-        handleFolderClick={handleFolderClick}
-      />
+        <FolderNodeAction
+          apiRoute={apiRoute}
+          actions= {['Show Politics']}
+          item={item}
+          showEntryDetails={showEntryDetails}
+        />
 
+        <span className='text-black'>{item.data ? item.data.name : ''}</span>
+        
+        <Badge bg="canvas-gray text-primary ms-2">
+          {levelCategory}
+        </Badge>
 
-      <span className='text-black'>{item.data ? item.data.name : ''}</span>
-      
-      <Badge bg="canvas-gray text-primary ms-2">
-        {levelCategory}
-      </Badge>
+        {debug.showSO && item.data.sortOrder !== undefined ?
+          <Badge className='size-badge round' bg="deep-gray ms-2">{item.data.sortOrder}</Badge> :
+          <></>
+        }
+        {debug.showID ?
+          <Badge className='size-badge round' bg="deep-gray ms-2">{item.data._id}</Badge> :
+          <></>
+        }
+        {/* {item.children.length !== 0 ?
+          <Badge className='size-badge round' bg="deep-gray ms-2">{item.children.length}</Badge> :
+          <></>
+        } */}
+      </Col>
 
-      {debug.showSO && item.data.sortOrder !== undefined ?
-        <Badge className='size-badge round' bg="deep-gray ms-2">{item.data.sortOrder}</Badge> :
-        <></>
-      }
-      {debug.showID ?
-        <Badge className='size-badge round' bg="deep-gray ms-2">{item.data._id}</Badge> :
-        <></>
-      }
-      {/* {item.children.length !== 0 ?
-        <Badge className='size-badge round' bg="deep-gray ms-2">{item.children.length}</Badge> :
-        <></>
-      } */}
-    </div>
+      <Col className='manager-options col-auto pe-0 ms-auto'>
+        <ExtraActions item={item} showEntryDetails={showEntryDetails} />
+      </Col>
+    </Row>
   );
 }
 

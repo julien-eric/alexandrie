@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import Col from 'react-bootstrap/Col'
@@ -12,28 +12,38 @@ import { buildTokenInfo } from '../../../utils.js'
 import './AddEntry.scss'
 
 import { Slider } from '../Slider'
-import EntryBreadCrumb from './Breadcrumb'
-import FileUpload from '../../FileUpload/FileUpload.js';
+import EntryFile from '../../FileUpload/EntryFile.js';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMagnifyingGlass } from '@fortawesome/pro-light-svg-icons';
 
 import axios from 'axios'
 const poster = (url, body, token) => axios.post(url, body, buildTokenInfo(token)).then(res => res.data);
 
 export const AddEntry = ({
+  item,
   location,
   expanded,
+  setExpanded,
   folder,
-  handleClose,
+  setFolder,
   ancestry,  
+  setItemDetails,
+  treeSelectionMode,
+  setTreeSelectionMode,
   parent,
   ...props
 }) => {
   const { t } = useTranslation()
   const [tab, setTab] = useState(folder === true ? 'folder' : 'policy');
+  const [formData, setFormData] = useState({})
 
-  const [formData, setFormData] = useState({
-    name: '',
-    file: ''
-  })
+  useEffect(() => {
+    setFormData({
+      name: item !== undefined ? item.data.name : '',
+      file: item && item.data.files.length > 0 ? item.data.files[0] : ''
+    })
+  }, [item]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -42,35 +52,56 @@ export const AddEntry = ({
     const result = await poster('https://localhost:3000/entries', entry, localStorage.getItem('accessToken'));
     if(result._id) {handleClose()}
   };
+  
+  const handleClose = async () => {
+    // mutate([`https://localhost:3000/${apiRoute}?role=${role._id}`, localStorage.getItem('accessToken')], false)
+    setFolder(false);
+    setExpanded(false);
+    setItemDetails();
+    setFormData({
+      name: '',
+      file: ''
+    });
+
+  };
+
+  const toggleSelectionMode = () => {
+    setTreeSelectionMode(!treeSelectionMode);
+  }
 
   const disabled = !folder && (formData.name === '' || formData.file === '');
 
-  return (
-    <Slider expanded={expanded} handleClose={handleClose} title={'Ajouter une politique'}>
+  const title = item && item.data ? item.data.name : t('general:messages.add-policy');
 
-      <Row>
-        <Col>
-          <Nav
-            justify  
-            variant='pull'
-            defaultActiveKey={tab}
-            className='add-entry mb-3'
-            as="ul"
-            onSelect={(selectedKey) => {
-                setTab(selectedKey);
-                props.setFolder(selectedKey === 'folder');
+  return (
+    <Slider expanded={expanded} handleClose={handleClose} title={title}>
+
+      {
+        !item &&
+        <Row>
+          <Col>
+            <Nav
+              justify  
+              variant='pull'
+              defaultActiveKey={tab}
+              className='add-entry mb-3'
+              as="ul"
+              onSelect={(selectedKey) => {
+                  setTab(selectedKey);
+                  setFolder(selectedKey === 'folder');
+                }
               }
-            }
-          >
-            <Nav.Item as="li">
-              <Nav.Link eventKey="policy">Politique</Nav.Link>
-            </Nav.Item>
-            <Nav.Item as="li">
-              <Nav.Link eventKey="folder">Répertoire</Nav.Link>
-            </Nav.Item>
-          </Nav>
-        </Col>
-      </Row>
+            >
+              <Nav.Item as="li">
+                <Nav.Link eventKey="policy">{t('general:messages.policy')}</Nav.Link>
+              </Nav.Item>
+              <Nav.Item as="li">
+                <Nav.Link eventKey="folder">{t('general:messages.folder')}</Nav.Link>
+              </Nav.Item>
+            </Nav>
+          </Col>
+        </Row>
+      }
 
       <Row>
         <Col>
@@ -84,16 +115,21 @@ export const AddEntry = ({
                 value={formData.name}
                 onChange={(e) => setFormData({...formData, name: e.target.value})}
               />
-              <EntryBreadCrumb
-                folder={folder}
-                item={props.item}
-                ancestry={ancestry || []}
-                newPolicyName={formData.name}
-              />
             </Form.Group>
 
+            <Row className='mb-3'>
+              <div className='d-grid px-0 gap-2'>
+                <Form.Label className='ps-0 mb-0' htmlFor='inputPassword5'>{t('general:inputs.assign-folder.label')}</Form.Label>
+                <Button variant='deep-gray' size='md' className='' onClick={toggleSelectionMode}>
+                  <FontAwesomeIcon className='fa-fw me-1' icon={faMagnifyingGlass} />
+                  {t('general:inputs.assign-folder.placeholder')}
+                </Button>  
+              </div>
+            </Row>
+
+
             {!folder && 
-              <FileUpload
+              <EntryFile 
                 formData={formData}
                 setFormData={setFormData}
               />

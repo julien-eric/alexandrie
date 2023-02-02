@@ -30,11 +30,11 @@ export const TreeStructure = ({
   router,
 
   apiRoute,
-  nodeSelectionMode,
-  handleShow,
+  selectMode,
+  foldersOnly,
   selected,
   setSelected,
-  changeSelection,
+  showDetails,
   ...props
 }) => {
 
@@ -44,7 +44,7 @@ export const TreeStructure = ({
   const [treeData, setTreeData] = useState();
   const [filter, setFilter] = useState('');
   const [readFilter, setReadFilter] = useState(ICON_STATE.ALL);
-  const [fetchPersonalPolicies, setFetchPersonalPolicies] = useState(nodeSelectionMode ? false : true);
+  const [fetchPersonalPolicies, setFetchPersonalPolicies] = useState(selectMode ? false : true);
   const { mutate } = useSWRConfig()
   const token = localStorage.getItem('accessToken');
   
@@ -177,10 +177,13 @@ export const TreeStructure = ({
     setSelected(newSelection);
     
   };
+
+
+
   if (error) return "An error has occurred.";
   if ((!error && !data) || !remoteTreeData) return "Loading...";
   const reducedTree = treeReducer(treeData, remoteTreeData, filter, readFilter);
-  console.log('readFilter', readFilter)
+
   return (
     <>
       <PDFViewer
@@ -194,7 +197,8 @@ export const TreeStructure = ({
         setFilter={setFilter}
         collapseAll={() => collapseExpandAll('collapse')}
         expandAll={() => collapseExpandAll('expand')}
-        nodeSelectionMode={nodeSelectionMode}
+        selectMode={selectMode}
+        showEntryDetails={showDetails}
         fetchPersonalPolicies={fetchPersonalPolicies}
         setFetchPersonalPolicies={setFetchPersonalPolicies}
         readFilter={readFilter}
@@ -211,11 +215,11 @@ export const TreeStructure = ({
         renderItem={(renderItemParams) => (
           <GenericNode
             apiRoute={apiRoute}
-            nodeSelectionMode={nodeSelectionMode}
+            selectMode={selectMode}
             renderItemParams={renderItemParams}
             offsetPerLevel={PADDING_PER_LEVEL}
             setFileSelection={setFileSelection}
-            handleShow={(item, folder) => handleShow(item, getAncestryArray(item._id, remoteTreeData), folder)}
+            showEntryDetails={showDetails}
             selected={selected}
             setSelected={setSelected}
             onSelect={onSelect}

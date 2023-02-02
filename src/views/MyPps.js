@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { App } from '../App'
 
 import Row from 'react-bootstrap/Row'
@@ -7,26 +7,31 @@ import Col from 'react-bootstrap/Col'
 import { AddEntry } from '../components/Sliders/AddEntry'
 import { PageHeader } from '../components/PageHeader'
 import { Tree } from '../components/TreeStructure'
-import { useSWRConfig }  from 'swr'
+// import { useSWRConfig }  from 'swr'
 
 export const MyPps = ({ ...props }) => {
-  const [expanded, setExpanded] = useState(false);
   const [selected, setSelected] = useState();
-  const [ancestry, setAncestry] = useState([]);
+  const [itemDetails, setItemDetails] = useState();
+
+  const [expanded, setExpanded] = useState(false);
   const [folder, setFolder] = useState(false);
-  const { mutate } = useSWRConfig()
 
-  const handleShowAddEntry = (newEntryParent, ancestry, folder = false) => {
+  const [treeSelectionMode, setTreeSelectionMode] = useState(false);
+
+  useEffect(() => {
+    document.title = 'Alexandrie';
+  }, []);
+  
+  const showEntryDetails = (item, edit, parent) => {
+    if(item) {
+      setSelected([item.data._id]);
+      setItemDetails(item);
+    } else {
+      setItemDetails(item);
+    }
     setExpanded(true);
-    if (folder) setFolder(true)
-    setAncestry(ancestry)
-    setSelected(newEntryParent._id)
   }
 
-  const handleClose = async () => {
-    await mutate('https://localhost:3000/entries');
-    setExpanded(false);
-  }
 
   return (
     <App router={props.router}>
@@ -37,20 +42,28 @@ export const MyPps = ({ ...props }) => {
             <PageHeader />
             <Tree 
               apiRoute={'entries'}
-              handleShow={handleShowAddEntry}
               selected={selected}
               setSelected={setSelected}
+              setExpanded={setExpanded}
+              showDetails={showEntryDetails}
+              selectMode={treeSelectionMode}
             />
           </Col>
         </Row>
 
-        <AddEntry
-          expanded={expanded}
-          folder={folder}
-          ancestry={ancestry}
-          setFolder={setFolder}
-          handleClose={handleClose}
-        />
+        {
+          expanded ?
+            <AddEntry
+              expanded={expanded}
+              setExpanded={setExpanded}
+              folder={folder}
+              setFolder={setFolder}
+              item={itemDetails}
+              setItemDetails={setItemDetails}
+              treeSelectionMode={treeSelectionMode}
+              setTreeSelectionMode={setTreeSelectionMode}
+            /> : <></>
+        }
       </div>
 
     </App>

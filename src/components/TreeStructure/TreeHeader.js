@@ -10,7 +10,7 @@ import Button from 'react-bootstrap/Button'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearch, faClose, faArrowsToDottedLine, faArrowsFromDottedLine, faUserCheck } from '@fortawesome/pro-light-svg-icons';
+import { faAdd, faSearch, faClose, faArrowsToDottedLine, faArrowsFromDottedLine, faUserCheck } from '@fortawesome/pro-light-svg-icons';
 import ReadFilter from './ReadFilter'
 
 export const TreeHeader = ({ 
@@ -21,7 +21,8 @@ export const TreeHeader = ({
   setReadFilter,
   collapseAll,
   expandAll,
-  nodeSelectionMode,
+  showEntryDetails,
+  selectMode,
   fetchPersonalPolicies,
   setFetchPersonalPolicies,
   ...props
@@ -39,7 +40,7 @@ export const TreeHeader = ({
   return (
     <Row className='mb-4'>
       {
-        apiRoute === 'entries' && !nodeSelectionMode ? 
+        apiRoute === 'entries' && !selectMode ? 
           <Button onClick={toggleShowUserPolicies} variant={fetchPersonalPolicies ? 'primary' : 'canvas-gray'} size='sm' className='col-auto px-3 ms-2 '>
             <FontAwesomeIcon className='fa-fw' icon={faUserCheck}/>
           </Button>
@@ -60,15 +61,19 @@ export const TreeHeader = ({
           </InputGroup>
         </div>
       </Form>
-        <ButtonGroup aria-label="Basic example" className='col-auto ps-1 pe-3'>
+        {/* <ButtonGroup aria-label="Basic example" className='col-auto ps-1 pe-3'>
           <Button onClick={collapseAll} variant='canvas-gray' size='sm' className='px-3'>
             <FontAwesomeIcon className='fa-fw' icon={faArrowsToDottedLine}/>
           </Button>
           <Button onClick={expandAll} variant='canvas-gray' size='sm' className='px-3'>
             <FontAwesomeIcon className='fa-fw' icon={faArrowsFromDottedLine}/>
           </Button>
-        </ButtonGroup>
-        <ReadFilter readFilter={readFilter} setReadFilter={setReadFilter} />
+        </ButtonGroup> */}
+        <ReadFilter readFilter={readFilter} setReadFilter={setReadFilter}  className='me-auto'/>
+        <Button variant='canvas-gray' size='sm' className='col-auto py-0 my-0 px-3 col-auto' onClick={() => showEntryDetails()}>
+          <FontAwesomeIcon className='fa-fw me-1' icon={faAdd} />
+          {t('general:messages.create')}
+        </Button>
     </Row>
   )
 }

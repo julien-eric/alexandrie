@@ -3,6 +3,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import './AuthLogin.scss';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Nav from 'react-bootstrap/Nav';
+import i18n from 'i18next'
 
 export const Profile = () => {
   const { loginWithRedirect } = useAuth0();
@@ -12,7 +13,17 @@ export const Profile = () => {
   if (isLoading) {
     return <div>Loading ...</div>;
   }
-
+  
+  const toggleLanguage = (languageCode) => {
+    let targetLanguage = 'fr';
+    if(localStorage.getItem('i18nextLng') === 'fr')
+      targetLanguage = 'en';
+    
+    i18n.changeLanguage(targetLanguage, (err, t) => {
+      if (err) return console.log('something went wrong loading', err);
+      t('key'); // -> same as i18next.t
+    });
+  }
   return (
     isAuthenticated ? (
       <>
@@ -21,7 +32,7 @@ export const Profile = () => {
         </Nav.Link>
         <NavDropdown title={user.name} id="basic-nav-dropdown">
           <NavDropdown.Item href="#">{user.email}</NavDropdown.Item>
-          <NavDropdown.Item href="#">Language</NavDropdown.Item>
+          <NavDropdown.Item href="#" onClick={toggleLanguage}>Language</NavDropdown.Item>
           <NavDropdown.Item href="#" onClick={() => logout({ returnTo: window.location.origin })}>Log Out</NavDropdown.Item>
         </NavDropdown>
       </>

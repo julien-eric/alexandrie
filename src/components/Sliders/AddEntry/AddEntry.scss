@@ -17,7 +17,7 @@
 
 .pdf-height {
   max-width: $lh-modal-width;
-  width: $lh-modal-width - 100px;
+  width: $lh-modal-width;
   margin: auto;
   transition-property: all;
   transition-duration: 0.7s;
@@ -26,6 +26,5 @@
 .reader-helper {
   position: fixed;
   top: 50px;
-  
-  right: calc((100% - #{$lh-modal-width})/2);
+  right: calc((90% - #{$lh-modal-width})/2);
 }

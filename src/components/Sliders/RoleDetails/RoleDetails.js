@@ -9,7 +9,6 @@ import Button from 'react-bootstrap/Button'
 import { buildTokenInfo } from '../../../utils.js'
 
 import { Slider } from '../Slider'
-import { LinkedRolesList } from '../RoleDetails'
 import useSWR, { useSWRConfig }  from 'swr'
 import { PolicySelection } from '../PolicySelection/PolicySelection'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -22,25 +21,21 @@ const poster = (url, body, token) => axios.post(url, body, buildTokenInfo(token)
 export const RoleDetails = ({
   location,
   expanded,
-  folder,
   handleClose,
-  ancestry,  
   role,
-  parent,
   ...props
 }) => {
   const { t } = useTranslation()
-  const [tab, setTab] = useState(folder === true ? 'folder' : 'policy');
   const [showPolicySelection, setShowPolicySelection] = useState(false);
   const token = localStorage.getItem('accessToken');
   const apiRoute = 'entries';
   const { mutate } = useSWRConfig()
 
   const [formData, setFormData] = useState({
-    name: ancestry[0] ? ancestry[0].data.name : ''
+    name: role && role.data ? role.data.name : ''
   })
 
-  const { data, error } = useSWR(token !== undefined ? [`https://localhost:3000/${apiRoute}?role=${role._id}`, token] : null, fetcher);
+  const { data, error } = useSWR(token !== undefined ? [`https://localhost:3000/${apiRoute}?role=${role.data._id}`, token] : null, fetcher);
 
   const reduceItems = (items, onlyIds) => {
     if(items['1']) delete items['1'];
@@ -99,12 +94,6 @@ export const RoleDetails = ({
           <Row className=''>
             <Col as={'div'} className='d-grid col-12'>
               <Form.Label className='ps-0' htmlFor='inputPassword5'>{t('general:messages.policies')}</Form.Label>
-              {/* {
-                data ?
-                <LinkedRolesList
-                  linkedPolicies={reduceItems(data.items, false)}
-                /> : <></>
-              } */}
               <Button variant='deep-gray' size='md' className='' onClick={() => setShowPolicySelection(true)}>
                 <FontAwesomeIcon className='fa-fw me-1' icon={faEye} />
                 {t('general:messages.display-policies')}
@@ -114,7 +103,7 @@ export const RoleDetails = ({
 
           <Row className='mt-5 justify-content-end'>
             <Col className='col-6 text-end me-0 pe-0'>
-              <Button variant='primary' type='submit' size='md' className='me-1 d-inline'>Confirmer</Button>
+              <Button variant='primary' type='submit' size='md' className='me-1 d-inline'>{t('general:messages.confirm')}</Button>
             </Col>
           </Row>
 

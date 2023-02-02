@@ -66,12 +66,12 @@ export const PolicySelection = ({
     <>
       <Modal show={show} onHide={handleClose} className='modal-bg policy-selection-modal'>
         <Modal.Header closeButton>
-         {t('general:headings.linking-policy-modal-header') + ' ' + role.name }
+         {t('general:headings.linking-policy-modal-header') + ' ' + role.data.name }
         </Modal.Header>
         <Modal.Body className=''>
           <Tree 
             apiRoute={'entries'}
-            nodeSelectionMode={role._id}
+            selectMode={true}
             setPdfFile={()=>{}} 
             handleShow={()=>{}}
             selected={selected}

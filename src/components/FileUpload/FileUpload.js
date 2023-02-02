@@ -2,14 +2,13 @@ import React , {useState} from 'react';
 import { CognitoIdentityClient } from '@aws-sdk/client-cognito-identity';
 import { fromCognitoIdentityPool } from '@aws-sdk/credential-provider-cognito-identity';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { useTranslation } from 'react-i18next'
 
 import Form from 'react-bootstrap/Form'
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 import InputGroup from 'react-bootstrap/InputGroup'
 import { ICON_STATE, ThreeStateIcon } from '../ThreeStateIcon/ThreeStateIcon';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-// import { FontAwesomeIcon } from '@fortawesome/fontawesome-svg-core'
 import { faCloudCheck, faSpinner, faCloudArrowUp } from '@fortawesome/pro-light-svg-icons'
 
 ///////////////////////
@@ -31,9 +30,11 @@ const albumBucketName = S3_BUCKET;
 export const FileUpload = ({
   formData,
   setFormData,
+  setComplete,
   ...props
 }) => {
 
+  const { t } = useTranslation()
   const [loading, setLoading] = useState(ICON_STATE.INITIAL);
 
   const handleFileInput = async (e) => {
@@ -63,6 +64,7 @@ export const FileUpload = ({
         if(data.$metadata.httpStatusCode === 200) {
           setFormData({...formData, file: file.name})
           setLoading(ICON_STATE.FINAL);
+          setComplete();
         }
       } catch (err) {
         return alert('There was an error uploading your photo: ', err.message);
@@ -74,7 +76,7 @@ export const FileUpload = ({
 
   return (<Form.Group as={Row} className='mb-3'>
           <Col className='px-0'>
-            <Form.Label htmlFor='inputPassword5'>Fichier</Form.Label>
+            <Form.Label htmlFor='inputPassword5'>{t('general:messages.upload-new-file')}</Form.Label>
             <div className='lh-group'>
               <InputGroup className="mb-3 lh-input-group">
                 <Form.Control
