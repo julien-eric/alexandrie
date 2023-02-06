@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, Link } from 'react-router-dom'
 import './Sidebar.scss'
@@ -15,15 +15,20 @@ export const Sidebar = ({
   ...props
 }) => {
   const { t } = useTranslation()
-  const [expanded, setExpanded] = useState(true);
+  const lsExpanded = JSON.parse(localStorage.getItem('sidebarExpanded'));
+  const [expanded, setExpanded] = useState(lsExpanded === null ? true : lsExpanded)
   const location = useLocation()
 
-  const toggleExpanded = () => {
-    setExpanded(!expanded);
+  useEffect(() => {
+    localStorage.setItem('sidebarExpanded', expanded);
+  }, [expanded])
+
+  const toggleExpanded = () => { 
+    setExpanded(!expanded)
   }
 
   return (
-    <nav id='sidebar' className={`${expanded === true ? 'expanded' : 'collapsed'} bg-light px-2`}>
+    <nav id='sidebar' className={`${expanded ? 'expanded' : 'collapsed'} bg-light px-2`}>
       <Row className='d-flex align-items-center institution-name' onClick={toggleExpanded}>
         <Col className='col-3 ps-3 py-3'>
           <img

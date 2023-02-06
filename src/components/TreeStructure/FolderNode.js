@@ -10,7 +10,8 @@ import { useTranslation } from 'react-i18next'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { FolderNodeAction } from './FolderNodeAction'
-import { faAngleDown, faAngleRight, faFolderClosed, faHyphen, faBriefcase, faSquareCheck, faSquare } from '@fortawesome/pro-light-svg-icons'
+import { faAngleDown, faAngleRight, faFolderClosed, faHyphen, faBriefcase, faSquare } from '@fortawesome/pro-light-svg-icons'
+import { faSquareCheck } from '@fortawesome/pro-solid-svg-icons'
 import { ICON_STATE, ThreeStateIcon } from '../ThreeStateIcon/ThreeStateIcon';
 
 
@@ -80,7 +81,7 @@ export const FolderNode = ({
             onSelect()
           }}>
             {
-                selected ? <FontAwesomeIcon icon={faSquareCheck} /> : <FontAwesomeIcon icon={faSquare} />
+                selected ? <FontAwesomeIcon className='text-primary' icon={faSquareCheck} /> : <FontAwesomeIcon icon={faSquare} />
             }
           </span>
           :<></>

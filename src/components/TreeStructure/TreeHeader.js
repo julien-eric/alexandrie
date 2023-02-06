@@ -22,6 +22,7 @@ export const TreeHeader = ({
   collapseAll,
   expandAll,
   showEntryDetails,
+  setSelected,
   selectMode,
   fetchPersonalPolicies,
   setFetchPersonalPolicies,
@@ -35,6 +36,11 @@ export const TreeHeader = ({
 
   const toggleShowUserPolicies = () => {
     setFetchPersonalPolicies(!fetchPersonalPolicies);
+  }
+
+  const onCreateEntry = () => {
+    setSelected([]);
+    showEntryDetails()
   }
 
   return (
@@ -70,7 +76,7 @@ export const TreeHeader = ({
           </Button>
         </ButtonGroup> */}
         <ReadFilter readFilter={readFilter} setReadFilter={setReadFilter}  className='me-auto'/>
-        <Button variant='canvas-gray' size='sm' className='col-auto py-0 my-0 px-3 col-auto' onClick={() => showEntryDetails()}>
+        <Button variant='canvas-gray' size='sm' className='col-auto py-0 my-0 px-3 col-auto' onClick={onCreateEntry}>
           <FontAwesomeIcon className='fa-fw me-1' icon={faAdd} />
           {t('general:messages.create')}
         </Button>

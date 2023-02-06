@@ -31,6 +31,7 @@ export const TreeStructure = ({
 
   apiRoute,
   selectMode,
+  noLeafNodes,
   foldersOnly,
   selected,
   setSelected,
@@ -198,6 +199,7 @@ export const TreeStructure = ({
         collapseAll={() => collapseExpandAll('collapse')}
         expandAll={() => collapseExpandAll('expand')}
         selectMode={selectMode}
+        setSelected={setSelected}
         showEntryDetails={showDetails}
         fetchPersonalPolicies={fetchPersonalPolicies}
         setFetchPersonalPolicies={setFetchPersonalPolicies}
