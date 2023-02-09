@@ -5,9 +5,8 @@ import { useLocation } from 'react-router-dom'
 
 import Row from 'react-bootstrap/Row'
 
-import Button from 'react-bootstrap/Button'
-
 export const PageHeader = ({
+  tempTitle,
   ...props
 }) => {
   const { t } = useTranslation();
@@ -18,7 +17,10 @@ export const PageHeader = ({
   return (
     <Row className='my-4'>
         <h2 className='col-auto text-black'>
-          {t(`general:headings.${title}`)}
+          {tempTitle ?
+            tempTitle :
+            t(`general:headings.${title}`)
+          }
         </h2>
     </Row>)
 }

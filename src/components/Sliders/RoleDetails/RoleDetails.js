@@ -58,7 +58,6 @@ export const RoleDetails = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
     let roleInfo = {...role, ...formData};
-    console.log('roleInfo', roleInfo)
     const result = await poster(`https://localhost:3000/roles/${roleInfo._id}`, { role: roleInfo }, localStorage.getItem('accessToken'));
     if(result._id) {handleClose()}
   };

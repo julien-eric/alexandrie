@@ -6,14 +6,14 @@ import { faPen, faTrash } from '@fortawesome/pro-light-svg-icons'
 
 export const ExtraActions = ({
   selected,
-  showEntryDetails,
+  showDetails,
   item,
   ...props
 }) => {
 
   const onEdit = (e) => {
     e.stopPropagation();
-    showEntryDetails(item);
+    showDetails(item);
   } 
  
   return (

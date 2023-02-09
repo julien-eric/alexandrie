@@ -9,7 +9,7 @@ export const GenericNode = ({
   renderItemParams,
   offsetPerLevel,
   setFileSelection,
-  showEntryDetails,
+  showDetails,
   ...props
 }) => {
 
@@ -38,7 +38,7 @@ export const GenericNode = ({
             renderItemParams={renderItemParams}
             offsetPerLevel={offsetPerLevel}
             setFileSelection={setFileSelection}
-            showEntryDetails={showEntryDetails}
+            showDetails={showDetails}
             onSelect={() => onSelect(item)}
             selected={selected && selected.indexOf(item.data._id) !== -1}
             debug={debug}
@@ -50,7 +50,7 @@ export const GenericNode = ({
             renderItemParams={renderItemParams}
             offsetPerLevel={offsetPerLevel}
             setFileSelection={setFileSelection}
-            showEntryDetails={showEntryDetails} 
+            showDetails={showDetails} 
             onSelect={() => onSelect(item)}
             selected={selected && selected.indexOf(item.data._id) !== -1}
             debug={debug}

@@ -20,7 +20,7 @@ export const FolderNode = ({
   selectMode,
   renderItemParams,
   offsetPerLevel,
-  showEntryDetails,
+  showDetails,
   inheritedClasses,
   onSelect,
   selected,
@@ -31,9 +31,9 @@ export const FolderNode = ({
   const { item, onExpand, onCollapse, provided } = renderItemParams;
 
   const folderCategory = (level) => {
-    if(level == 0) return 'Service';
-    if(level == 1) return 'Département';
-    if(level == 2) return 'Unité';
+    if(level === 0) return 'Service';
+    if(level === 1) return 'Département';
+    if(level === 2) return 'Unité';
     if(level === undefined) return undefined
   } 
   const levelCategory = folderCategory(provided.draggableProps.style.paddingLeft / offsetPerLevel);
@@ -93,7 +93,7 @@ export const FolderNode = ({
           apiRoute={apiRoute}
           actions= {['Show Politics']}
           item={item}
-          showEntryDetails={showEntryDetails}
+          showDetails={showDetails}
         />
 
         <span className='text-black'>{item.data ? item.data.name : ''}</span>
@@ -117,7 +117,7 @@ export const FolderNode = ({
       </Col>
 
       <Col className='manager-options col-auto pe-0 ms-auto'>
-        <ExtraActions item={item} showEntryDetails={showEntryDetails} />
+        <ExtraActions item={item} showDetails={showDetails} />
       </Col>
     </Row>
   );

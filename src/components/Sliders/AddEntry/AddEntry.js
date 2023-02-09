@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import Col from 'react-bootstrap/Col'
-import Row from 'react-bootstrap/Row'
-import Nav from 'react-bootstrap/Nav'
-import Form from 'react-bootstrap/Form'
+import { Nav, InputGroup, Form, Row, Col, Button } from 'react-bootstrap';
 
-import Button from 'react-bootstrap/Button'
 import { buildTokenInfo } from '../../../utils.js'
+import { useSWRConfig }  from 'swr'
 
 import './AddEntry.scss'
 
@@ -15,7 +12,8 @@ import { Slider } from '../Slider'
 import EntryFile from '../../FileUpload/EntryFile.js';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMagnifyingGlass } from '@fortawesome/pro-light-svg-icons';
+import { faFolder, faRepeat, faMagnifyingGlass, faCheck } from '@fortawesome/pro-light-svg-icons';
+import { ICON_STATE, ThreeStateIcon } from '../../ThreeStateIcon/ThreeStateIcon';
 
 import axios from 'axios'
 const poster = (url, body, token) => axios.post(url, body, buildTokenInfo(token)).then(res => res.data);
@@ -25,8 +23,8 @@ export const AddEntry = ({
   location,
   expanded,
   setExpanded,
-  folder,
-  setFolder,
+  isFolder,
+  setIsFolder,
   ancestry,  
   setItemDetails,
   treeSelectionMode,
@@ -35,32 +33,40 @@ export const AddEntry = ({
   ...props
 }) => {
   const { t } = useTranslation()
-  const [tab, setTab] = useState(folder === true ? 'folder' : 'policy');
+  const [tab, setTab] = useState(isFolder === true ? 'folder' : 'policy');
   const [formData, setFormData] = useState({})
+  const { mutate } = useSWRConfig();
 
   useEffect(() => {
     setFormData({
       name: item !== undefined ? item.data.name : '',
-      file: item && item.data.files.length > 0 ? item.data.files[0] : ''
+      file: item && item.data.files && item.data.files.length > 0 ? item.data.files[0] : '',
+      parent: parent && parent.data._id ? parent.data._id : undefined,
     })
-  }, [item]);
-
+  }, [item, parent]);
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let entry = {parent: ancestry[ancestry.length - 1].data._id, ...formData};
-    if(folder) entry.folder = true;
-    const result = await poster('https://localhost:3000/entries', entry, localStorage.getItem('accessToken'));
+    let entry = {...formData};
+    if(isFolder) entry.folder = true;
+    const entryId = item && item.data._id ? `/${item.data._id}` : ''
+    const result = await poster(`https://localhost:3000/entries${entryId}`, entry, localStorage.getItem('accessToken'));
     if(result._id) {handleClose()}
   };
   
   const handleClose = async () => {
-    // mutate([`https://localhost:3000/${apiRoute}?role=${role._id}`, localStorage.getItem('accessToken')], false)
-    setFolder(false);
+    // TODO : Tree should take in a url like https://localhost:3000/entries?user=true&folders=true, and parse the params from it. This would allow for
+    // mutating the right url.
+    mutate([`https://localhost:3000/entries`, localStorage.getItem('accessToken')], false)
+    mutate([`https://localhost:3000/entries?user=true`, localStorage.getItem('accessToken')], false)
+    setIsFolder(false);
     setExpanded(false);
     setItemDetails();
+    setTreeSelectionMode(false);
     setFormData({
       name: '',
-      file: ''
+      file: '',
+      parent: ''
     });
 
   };
@@ -69,13 +75,14 @@ export const AddEntry = ({
     setTreeSelectionMode(!treeSelectionMode);
   }
 
-  const disabled = !folder && (formData.name === '' || formData.file === '');
+  const disabled = (!isFolder && (formData.name === '' || formData.file === '')) || treeSelectionMode;
 
   const title = item && item.data ? item.data.name : t('general:messages.add-policy');
 
+  const iconState = !treeSelectionMode ? ICON_STATE.INITIAL : ICON_STATE.LOADING
+
   return (
     <Slider expanded={expanded} handleClose={handleClose} title={title}>
-
       {
         !item &&
         <Row>
@@ -88,7 +95,7 @@ export const AddEntry = ({
               as="ul"
               onSelect={(selectedKey) => {
                   setTab(selectedKey);
-                  setFolder(selectedKey === 'folder');
+                  setIsFolder(selectedKey === 'folder');
                 }
               }
             >
@@ -120,15 +127,24 @@ export const AddEntry = ({
             <Row className='mb-3'>
               <div className='d-grid px-0 gap-2'>
                 <Form.Label className='ps-0 mb-0' htmlFor='inputPassword5'>{t('general:inputs.assign-folder.label')}</Form.Label>
-                <Button variant='deep-gray' size='md' className='' onClick={toggleSelectionMode}>
-                  <FontAwesomeIcon className='fa-fw me-1' icon={faMagnifyingGlass} />
-                  {t('general:inputs.assign-folder.placeholder')}
-                </Button>  
+                <InputGroup className='px-0'>
+                  <InputGroup.Text id="basic-addon1"><FontAwesomeIcon className='fa-fw me-1' icon={faFolder} /></InputGroup.Text>
+                  <Form.Control
+                    type="text"
+                    placeholder={t('general:messages.file')}
+                    aria-label="Input group example"
+                    aria-describedby="btnGroupAddon2"
+                    value={parent && parent.data.name ? parent.data.name : t('general:inputs.assign-folder.placeholder')}
+                    onChange={()=>{}}
+                  />
+                  <Button onClick={toggleSelectionMode}>
+                    <ThreeStateIcon noSpin={true} icons={{ initial: faRepeat, loading: faCheck, final: faRepeat }} iconState={iconState} />
+                  </Button>
+                </InputGroup>
               </div>
             </Row>
 
-
-            {!folder && 
+            {!isFolder && 
               <EntryFile 
                 formData={formData}
                 setFormData={setFormData}
@@ -137,7 +153,9 @@ export const AddEntry = ({
 
             <Row className='mt-5 justify-content-end'>
               <Col className='col-6 text-end me-0 pe-0'>
-                <Button variant='primary' type='submit' size='md' disabled={disabled} className='me-1 d-inline'>Confirmer</Button>
+                <Button variant='primary' type='submit' size='md' disabled={disabled} className='me-1 d-inline'>
+                  {t('general:messages.confirm')}
+                </Button>
               </Col>
             </Row>
           </Form>

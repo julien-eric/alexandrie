@@ -11,27 +11,35 @@ import { Tree } from '../components/TreeStructure'
 
 export const MyPps = ({ ...props }) => {
   const [selected, setSelected] = useState();
+  const [parent, setParent] = useState();
   const [itemDetails, setItemDetails] = useState();
 
   const [expanded, setExpanded] = useState(false);
-  const [folder, setFolder] = useState(false);
+  const [isFolder, setIsFolder] = useState(false);
 
   const [treeSelectionMode, setTreeSelectionMode] = useState(false);
 
   useEffect(() => {
     document.title = 'Alexandrie';
   }, []);
-  
-  const showEntryDetails = (item, edit, parent) => {
+
+  useEffect(() => {
+    if(treeSelectionMode && parent)
+      setSelected([parent.data._id]) 
+  }, [treeSelectionMode, parent]);
+
+  const showEntryDetails = (item, parent) => {
     if(item) {
       setSelected([item.data._id]);
       setItemDetails(item);
     } else {
       setItemDetails(item);
     }
+    if(parent) {
+      setParent(parent)
+    }
     setExpanded(true);
   }
-
 
   return (
     <App router={props.router}>
@@ -39,14 +47,17 @@ export const MyPps = ({ ...props }) => {
       <div className='wrapper2'>
         <Row className='w-100 me-2'>
           <Col className='tree-root'>
-            <PageHeader />
+            <PageHeader tempTitle={treeSelectionMode && itemDetails ? itemDetails.data.name : ''}/>
             <Tree 
               apiRoute={'entries'}
               selected={selected}
               setSelected={setSelected}
               setExpanded={setExpanded}
+              setParent={setParent}
               showDetails={showEntryDetails}
+              singleSelect={treeSelectionMode}
               selectMode={treeSelectionMode}
+              foldersOnly={treeSelectionMode}
             />
           </Col>
         </Row>
@@ -54,14 +65,16 @@ export const MyPps = ({ ...props }) => {
         {
           expanded ?
             <AddEntry
+              apiRoute={'entries'}
               expanded={expanded}
               setExpanded={setExpanded}
-              folder={folder}
-              setFolder={setFolder}
+              isFolder={isFolder}
+              setIsFolder={setIsFolder}
               item={itemDetails}
               setItemDetails={setItemDetails}
               treeSelectionMode={treeSelectionMode}
               setTreeSelectionMode={setTreeSelectionMode}
+              parent={parent}
             /> : <></>
         }
       </div>

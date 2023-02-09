@@ -29,8 +29,6 @@ export const EntryFile = ({
     setEditingFile(ICON_STATE.INITIAL)
   };
 
-  console.log('formData.file', formData.file)
-  console.log('formData.file', formData.file === '')
   return (
     <>
     {
@@ -47,7 +45,7 @@ export const EntryFile = ({
             onChange={()=>{}}
           />
           <Button onClick={toggleEditingFileState}>
-            <ThreeStateIcon icons={{ initial: faRepeat, loading: faCaretUp, final: faRepeat }} iconState={editingFile} />
+            <ThreeStateIcon noSpin={true} icons={{ initial: faRepeat, loading: faCaretUp, final: faRepeat }} iconState={editingFile} />
           </Button>
         </InputGroup>
       </Row>

@@ -1,9 +1,7 @@
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Container from 'react-bootstrap/Container'
 import { useTranslation } from 'react-i18next'
-// import { faArrowUp, faArrowDown, faSeal } from '@fortawesome/pro-light-svg-icons'
 
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
@@ -14,6 +12,7 @@ import { buildTokenInfo } from '../../../utils.js'
 
 import './PolicySelection.scss'
 
+import useSWR, { useSWRConfig }  from 'swr'
 import axios from 'axios'
 const poster = (url, body, token) => axios.post(url, body, buildTokenInfo(token)).then(res => res.data);
 
@@ -28,14 +27,15 @@ export const PolicySelection = ({
   const [selected, setSelected] = useState(rolePolicies || []);
   const [newEntries, setNewEntries] = useState();
   const [changes, setChanges] = useState([]);
+  const { mutate } = useSWRConfig()
+
   const handleClose = () => {
     togglePolicySelection(false);
+    mutate([`https://localhost:3000/entries`, localStorage.getItem('accessToken')], false)
   }
 
-  const token = localStorage.getItem('accessToken');
-
   const applyNewPolicies = async (e) => {
-    const result = await poster('https://localhost:3000/roles', {role: role._id, addition: newEntries, entryIds: changes }, localStorage.getItem('accessToken'));
+    const result = await poster('https://localhost:3000/roles', {role: role.data._id, addition: newEntries, entryIds: changes }, localStorage.getItem('accessToken'));
     if(result.acknowledged) {
       handleClose();
     }
@@ -47,7 +47,7 @@ export const PolicySelection = ({
     } else {
 
       const newElements = selected.filter((entry) => {
-            return rolePolicies.indexOf(entry) === -1;
+        return rolePolicies.indexOf(entry) === -1;
       });
       if(newElements.length > 0) {
         setChanges(newElements);

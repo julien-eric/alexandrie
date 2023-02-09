@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 export const ThreeStateIcon = ({
   iconState,
   icons,
+  noSpin,
   ...props
 }) => {
 
@@ -15,7 +16,8 @@ export const ThreeStateIcon = ({
   }
 
   let classes = 'fa-fw';
-  classes += iconState === ICON_STATE.LOADING ? ' spinning' : '';
+  const spinning = noSpin ? '' : ' spinning'
+  classes += iconState === ICON_STATE.LOADING ? spinning : '';
   classes += iconState === ICON_STATE.ERROR ? ' text-danger' : '';
 
   return <FontAwesomeIcon className={classes} icon={getIcon()} />

@@ -14,7 +14,7 @@ import axios from 'axios'
 import useSWR, { useSWRConfig }  from 'swr'
 import { ICON_STATE } from './ReadFilter.js'
 
-import { treeReducer, getLineage, setCollapsed, getAncestryArray, generateNewSortOrder } from './tree-utils.js'
+import { treeReducer, getLineage, setCollapsed, generateNewSortOrder } from './tree-utils.js'
 
 import Tree, {
   mutateTree,
@@ -26,13 +26,25 @@ const PADDING_PER_LEVEL = 32;
 const fetcher = (url, token) => axios.get(url, buildTokenInfo(token)).then(res => res.data);
 const poster = (url, body, token) => axios.post(url, body, buildTokenInfo(token)).then(res => res.data);
 
+/**
+ * The tree component
+ * 
+ * @param {Object} apiRoute - entries or roles, this should evolve into a url pathname from which to parse some of the other params
+ * @param {Object} selectMode - The nodes are selectable (a checkbox appears to allow selection)
+ * @param {Object} foldersOnly - Only folder nodes are shown
+ * @param {Object} singleSelect - Only allow selecting one node
+ * @param {Object} selected - Array of IDs selected
+ * @param {Function} setSelected - Setter for selected
+ * @param {Function} showDetails - Function to run when a node is "opened"
+*/
 export const TreeStructure = ({
   router,
 
   apiRoute,
   selectMode,
-  noLeafNodes,
   foldersOnly,
+  singleSelect,
+  setParent,
   selected,
   setSelected,
   showDetails,
@@ -49,7 +61,11 @@ export const TreeStructure = ({
   const { mutate } = useSWRConfig()
   const token = localStorage.getItem('accessToken');
   
-  const fetchEntriesUrl = `https://localhost:3000/${apiRoute}${fetchPersonalPolicies ? '?user=true' : ''}`
+  let fetchEntriesUrl = `https://localhost:3000/${apiRoute}${fetchPersonalPolicies ? '?user=true' : ''}`
+  !fetchPersonalPolicies && foldersOnly ? fetchEntriesUrl += '?' : fetchEntriesUrl += '' 
+  fetchPersonalPolicies && foldersOnly ? fetchEntriesUrl += '&' : fetchEntriesUrl += '' 
+  foldersOnly ? fetchEntriesUrl += 'folders=true' : fetchEntriesUrl += ''
+
   const { data, error } = useSWR(token !== undefined ? [fetchEntriesUrl, token] : null, fetcher);
   
   useLayoutEffect(() => {
@@ -117,69 +133,91 @@ export const TreeStructure = ({
   };
 
   const onSelect = (item) => {
-    
-    const union = (array1, array2) => {
-      return Array.from(new Set(array1.concat(array2)));
-    }
 
-    const hasChildren = item.data.folder && item.data.children && item.data.children.length > 0;
-    let newSelection = [...selected];
+    if(singleSelect) {
 
-    if(hasChildren) {
+      if(foldersOnly){
+        setParent(selected === item.data._id ? [] : item);
+      }
+      setSelected(selected === item.data._id ? [] : item.data._id);
 
-      const selfIndex = selected.indexOf(item.data._id);
-      const selfSelected = selfIndex !== -1;
-      
-      const lineage = getLineage(item.data._id, treeData)
-      const allChildrenSelected = newSelection.length >0 && lineage.every((selectedItemId) => {
-        return newSelection.includes(selectedItemId);
-      });
-      const someChildrenSelected = !allChildrenSelected && lineage.some((selectedItemId) => {
-        return newSelection.includes(selectedItemId);
-      });
+    } else {
 
-      if(allChildrenSelected) {
-        if(selfSelected) {
-          newSelection = newSelection.filter((selectedItemId) => {
-            return !lineage.includes(selectedItemId);
-          });
-        } else {
-          newSelection = [...newSelection, item.data._id]
+      const union = (array1, array2) => {
+        return Array.from(new Set(array1.concat(array2)));
+      }
+  
+      const hasChildren = item.data.folder && item.data.children && item.data.children.length > 0;
+      let newSelection = [...selected];
+  
+      if(hasChildren) {
+  
+        const selfIndex = selected.indexOf(item.data._id);
+        const selfSelected = selfIndex !== -1;
+        
+        const lineage = getLineage(item.data._id, treeData)
+        const allChildrenSelected = newSelection.length >0 && lineage.every((selectedItemId) => {
+          return newSelection.includes(selectedItemId);
+        });
+        const someChildrenSelected = !allChildrenSelected && lineage.some((selectedItemId) => {
+          return newSelection.includes(selectedItemId);
+        });
+  
+        if(allChildrenSelected) {
+          if(selfSelected) {
+            newSelection = newSelection.filter((selectedItemId) => {
+              return !lineage.includes(selectedItemId);
+            });
+          } else {
+            newSelection = [...newSelection, item.data._id]
+          }
         }
-      }
-      
-      if(someChildrenSelected) {
-        newSelection = union(newSelection, lineage);
-      }
-
-      if(!someChildrenSelected) {
-        if(selfSelected) {
+        
+        if(someChildrenSelected) {
+          newSelection = union(newSelection, lineage);
+        }
+  
+        if(!someChildrenSelected) {
+          if(selfSelected) {
+            newSelection = newSelection.filter(selectedItemId =>
+              selectedItemId !== item.data._id
+            );
+          } else {
+            newSelection = [...lineage]
+          }
+        }
+  
+      } else {
+        
+        const itemIndex = newSelection.indexOf(item.data._id);
+        
+        if(itemIndex === -1) {
+          newSelection = [...newSelection, item.data._id]
+        } else {
           newSelection = newSelection.filter(selectedItemId =>
             selectedItemId !== item.data._id
           );
-        } else {
-          newSelection = [...lineage]
         }
       }
-
-    } else {
-      
-      const itemIndex = newSelection.indexOf(item.data._id);
-      
-      if(itemIndex === -1) {
-        newSelection = [...newSelection, item.data._id]
-      } else {
-        newSelection = newSelection.filter(selectedItemId =>
-          selectedItemId !== item.data._id
-        );
-      }
+  
+      setSelected(newSelection);
     }
-
-    setSelected(newSelection);
-    
   };
 
+  const showEntryDetails = (item) => {
 
+    if(!item) {
+      showDetails()
+      return
+    }
+
+    const parentId = item.data.parent
+    if(parentId && reducedTree.items[parentId]) {
+      showDetails(item, reducedTree.items[parentId])
+    } else {
+      showDetails(item)
+    }
+  }
 
   if (error) return "An error has occurred.";
   if ((!error && !data) || !remoteTreeData) return "Loading...";
@@ -200,7 +238,7 @@ export const TreeStructure = ({
         expandAll={() => collapseExpandAll('expand')}
         selectMode={selectMode}
         setSelected={setSelected}
-        showEntryDetails={showDetails}
+        showEntryDetails={showEntryDetails}
         fetchPersonalPolicies={fetchPersonalPolicies}
         setFetchPersonalPolicies={setFetchPersonalPolicies}
         readFilter={readFilter}
@@ -221,7 +259,7 @@ export const TreeStructure = ({
             renderItemParams={renderItemParams}
             offsetPerLevel={PADDING_PER_LEVEL}
             setFileSelection={setFileSelection}
-            showEntryDetails={showDetails}
+            showDetails={showEntryDetails}
             selected={selected}
             setSelected={setSelected}
             onSelect={onSelect}

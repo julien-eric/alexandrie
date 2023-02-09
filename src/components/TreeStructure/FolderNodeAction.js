@@ -10,7 +10,7 @@ import { faBuilding, faFolderClosed } from '@fortawesome/pro-light-svg-icons'
 export const FolderNodeAction = ({
   apiRoute,
   item,
-  showEntryDetails,
+  showDetails,
   ...props
 }) => {
   const { t } = useTranslation();
@@ -32,7 +32,7 @@ export const FolderNodeAction = ({
       {actions.map(
         (action, index) => {
           return(
-            <Dropdown.Item href="#" key={index} onClick={(e) => showEntryDetails(item)}>{t(`general:actions.${action}.short`)}</Dropdown.Item>
+            <Dropdown.Item href="#" key={index} onClick={(e) => showDetails(item)}>{t(`general:actions.${action}.short`)}</Dropdown.Item>
           )
         }
       )} 
