@@ -12,7 +12,7 @@ import { Slider } from '../Slider'
 import EntryFile from '../../FileUpload/EntryFile.js';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFolder, faRepeat, faMagnifyingGlass, faCheck } from '@fortawesome/pro-light-svg-icons';
+import { faFolder, faRepeat, faMagnifyingGlass, faX } from '@fortawesome/pro-light-svg-icons';
 import { ICON_STATE, ThreeStateIcon } from '../../ThreeStateIcon/ThreeStateIcon';
 
 import axios from 'axios'
@@ -138,7 +138,7 @@ export const AddEntry = ({
                     onChange={()=>{}}
                   />
                   <Button onClick={toggleSelectionMode}>
-                    <ThreeStateIcon noSpin={true} icons={{ initial: faRepeat, loading: faCheck, final: faRepeat }} iconState={iconState} />
+                    <ThreeStateIcon noSpin={true} icons={{ initial: faMagnifyingGlass, loading: faX, final: faRepeat }} iconState={iconState} />
                   </Button>
                 </InputGroup>
               </div>

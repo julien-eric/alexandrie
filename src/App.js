@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useAuth0 } from "@auth0/auth0-react";
 
 import './App.scss'
@@ -12,7 +12,8 @@ export const App = ({
   router,
   ...props
 }) => {
-  const { getAccessTokenSilently, isAuthenticated, user } = useAuth0();
+  let { loginWithRedirect, getAccessTokenSilently, isAuthenticated, isLoading, user } = useAuth0();
+  // isLoading = true;
 
   const tokenPromise = useMemo(async () => getAccessTokenSilently(), []);
   tokenPromise.then((token) => { 
@@ -20,8 +21,28 @@ export const App = ({
     localStorage.setItem('alexandrie-auth/roles', user['alexandrie-auth/roles']) 
   });
 
-  return (
-    isAuthenticated ? (
+  if(isLoading) {
+    return (
+      <div className='jumbotron vertical-center'>
+        <Container>
+          <div className='mx-auto d-block align-items-center zooming' style={{ width: '10rem' }}>
+            <img
+              className='shining'
+              src='/logo.svg'
+              alt='alex-logo'
+            />
+            <div className='mx-auto text-center'>
+              <h3 className='mt-2 logo-text'>ALEXANDRIE</h3>
+            </div>
+          </div>
+        </Container>
+      </div>
+    )
+  }
+
+
+  if (isAuthenticated) {
+    return (
       <>
         <Topbar />
         <div className='wrapper'>
@@ -31,10 +52,11 @@ export const App = ({
           </Container>
         </div>
       </>
-    ) : <>
-    <SplashPage/>
-    </>
-  )
+    );
+  } else {
+    loginWithRedirect();
+  }
+
 }
 
 export default App

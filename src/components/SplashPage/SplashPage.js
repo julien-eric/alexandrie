@@ -10,19 +10,26 @@ export const SplashPage = ({
   ...props
 }) => {
   const { loginWithRedirect } = useAuth0();
+
   return (
-    <Container>
-      <Card className='mt-5 m-auto splash-card' style={{ width: '18rem' }}>
-        <Card.Img variant="top" src="./logolh.png" />
-        <Card.Body>
-          <Card.Title>Alexandrie</Card.Title>
-          <Card.Text>
-            Centraliser vos ressources.
-          </Card.Text>
-          <Button size="md" variant="primary" onClick={() => loginWithRedirect()}>Login</Button>
-        </Card.Body>
-      </Card>
-    </Container>)
+    <div className='jumbotron vertical-center'>
+      <Container>
+        <Card className='mx-auto d-block align-items-center' style={{ width: '10rem' }}>
+          <img
+            // className='shining'
+            style={{ width: '4rem' }}
+            src='/logo.svg'
+            alt='alex-logo'
+          />
+          <div className='mx-auto text-center'>
+            <h3 className='mt-2 logo-text'>ALEXANDRIE</h3>
+          </div>
+          <Button size="sm" variant="primary" className='mx-auto text-center' onClick={() => loginWithRedirect()}>Login</Button>
+
+        </Card>
+      </Container>
+    </div>
+  )
 }
 
 export default SplashPage

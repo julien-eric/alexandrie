@@ -13,6 +13,45 @@
 
 @import "~bootstrap/scss/bootstrap";
 
+@keyframes shining-loop {
+  0% { opacity: 1; }
+  30% { opacity: 1; }
+  60% { opacity: 0.8; }
+  100% { opacity: 1; }
+}
+
+@keyframes zoom-in-out-loop {
+  0% { transform: scale(1, 1); }
+  50% { transform: scale(1.1, 1.1); }
+  100% { transform: scale(1, 1); }
+}
+
+
+.shining {
+  animation: shining-loop 600ms infinite;
+}
+
+.zooming {
+  animation: zoom-in-out-loop 600ms infinite;
+}
+
+.logo-text {
+  font-size: 1rem;
+}
+
+.jumbotron {
+  height:100%;
+  width:100%;
+}
+
+.vertical-center {
+  min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
+  min-height: 100vh; /* These two lines are counted as one :-)       */
+
+  display: flex;
+  align-items: center;
+}
+
 .wrapper {
   display: flex;
   width: 100%;
