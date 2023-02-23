@@ -7,6 +7,7 @@ import { faPen, faTrash } from '@fortawesome/pro-light-svg-icons'
 export const ExtraActions = ({
   selected,
   showDetails,
+  onDelete,
   item,
   ...props
 }) => {
@@ -15,7 +16,7 @@ export const ExtraActions = ({
     e.stopPropagation();
     showDetails(item);
   } 
- 
+
   return (
     <>
       <div className='d-inline folder-button caret-off'>
@@ -24,7 +25,10 @@ export const ExtraActions = ({
         </Button>
       </div>
       <div className='d-inline folder-button caret-off'>
-        <Button variant='link' size='sm'>
+        <Button variant='link' size='sm' onClick={(e)=>{
+          e.stopPropagation();
+          onDelete(item);
+        }}>
           <FontAwesomeIcon className='text-primary' icon={faTrash} />
         </Button>
       </div>

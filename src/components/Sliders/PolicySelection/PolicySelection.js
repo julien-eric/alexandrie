@@ -7,7 +7,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Button from 'react-bootstrap/Button';
 
-import { Tree } from '../../../components/TreeStructure'
+import { Tree } from '../../TreeStructure'
 import { buildTokenInfo } from '../../../utils.js'
 
 import './PolicySelection.scss'

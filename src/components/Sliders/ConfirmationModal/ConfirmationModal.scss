@@ -1,0 +1,11 @@
+@import '../../../variables';
+
+.confirmation-modal {
+  margin: auto;
+  transition-property: all;
+  transition-duration: 0.7s;
+  .modal-dialog {
+    max-width:400px;
+  }
+}
+

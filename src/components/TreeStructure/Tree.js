@@ -2,6 +2,7 @@ import React, { useEffect, useLayoutEffect, useState } from 'react'
 import './Tree.scss'
 
 import { PDFViewer } from '../../components/Sliders/PDFViewer'
+import { ConfirmationModal } from '../../components/Sliders/ConfirmationModal'
 
 import { GenericNode } from './GenericNode'
 import { useTranslation } from 'react-i18next'
@@ -54,19 +55,26 @@ export const TreeStructure = ({
   const { t } = useTranslation()
   const [remoteTreeData, setRemoteTreeData] = useState();
   const [fileSelection, setFileSelection] = useState({});
+  const [confimationModal, setConfirmationModal] = useState(false);
   const [treeData, setTreeData] = useState();
   const [filter, setFilter] = useState('');
+  const [itemToDelete, setItemToDelete] = useState('');
   const [readFilter, setReadFilter] = useState(ICON_STATE.ALL);
   const [fetchPersonalPolicies, setFetchPersonalPolicies] = useState(selectMode ? false : true);
   const { mutate } = useSWRConfig()
   const token = localStorage.getItem('accessToken');
   
-  let fetchEntriesUrl = `https://localhost:3000/${apiRoute}${fetchPersonalPolicies ? '?user=true' : ''}`
-  !fetchPersonalPolicies && foldersOnly ? fetchEntriesUrl += '?' : fetchEntriesUrl += '' 
-  fetchPersonalPolicies && foldersOnly ? fetchEntriesUrl += '&' : fetchEntriesUrl += '' 
-  foldersOnly ? fetchEntriesUrl += 'folders=true' : fetchEntriesUrl += ''
+  const getUrl = () => {
+    const url = new URL(`https://localhost:3000/${apiRoute}`)
+    const params = new URLSearchParams()
+    params.append('user', fetchPersonalPolicies)
+    params.append('foldersOnly', foldersOnly)
+    return `${url.toString()}?${params.toString()}`
+  }
 
-  const { data, error } = useSWR(token !== undefined ? [fetchEntriesUrl, token] : null, fetcher);
+  const treeUrl = getUrl();
+
+  const { data, error } = useSWR(token !== undefined ? [treeUrl, token] : null, fetcher);
   
   useLayoutEffect(() => {
     setRemoteTreeData(data);
@@ -102,21 +110,18 @@ export const TreeStructure = ({
     const draggedEntryId = remoteTreeData.items[source.parentId].children[source.index];
     const newSortOrder = generateNewSortOrder(remoteTreeData, source, destination);
     const newTree = moveItemOnTree(treeReducer(treeData, remoteTreeData, undefined, undefined, true), source, destination); 
+
     //SEEMS GOOD WHEN NEW-SO IS LOWER THAN AFTER --- DISCREPANCY BETWEEN LIBRARY INDEXING AND BE RESORTING
     // Fixes sortOrder for dragged item
     newTree.items[draggedEntryId] = {...newTree.items[draggedEntryId], data:{ ...newTree.items[draggedEntryId].data, sortOrder: newSortOrder}}
     
     // Fixes children order in parent item
     newTree.items[destination.parentId] = {...newTree.items[destination.parentId], data:{ ...newTree.items[destination.parentId].data, children: newTree.items[destination.parentId].children}}
-    // newTree.items[destination.parentId] = {...newTree.items[destination.parentId], children: newTree.items[destination.parentId].data.children}
-
-    // setTreeData(newTree)
-    // setRemoteTreeData(newTree)
 
     let changeParams = {_id: draggedEntryId, sortOrder: newSortOrder};
     if ( source.parentId !== destination.parentId ) changeParams.parent = destination.parentId;
 
-    await mutate([`https://localhost:3000/${apiRoute}`, token], newTree, false)
+    await mutate([treeUrl, token], newTree, false)
     const getResult = async (results) => {
       //A Post request to update one item shouldn't return the complete list no?
       //So what is the best practice for that update to return the list?
@@ -126,7 +131,7 @@ export const TreeStructure = ({
     }
     const options = { rollbackOnError: true }
     try {
-      mutate([`https://localhost:3000/${apiRoute}`, token], getResult, options)
+      mutate([treeUrl, token], getResult, options)
     } catch (error) {
       console.log('error', error);
     }
@@ -219,12 +224,40 @@ export const TreeStructure = ({
     }
   }
 
+  const onDelete = async (item) => {
+    setConfirmationModal(true)
+    setItemToDelete(item)
+  }
+
+  const deleteEntry = async (item) => {
+
+    if(item.data.folder) {
+      //Recursive Delete with prompt to confirm impact on child nodes
+      alert('Folder Delete not implemented')
+    } else {
+      const result = await poster(`https://localhost:3000/entries/delete/${item.data._id}`, {}, token);
+      if(result) {
+        if(result.status === 404) {
+          alert('There was an error deleting the file')
+        } else if(result._id) {
+          await mutate([treeUrl, token], false)
+          setConfirmationModal(false)
+        }
+      }
+    }
+  }
+
   if (error) return "An error has occurred.";
   if ((!error && !data) || !remoteTreeData) return "Loading...";
   const reducedTree = treeReducer(treeData, remoteTreeData, filter, readFilter);
 
   return (
     <>
+      <ConfirmationModal 
+        show={confimationModal}
+        setConfirmationModal={setConfirmationModal}
+        confirmCallback={() => deleteEntry(itemToDelete)}
+      />
       <PDFViewer
         show={!!fileSelection.pdfFile}
         setFileSelection={setFileSelection}
@@ -260,6 +293,7 @@ export const TreeStructure = ({
             offsetPerLevel={PADDING_PER_LEVEL}
             setFileSelection={setFileSelection}
             showDetails={showEntryDetails}
+            onDelete={onDelete}
             selected={selected}
             setSelected={setSelected}
             onSelect={onSelect}

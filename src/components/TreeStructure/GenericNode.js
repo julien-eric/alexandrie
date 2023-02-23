@@ -10,13 +10,14 @@ export const GenericNode = ({
   offsetPerLevel,
   setFileSelection,
   showDetails,
+  onDelete,
   ...props
 }) => {
 
   // Switch to debug
   const debug = {
     showID: false,
-    showSO: true 
+    showSO: false 
   }
 
   const { item, provided, snapshot } = renderItemParams;
@@ -46,11 +47,12 @@ export const GenericNode = ({
           <LeafNode
             apiRoute={apiRoute}
             selectMode={selectMode}
-            inheritedClasses={classes += ' leaf'} 
+            inheritedClasses={classes += ' leaf'}
             renderItemParams={renderItemParams}
             offsetPerLevel={offsetPerLevel}
             setFileSelection={setFileSelection}
             showDetails={showDetails} 
+            onDelete={onDelete} 
             onSelect={() => onSelect(item)}
             selected={selected && selected.indexOf(item.data._id) !== -1}
             debug={debug}

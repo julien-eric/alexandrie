@@ -21,6 +21,7 @@ export const LeafNode = ({
   renderItemParams,
   setFileSelection,
   showDetails,
+  onDelete,
   inheritedClasses,
   onSelect,
   debug,
@@ -83,7 +84,11 @@ export const LeafNode = ({
       </Col>
 
       <Col className='manager-options col-auto pe-0 ms-auto'>
-        <ExtraActions item={item} showDetails={() => showDetails(item)} />
+        <ExtraActions
+          item={item}
+          showDetails={() => showDetails(item)} 
+          onDelete={onDelete} 
+        />
       </Col>
     </Row>
   );

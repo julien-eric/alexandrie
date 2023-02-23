@@ -46,7 +46,10 @@ export const ReadFilter = ({
   return (
     <ButtonGroup aria-label="Basic example" className='col-auto ps-1 pe-3'>
       <Button onClick={onClick} variant={readFilter !==  ICON_STATE.ALL ? 'primary' : 'canvas-gray'} size='sm' className='px-3'>
-        <FontAwesomeIcon className={readFilter === ICON_STATE.ALL ? 'text-deep-gray' : ''} icon={getIcon()} />
+        <FontAwesomeIcon className={readFilter === ICON_STATE.ALL ? 'text-deep-gray me-2' : 'me-2'} icon={getIcon()} />
+        {readFilter === ICON_STATE.ALL ? t('general:messages.no-read-filter') : null}
+        {readFilter === ICON_STATE.UNREAD ? t('general:messages.unread-filter') : null}
+        {readFilter === ICON_STATE.READ ? t('general:messages.read-filter') : null}
       </Button>
     </ButtonGroup>
   )

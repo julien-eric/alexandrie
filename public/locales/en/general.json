@@ -21,9 +21,19 @@
     "policy" : "Policy",
     "folder" : "Folder",
     "file" : "File",
-    "upload-new-file" : "Upload New File"
+    "upload-new-file" : "Upload New File",
+    "my-policies" : "My Policies",
+    "all-policies" : "All",
+    "unread-filter" : "Unread",
+    "read-filter" : "Read",
+    "no-read-filter" : "All"
   },
   "actions": {
+    "confirmation": {
+      "title": "Confirmation",
+      "message": "Are you sure you want to delete this entry",
+      "action": "Confirm"
+    },
     "create-user": {
       "message": "User created",
       "error": "There was an error creating this user"

@@ -21,9 +21,19 @@
     "policy" : "Politique",
     "folder" : "Répertoire",
     "file" : "Fichier",
-    "upload-new-file" : "Téléverser un nouveau fichier"
+    "upload-new-file" : "Téléverser un nouveau fichier",
+    "my-policies" : "Mes politiques",
+    "all-policies" : " Toutes",
+    "unread-filter" : "Non lues",
+    "read-filter" : "Lues",
+    "no-read-filter" : "Toutes"
   },
   "actions": {
+    "confirmation": {
+      "title": "Confirmation",
+      "message": "Êtes-vous sûr de vouloir supprimer cette entrée",
+      "action": "Confirmer"    
+    },
     "create-user": {
       "message": "User created",
       "error": "There was an error creating this user"
