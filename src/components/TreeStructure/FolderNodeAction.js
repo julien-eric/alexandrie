@@ -21,6 +21,7 @@ export const FolderNodeAction = ({
 
   return (
     <DropdownButton
+      disabled
       variant="link"
       title={apiRoute === 'entries' ? <FontAwesomeIcon className='text-primary' icon={faFolderClosed} /> : <FontAwesomeIcon icon={faBuilding} />}
       size="sm"

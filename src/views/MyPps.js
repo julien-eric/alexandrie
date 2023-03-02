@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect } from 'react'
 import { App } from '../App'
 
 import Row from 'react-bootstrap/Row'
@@ -7,7 +7,6 @@ import Col from 'react-bootstrap/Col'
 import { AddEntry } from '../components/Sliders/AddEntry'
 import { PageHeader } from '../components/PageHeader'
 import { Tree } from '../components/TreeStructure'
-// import { useSWRConfig }  from 'swr'
 
 export const MyPps = ({ ...props }) => {
   const [selected, setSelected] = useState();
@@ -15,7 +14,6 @@ export const MyPps = ({ ...props }) => {
   const [itemDetails, setItemDetails] = useState();
 
   const [expanded, setExpanded] = useState(false);
-  const [isFolder, setIsFolder] = useState(false);
 
   const [treeSelectionMode, setTreeSelectionMode] = useState(false);
 
@@ -68,13 +66,12 @@ export const MyPps = ({ ...props }) => {
               apiRoute={'entries'}
               expanded={expanded}
               setExpanded={setExpanded}
-              isFolder={isFolder}
-              setIsFolder={setIsFolder}
               item={itemDetails}
               setItemDetails={setItemDetails}
               treeSelectionMode={treeSelectionMode}
               setTreeSelectionMode={setTreeSelectionMode}
               parent={parent}
+              setParent={setParent}
             /> : <></>
         }
       </div>

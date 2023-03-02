@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import Col from 'react-bootstrap/Col'
@@ -29,15 +29,21 @@ export const RoleDetails = ({
   const [showPolicySelection, setShowPolicySelection] = useState(false);
   const token = localStorage.getItem('accessToken');
   const apiRoute = 'entries';
+  const [formData, setFormData] = useState({})
+  
   const { mutate } = useSWRConfig()
 
-  const [formData, setFormData] = useState({
-    name: role && role.data ? role.data.name : ''
-  })
+  useEffect(() => {
+    setFormData({
+      name: role && role.data ? role.data.name : ''
+    })
+  }, [role]);
 
   const { data, error } = useSWR(token !== undefined ? [`https://localhost:3000/${apiRoute}?role=${role.data._id}`, token] : null, fetcher);
 
   const reduceItems = (items, onlyIds) => {
+    if(!items || items.length === 0)
+      return []
     if(items['1']) delete items['1'];
     const roleAffectedPolicies = [];
     for (const [id, entry] of Object.entries(items)) {

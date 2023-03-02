@@ -17,7 +17,6 @@ export const Roles = ({ ...props }) => {
   
 
   const handleShowRoleDetails = (role) => {
-    console.log('role', role)
     setExpanded(true);
     setSelectedRole(role)
   }
