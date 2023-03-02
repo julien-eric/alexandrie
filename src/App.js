@@ -6,14 +6,12 @@ import './App.scss'
 import { Topbar } from './components/Topbar'
 import { Sidebar } from './components/Sidebar'
 import Container from 'react-bootstrap/Container'
-import { SplashPage } from './components/SplashPage'
 
 export const App = ({
   router,
   ...props
 }) => {
   let { loginWithRedirect, getAccessTokenSilently, isAuthenticated, isLoading, user } = useAuth0();
-  // isLoading = true;
 
   const tokenPromise = useMemo(async () => getAccessTokenSilently(), []);
   tokenPromise.then((token) => { 

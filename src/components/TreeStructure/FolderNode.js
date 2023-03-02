@@ -116,9 +116,12 @@ export const FolderNode = ({
         } */}
       </Col>
 
-      <Col className='manager-options col-auto pe-0 ms-auto'>
-        <ExtraActions item={item} showDetails={showDetails} />
-      </Col>
+      {
+        localStorage.getItem('alexandrie-auth/roles') === 'Manager' && 
+        <Col className='manager-options col-auto pe-0 ms-auto'>
+          <ExtraActions item={item} showDetails={showDetails} />
+        </Col>
+      }
     </Row>
   );
 }

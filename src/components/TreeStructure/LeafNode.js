@@ -83,13 +83,17 @@ export const LeafNode = ({
         </span>
       </Col>
 
-      <Col className='manager-options col-auto pe-0 ms-auto'>
-        <ExtraActions
-          item={item}
-          showDetails={() => showDetails(item)} 
-          onDelete={onDelete} 
-        />
-      </Col>
+      {
+        localStorage.getItem('alexandrie-auth/roles') === 'Manager' && 
+        <Col className='manager-options col-auto pe-0 ms-auto'>
+          <ExtraActions
+            item={item}
+            showDetails={() => showDetails(item)} 
+            onDelete={onDelete} 
+          />
+        </Col>
+      }
+
     </Row>
   );
 }
