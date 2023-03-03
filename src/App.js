@@ -15,8 +15,8 @@ export const App = ({
 
   const tokenPromise = useMemo(async () => getAccessTokenSilently(), []);
   tokenPromise.then((token) => { 
-    localStorage.setItem('accessToken', token) 
-    localStorage.setItem('alexandrie-auth/roles', user['alexandrie-auth/roles']) 
+    localStorage.setItem('accessToken', token)
+    localStorage.setItem('alexandrie-auth/roles', user['alexandrie-auth/roles'])
   });
 
   if(isLoading) {

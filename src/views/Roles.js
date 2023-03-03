@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { App } from '../App'
-import { useTranslation } from 'react-i18next'
+import { useParams } from "react-router-dom";
 
 import { PageHeader } from '../components/PageHeader'
 import { Tree } from '../components/TreeStructure'
@@ -8,24 +8,23 @@ import { Tree } from '../components/TreeStructure'
 import { RoleDetails } from '../components/Sliders/RoleDetails'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+
+import { useNavigate } from 'react-router-dom';
 import { useSWRConfig }  from 'swr'
 
 export const Roles = ({ ...props }) => {
-  const [expanded, setExpanded] = useState(false);
-  const [selectedRole, setSelectedRole] = useState();
+  const navigate = useNavigate();
   const { mutate } = useSWRConfig()
+  const { roleId } = useParams();
   
-
   const handleShowRoleDetails = (role) => {
-    setExpanded(true);
-    setSelectedRole(role)
+    navigate(`/roles/${role.data._id}`)
   }
 
   const handleClose = async () => {
     await mutate('https://localhost:3000/roles');
-    setExpanded(false);
+    navigate('/roles')
   }
-
 
   return (
     <App router={props.router}>
@@ -36,18 +35,17 @@ export const Roles = ({ ...props }) => {
             <PageHeader />
             <Tree 
               apiRoute={'roles'}
-              selected={selectedRole ? selectedRole._id : undefined}
-              setSelected={setSelectedRole}
+              selected={roleId ? roleId : undefined}
+              setSelected={() => {}}
               handleClose={handleClose}
               showDetails={handleShowRoleDetails}
             />
           </Col>
         </Row>
           {
-            selectedRole ?
+            roleId ?
               <RoleDetails
-                expanded={expanded}
-                role={selectedRole}
+                roleId={roleId}
                 handleClose={handleClose}
               />
             : <></>

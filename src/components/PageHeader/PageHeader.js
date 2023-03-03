@@ -12,7 +12,8 @@ export const PageHeader = ({
   const { t } = useTranslation();
   const location = useLocation().pathname;
 
-  let title = location === '/' ? 'my-pps': location.substring(1);
+  const secondIndex = location.indexOf('/', 2) === -1 ? location.length : location.indexOf('/', 2);
+  let title = location === '/' ? 'my-pps': location.substring(location.indexOf('/')+1, secondIndex);
 
   return (
     <Row className='my-4'>

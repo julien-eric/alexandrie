@@ -26,6 +26,7 @@ ReactDOM.render(
       <Routes>
         <Route exact path='/' element={<MyPps/>} />
         <Route exact path='/roles' element={<Roles/>} />
+        <Route exact path='/roles/:roleId' element={<Roles/>} />
         <Route exact path='/login' element={<MyPps/>} />
       </Routes>
     </Router>

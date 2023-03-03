@@ -20,26 +20,46 @@ const poster = (url, body, token) => axios.post(url, body, buildTokenInfo(token)
 
 export const RoleDetails = ({
   location,
-  expanded,
   handleClose,
-  role,
+  roleId,
   ...props
 }) => {
   const { t } = useTranslation()
   const [showPolicySelection, setShowPolicySelection] = useState(false);
-  const token = localStorage.getItem('accessToken');
+  const [role, setRole] = useState();
   const apiRoute = 'entries';
   const [formData, setFormData] = useState({})
+  const token = localStorage.getItem('accessToken');
   
   const { mutate } = useSWRConfig()
 
-  useEffect(() => {
-    setFormData({
-      name: role && role.data ? role.data.name : ''
-    })
-  }, [role]);
+  const useRole = () => {
+    const { data, error } = useSWR(token !== undefined ? [`https://localhost:3000/roles/${roleId}`, token] : null, fetcher);
+    return { roleData: data, roleError: error }
+  }
 
-  const { data, error } = useSWR(token !== undefined ? [`https://localhost:3000/${apiRoute}?role=${role.data._id}`, token] : null, fetcher);
+  const useSubbedEntries = () => {
+    const { data, error } = useSWR(token !== undefined ? [`https://localhost:3000/entries?role=${roleId}`, token] : null, fetcher);
+    return { subbedEntries: data, subbedEntriesError: error }
+  }
+  
+  const { roleData, roleError } = useRole()
+  const { subbedEntries, subbedEntriesError } = useSubbedEntries()
+
+  useEffect(() => {
+    if(role) {
+      setFormData({
+        name: role && role.data ? role.data.name : ''
+      })
+    }
+  }, [role]);
+  
+  useEffect(() => {
+    if(roleData) {
+      setRole({id:roleData._id, data:roleData})
+    }
+  }, [roleData]);
+
 
   const reduceItems = (items, onlyIds) => {
     if(!items || items.length === 0)
@@ -63,8 +83,10 @@ export const RoleDetails = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let roleInfo = {...role, ...formData};
-    const result = await poster(`https://localhost:3000/roles/${roleInfo._id}`, { role: roleInfo }, localStorage.getItem('accessToken'));
+    let roleInfo = {
+      name: formData ? formData.name : role ? role.name : ''
+    };
+    const result = await poster(`https://localhost:3000/roles/${role.id}`, { role: roleInfo }, localStorage.getItem('accessToken'));
     if(result._id) {handleClose()}
   };
 
@@ -75,10 +97,10 @@ export const RoleDetails = ({
           show={!!showPolicySelection}
           togglePolicySelection={togglePolicySelection}
           role={role}
-          rolePolicies={reduceItems(data.items, true)}
+          rolePolicies={reduceItems(subbedEntries.items, true)}
         /> : <></>
       }
-      <Slider expanded={expanded} handleClose={handleClose} title={'Role Details'}>
+      <Slider expanded={!!roleId} handleClose={handleClose} title={'Role Details'}>
 
         <Form onSubmit={handleSubmit} >
           <Row>
