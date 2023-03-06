@@ -13,10 +13,12 @@ export const App = ({
 }) => {
   let { loginWithRedirect, getAccessTokenSilently, isAuthenticated, isLoading, user } = useAuth0();
 
-  const tokenPromise = useMemo(async () => getAccessTokenSilently(), []);
-  tokenPromise.then((token) => { 
+  const tokenPromise = getAccessTokenSilently();
+  tokenPromise.then((token) => {
     localStorage.setItem('accessToken', token)
     localStorage.setItem('alexandrie-auth/roles', user['alexandrie-auth/roles'])
+  }).catch((error) => {
+    console.log('Error fetching token or user', error)
   });
 
   if(isLoading) {
