@@ -61,6 +61,7 @@ export const AddEntry = ({
   const handleClose = async () => {
     mutate([`https://localhost:3000/entries`, localStorage.getItem('accessToken')], false)
     mutate([`https://localhost:3000/entries?user=true`, localStorage.getItem('accessToken')], false)
+    mutate([`https://localhost:3000/entries?user=true&foldersOnly=false`, localStorage.getItem('accessToken')], false)
     setIsFolder(false);
     setParent();
     setExpanded(false);

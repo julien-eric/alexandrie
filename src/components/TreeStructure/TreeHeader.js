@@ -26,6 +26,7 @@ export const TreeHeader = ({
   selectMode,
   fetchPersonalPolicies,
   setFetchPersonalPolicies,
+  onCreate,
   ...props
 }) => {
   const { t } = useTranslation()
@@ -38,9 +39,13 @@ export const TreeHeader = ({
     setFetchPersonalPolicies(!fetchPersonalPolicies);
   }
 
-  const onCreateEntry = () => {
-    setSelected([]);
-    showEntryDetails()
+  const onClickCreate = () => {
+    if(onCreate) {
+      onCreate()
+    } else {
+      setSelected([]);
+      showEntryDetails()
+    }
   }
 
   return (
@@ -68,19 +73,26 @@ export const TreeHeader = ({
           </InputGroup>
         </div>
       </Form>
-        <ButtonGroup aria-label="Basic example" className='col-auto ps-1 pe-3'>
-          <Button onClick={collapseAll} variant='canvas-gray' size='sm' className='px-3'>
-            <FontAwesomeIcon className='fa-fw' icon={faArrowsToDottedLine}/>
+        { apiRoute === 'entries' && !selectMode &&
+          <>
+            <ButtonGroup aria-label="Basic example" className='col-auto ps-1 pe-3'>
+              <Button onClick={collapseAll} variant='canvas-gray' size='sm' className='px-3'>
+                <FontAwesomeIcon className='fa-fw' icon={faArrowsToDottedLine}/>
+              </Button>
+              <Button onClick={expandAll} variant='canvas-gray' size='sm' className='px-3'>
+                <FontAwesomeIcon className='fa-fw' icon={faArrowsFromDottedLine}/>
+              </Button>
+            </ButtonGroup>
+            <ReadFilter readFilter={readFilter} setReadFilter={setReadFilter}  className='me-auto'/>
+          </>
+        }
+        {
+          !selectMode && 
+          <Button variant='canvas-gray' size='sm' className='col-auto py-0 my-0 px-3 col-auto' onClick={onClickCreate}>
+            <FontAwesomeIcon className='fa-fw me-1' icon={faAdd} />
+            {t('general:messages.create')}
           </Button>
-          <Button onClick={expandAll} variant='canvas-gray' size='sm' className='px-3'>
-            <FontAwesomeIcon className='fa-fw' icon={faArrowsFromDottedLine}/>
-          </Button>
-        </ButtonGroup>
-        <ReadFilter readFilter={readFilter} setReadFilter={setReadFilter}  className='me-auto'/>
-        <Button variant='canvas-gray' size='sm' className='col-auto py-0 my-0 px-3 col-auto' onClick={onCreateEntry}>
-          <FontAwesomeIcon className='fa-fw me-1' icon={faAdd} />
-          {t('general:messages.create')}
-        </Button>
+        }
     </Row>
   )
 }

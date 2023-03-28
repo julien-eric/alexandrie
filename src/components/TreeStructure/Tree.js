@@ -49,6 +49,7 @@ export const TreeStructure = ({
   selected,
   setSelected,
   showDetails,
+  onCreate,
   ...props
 }) => {
 
@@ -235,7 +236,7 @@ export const TreeStructure = ({
       //Recursive Delete with prompt to confirm impact on child nodes
       alert('Folder Delete not implemented')
     } else {
-      const result = await poster(`https://localhost:3000/entries/delete/${item.data._id}`, {}, token);
+      const result = await poster(`https://localhost:3000/${apiRoute}/delete/${item.data._id}`, {}, token);
       if(result) {
         if(result.status === 404) {
           alert('There was an error deleting the file')
@@ -276,6 +277,7 @@ export const TreeStructure = ({
         setFetchPersonalPolicies={setFetchPersonalPolicies}
         readFilter={readFilter}
         setReadFilter={setReadFilter}
+        onCreate={onCreate}
       />
       <Row className='mb-3'>
         <Col className='col-12'>

@@ -24,9 +24,9 @@ export const PolicySelection = ({
   ...props
 }) => {
   const { t } = useTranslation();
+  const [originalEntries, setOriginalEntries] = useState(rolePolicies || []);
   const [selected, setSelected] = useState(rolePolicies || []);
-  const [newEntries, setNewEntries] = useState();
-  const [changes, setChanges] = useState([]);
+  const [changeCount, setChangeCount] = useState([]);
   const { mutate } = useSWRConfig()
 
   const handleClose = () => {
@@ -35,38 +35,31 @@ export const PolicySelection = ({
   }
 
   const applyNewPolicies = async (e) => {
-    const result = await poster('https://localhost:3000/roles', {role: role.data._id, addition: newEntries, entryIds: changes }, localStorage.getItem('accessToken'));
+    const result = await poster(`https://localhost:3000/roles/${role.id}/entries`, {entryIds: selected }, localStorage.getItem('accessToken'));
     if(result.acknowledged) {
       handleClose();
     }
   }
 
   useEffect(() => {
-    if(rolePolicies === selected) {
-      setChanges([])
+    if(originalEntries === selected) {
+      setChangeCount(0)
     } else {
-
       const newElements = selected.filter((entry) => {
-        return rolePolicies.indexOf(entry) === -1;
+        return originalEntries.indexOf(entry) === -1;
       });
-      if(newElements.length > 0) {
-        setChanges(newElements);
-        setNewEntries(true);
-      } else {
-        const removedElements = rolePolicies.filter((entry) => {
-          return selected.indexOf(entry) === -1;
-        });
-        setChanges(removedElements);
-        setNewEntries(false);
-      }
+      const removedElements = originalEntries.filter((entry) => {
+        return selected.indexOf(entry) === -1;
+      });
+      setChangeCount(newElements.length + removedElements.length);
     }
-  }, [selected]);
+  }, [selected, originalEntries]);
 
   return (
     <>
       <Modal show={show} onHide={handleClose} className='modal-bg policy-selection-modal'>
         <Modal.Header closeButton>
-         {t('general:headings.linking-policy-modal-header') + ' ' + role.data.name }
+         {t('general:headings.linking-policy-modal-header') + ' ' + role && role ? role.data.name : '' }
         </Modal.Header>
         <Modal.Body className=''>
           <Tree 
@@ -83,8 +76,8 @@ export const PolicySelection = ({
             <Row className=''>
                 <Col className='col-9 d-flex justify-content-between align-items-center'>
                   {
-                    changes.length > 0 && 
-                    <span>{`${changes.length} ${t('general:messages.number-of-linked-policies')}`}</span>
+                    changeCount > 0 && 
+                    <span>{`${changeCount} ${t('general:messages.number-of-linked-policies')}`}</span>
                   }
                 </Col>
               <Col className='col-3 pe-0 d-flex justify-content-end'>

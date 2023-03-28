@@ -15,62 +15,25 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye } from '@fortawesome/pro-light-svg-icons';
 
 import axios from 'axios'
-const fetcher = (url, token) => axios.get(url, buildTokenInfo(token)).then(res => res.data);
 const poster = (url, body, token) => axios.post(url, body, buildTokenInfo(token)).then(res => res.data);
 
 export const RoleDetails = ({
   location,
   handleClose,
-  roleId,
+  handleSubmit,
+  role,
+  rolePolicies,
   ...props
 }) => {
   const { t } = useTranslation()
   const [showPolicySelection, setShowPolicySelection] = useState(false);
-  const [role, setRole] = useState();
   const apiRoute = 'entries';
-  const [formData, setFormData] = useState({})
+  const [formData, setFormData] = useState({
+    name: role && role.data ? role.data.name : ''
+  })
   const token = localStorage.getItem('accessToken');
   
   const { mutate } = useSWRConfig()
-
-  const useRole = () => {
-    const { data, error } = useSWR(token !== undefined ? [`https://localhost:3000/roles/${roleId}`, token] : null, fetcher);
-    return { roleData: data, roleError: error }
-  }
-
-  const useSubbedEntries = () => {
-    const { data, error } = useSWR(token !== undefined ? [`https://localhost:3000/entries?role=${roleId}`, token] : null, fetcher);
-    return { subbedEntries: data, subbedEntriesError: error }
-  }
-  
-  const { roleData, roleError } = useRole()
-  const { subbedEntries, subbedEntriesError } = useSubbedEntries()
-
-  useEffect(() => {
-    if(role) {
-      setFormData({
-        name: role && role.data ? role.data.name : ''
-      })
-    }
-  }, [role]);
-  
-  useEffect(() => {
-    if(roleData) {
-      setRole({id:roleData._id, data:roleData})
-    }
-  }, [roleData]);
-
-
-  const reduceItems = (items, onlyIds) => {
-    if(!items || items.length === 0)
-      return []
-    if(items['1']) delete items['1'];
-    const roleAffectedPolicies = [];
-    for (const [id, entry] of Object.entries(items)) {
-      roleAffectedPolicies.push(onlyIds ? entry.id : entry.data)
-    }
-    return roleAffectedPolicies;
-  }
 
   const togglePolicySelection = (show) => {
     if(show) {
@@ -81,13 +44,9 @@ export const RoleDetails = ({
     }
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    let roleInfo = {
-      name: formData ? formData.name : role ? role.name : ''
-    };
-    const result = await poster(`https://localhost:3000/roles/${role.id}`, { role: roleInfo }, localStorage.getItem('accessToken'));
-    if(result._id) {handleClose()}
+  const onSubmit = async (e) => {
+    e.preventDefault()
+    handleSubmit(formData)
   };
 
   return (
@@ -97,12 +56,12 @@ export const RoleDetails = ({
           show={!!showPolicySelection}
           togglePolicySelection={togglePolicySelection}
           role={role}
-          rolePolicies={reduceItems(subbedEntries.items, true)}
+          rolePolicies={rolePolicies}
         /> : <></>
       }
-      <Slider expanded={!!roleId} handleClose={handleClose} title={'Role Details'}>
+      <Slider expanded={true} handleClose={handleClose} title={'Role Details'}>
 
-        <Form onSubmit={handleSubmit} >
+        <Form onSubmit={onSubmit} >
           <Row>
             <Col>
               <Form.Group className='mb-3'>
