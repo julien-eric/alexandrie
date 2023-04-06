@@ -66,10 +66,14 @@ export const TreeStructure = ({
   
   const getUrl = () => {
     const url = new URL(`https://localhost:3000/${apiRoute}`)
-    const params = new URLSearchParams()
-    params.append('user', fetchPersonalPolicies)
-    params.append('foldersOnly', JSON.stringify(foldersOnly))
-    return `${url.toString()}?${params.toString()}`
+    let paramsUrl = ''
+    if(apiRoute === 'entries') {
+      const params = new URLSearchParams()
+      params.append('user', fetchPersonalPolicies)
+      params.append('foldersOnly', JSON.stringify(foldersOnly))
+      paramsUrl = '?' + params.toString()
+    }
+    return `${url.toString()}${paramsUrl}`
   }
 
   const treeUrl = getUrl();

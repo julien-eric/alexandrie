@@ -29,8 +29,8 @@ export const Roles = ({ ...props }) => {
   }
 
   const handleClose = async () => {
-    await mutate('https://localhost:3000/roles');
     navigate('/roles')
+    mutate([`https://localhost:3000/roles`, token], false)
   }
 
   const onCreate = async () => {
