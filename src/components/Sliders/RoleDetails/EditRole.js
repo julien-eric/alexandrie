@@ -12,6 +12,7 @@ export const EditRole = ({
   location,
   handleClose,
   roleId,
+  setConfirmDelete,
   creatingNewRole,
   ...props
 }) => {
@@ -72,6 +73,8 @@ export const EditRole = ({
         <RoleDetails
           role={role}
           handleClose={handleClose}
+          creatingNewRole={creatingNewRole}
+          setConfirmDelete={setConfirmDelete}
           rolePolicies={subbedEntries && reduceItems(subbedEntries.items, true)}
           handleSubmit={handleSubmit}
         />

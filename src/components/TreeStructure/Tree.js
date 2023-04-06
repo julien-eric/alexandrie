@@ -45,7 +45,6 @@ export const TreeStructure = ({
   selectMode,
   foldersOnly,
   singleSelect,
-  setParent,
   selected,
   setSelected,
   showDetails,
@@ -142,9 +141,6 @@ export const TreeStructure = ({
 
     if(singleSelect) {
 
-      if(foldersOnly){
-        setParent(selected === item.data._id ? [] : item);
-      }
       setSelected(selected === item.data._id ? [] : item.data._id);
 
     } else {

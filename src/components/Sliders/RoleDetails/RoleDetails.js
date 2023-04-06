@@ -18,11 +18,12 @@ import axios from 'axios'
 const poster = (url, body, token) => axios.post(url, body, buildTokenInfo(token)).then(res => res.data);
 
 export const RoleDetails = ({
-  location,
   handleClose,
   handleSubmit,
   role,
   rolePolicies,
+  creatingNewRole,
+  setConfirmDelete,
   ...props
 }) => {
   const { t } = useTranslation()
@@ -49,6 +50,14 @@ export const RoleDetails = ({
     handleSubmit(formData)
   };
 
+  const onClose = () => {
+    if(creatingNewRole.current !== '' && formData.name && formData.name !== '') {
+      setConfirmDelete(true)
+    } else {
+      handleClose()
+    }
+  }
+
   return (
     <>
       { showPolicySelection ? 
@@ -59,7 +68,7 @@ export const RoleDetails = ({
           rolePolicies={rolePolicies}
         /> : <></>
       }
-      <Slider expanded={true} handleClose={handleClose} title={'Role Details'}>
+      <Slider expanded={true} handleClose={onClose} title={'Role Details'}>
 
         <Form onSubmit={onSubmit} >
           <Row>

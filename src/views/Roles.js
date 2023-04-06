@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { App } from '../App'
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import { PageHeader } from '../components/PageHeader'
 import { Tree } from '../components/TreeStructure'
@@ -10,7 +10,6 @@ import { ConfirmationModal } from '../components/Sliders/ConfirmationModal'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
-import { useNavigate } from 'react-router-dom';
 import { useSWRConfig }  from 'swr'
 import { buildTokenInfo } from '../../src/utils.js'
 
@@ -30,12 +29,8 @@ export const Roles = ({ ...props }) => {
   }
 
   const handleClose = async () => {
-    if(newRoleId.current) {
-      setConfirmDelete(true)
-    } else {
-      await mutate('https://localhost:3000/roles');
-      navigate('/roles')
-    }
+    await mutate('https://localhost:3000/roles');
+    navigate('/roles')
   }
 
   const onCreate = async () => {
@@ -87,6 +82,7 @@ export const Roles = ({ ...props }) => {
                 roleId={roleId}
                 handleClose={handleClose}
                 creatingNewRole={newRoleId}
+                setConfirmDelete={setConfirmDelete}
               />
             : <></>
           }

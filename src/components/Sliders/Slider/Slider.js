@@ -10,7 +10,7 @@ import Button from 'react-bootstrap/Button'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faX } from '@fortawesome/pro-light-svg-icons';
 
-export const AddEntry = ({
+export const EntryDetails = ({
   expanded,
   handleClose,
   title,
@@ -36,4 +36,4 @@ export const AddEntry = ({
     </div>)
 }
 
-export default AddEntry
+export default EntryDetails

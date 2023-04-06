@@ -1,58 +1,99 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { App } from '../App'
+import { useParams, useNavigate } from "react-router-dom";
 
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
-import { AddEntry } from '../components/Sliders/AddEntry'
+import { EditEntry } from '../components/Sliders/EntryDetails'
 import { PageHeader } from '../components/PageHeader'
 import { Tree } from '../components/TreeStructure'
+import { ConfirmationModal } from '../components/Sliders/ConfirmationModal'
+
+import { useSWRConfig }  from 'swr'
+import { buildTokenInfo } from '../../src/utils.js'
+
+import axios from 'axios'
+const poster = (url, body, token) => axios.post(url, body, buildTokenInfo(token)).then(res => res.data);
 
 export const MyPps = ({ ...props }) => {
+  const token = localStorage.getItem('accessToken');
   const [selected, setSelected] = useState();
-  const [parent, setParent] = useState();
-  const [itemDetails, setItemDetails] = useState();
-
-  const [expanded, setExpanded] = useState(false);
-
   const [treeSelectionMode, setTreeSelectionMode] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const newEntryId = useRef('');
+  const newParentId = useRef('');
+
+  const navigate = useNavigate();
+  const { mutate } = useSWRConfig()
+  
+  const { entryId } = useParams();
 
   useEffect(() => {
     document.title = 'Alexandrie';
   }, []);
 
-  useEffect(() => {
-    if(treeSelectionMode && parent)
-      setSelected([parent.data._id]) 
-  }, [treeSelectionMode, parent]);
+  const handleShowRoleDetails = (entry) => {
+    navigate(`/entries/${entry.data._id}`)
+  }
 
-  const showEntryDetails = (item, parent) => {
-    if(item) {
-      setSelected([item.data._id]);
-      setItemDetails(item);
+  const handleClose = async () => {
+    mutate([`https://localhost:3000/entries`, localStorage.getItem('accessToken')], false)
+    mutate([`https://localhost:3000/entries?user=true`, localStorage.getItem('accessToken')], false)
+    mutate([`https://localhost:3000/entries?user=true&foldersOnly=false`, localStorage.getItem('accessToken')], false)
+    if(newEntryId.current) {
+      setConfirmDelete(true)
     } else {
-      setItemDetails(item);
+      await mutate('https://localhost:3000/entries');
+      navigate('/')
     }
-    if(parent) {
-      setParent(parent)
+  }
+
+  const onSelect = async (entryId) => {
+    if(treeSelectionMode) {
+      newParentId.current = entryId
     }
-    setExpanded(true);
+    setSelected(entryId)
+  }
+
+  const onCreate = async () => {
+    const result = await poster(`https://localhost:3000/roles`, {}, token);
+    if(result && result._id) {
+      navigate(`/entries/${result._id}`)
+      newEntryId.current = result._id
+    }
+  }
+
+  const cancelCreation = async () => {
+    const result = await poster(`https://localhost:3000/roles/delete/${entryId}`, {}, token);
+    if(result) {
+      if(result.status === 404) {
+        alert('There was an error deleting the role')
+      } else if(result._id) {
+        // await mutate([treeUrl, token], false)
+        await setConfirmDelete(false)
+        newEntryId.current = ''
+        handleClose()
+      }
+    }
   }
 
   return (
     <App router={props.router}>
-
+      <ConfirmationModal 
+        show={confirmDelete}
+        setConfirmationModal={setConfirmDelete}
+        confirmCallback={cancelCreation}
+      />
       <div className='wrapper2'>
         <Row className='w-100 me-2'>
           <Col className='tree-root'>
-            <PageHeader tempTitle={treeSelectionMode && itemDetails ? itemDetails.data.name : ''}/>
+            <PageHeader tempTitle={treeSelectionMode}/>
             <Tree 
               apiRoute={'entries'}
               selected={selected}
-              setSelected={setSelected}
-              setExpanded={setExpanded}
-              setParent={setParent}
-              showDetails={showEntryDetails}
+              setSelected={onSelect}
+              showDetails={handleShowRoleDetails}
               singleSelect={treeSelectionMode}
               selectMode={treeSelectionMode}
               foldersOnly={treeSelectionMode}
@@ -61,17 +102,13 @@ export const MyPps = ({ ...props }) => {
         </Row>
 
         {
-          expanded ?
-            <AddEntry
-              apiRoute={'entries'}
-              expanded={expanded}
-              setExpanded={setExpanded}
-              item={itemDetails}
-              setItemDetails={setItemDetails}
+          entryId ?
+            <EditEntry
+              entryId={entryId}
               treeSelectionMode={treeSelectionMode}
               setTreeSelectionMode={setTreeSelectionMode}
-              parent={parent}
-              setParent={setParent}
+              newParentId={newParentId.current}
+              handleClose={handleClose}
             /> : <></>
         }
       </div>

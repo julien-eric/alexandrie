@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 
 import { InputGroup, Form, Row, Button } from 'react-bootstrap';
 
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFolder, faRepeat, faMagnifyingGlass, faX, faCheck } from '@fortawesome/pro-light-svg-icons';
 import { ICON_STATE, ThreeStateIcon } from '../../ThreeStateIcon/ThreeStateIcon';
@@ -17,7 +16,7 @@ export const ParentFolderSelection = ({
 }) => {
   const { t } = useTranslation()
   const iconState = !treeSelectionMode ? ICON_STATE.INITIAL : ICON_STATE.LOADING
-
+  console.log('parent', parent)
   return (
     <Row className='mb-3'>
       <div className='d-grid px-0 gap-2'>

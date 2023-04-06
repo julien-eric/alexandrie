@@ -6,7 +6,7 @@ import { Nav, Form, Row, Col, Button } from 'react-bootstrap';
 import { buildTokenInfo } from '../../../utils.js'
 import { useSWRConfig }  from 'swr'
 
-import './AddEntry.scss'
+import './EntryDetails.scss'
 
 import { Slider } from '../Slider'
 import EntryFile from '../../FileUpload/EntryFile.js';
@@ -15,65 +15,47 @@ import axios from 'axios'
 import ParentFolderSelection from './ParentFolderSelection.js';
 const poster = (url, body, token) => axios.post(url, body, buildTokenInfo(token)).then(res => res.data);
 
-export const AddEntry = ({
-  item,
-  location,
-  expanded,
-  setExpanded,
+export const EntryDetails = ({
+  entry,
   treeSelectionMode,
   setTreeSelectionMode,
   parent,
   setParent,
+  handleSubmit,
+  handleClose,
   ...props
 }) => {
   const { t } = useTranslation()
-  const [isFolder, setIsFolder] = useState();
+  const [isFolder, setIsFolder] = useState(entry && entry.data ? entry.data.folder : '');
   const [originalParent, setOriginalParent] = useState(parent);
   const [formData, setFormData] = useState({
-    _id: item && item.data ? item.data._id : '',
+    _id: entry && entry.data ? entry.data._id : '',
     file:'',
-    name: item && item.data ? item.data.name : '',
-    parent: item && item.data && item.data.parent ? item.data.parent : '',
+    name: entry && entry.data ? entry.data.name : '',
+    folder: isFolder,
+    parent: entry && entry.data && entry.data.parent ? entry.data.parent : '',
   })
   const { mutate } = useSWRConfig();
 
   useEffect(() => {
     setFormData({
       ...formData,
-      name: formData.name ? formData.name : item !== undefined ? item.data.name : '',
-      file: item && item.data.files && item.data.files.length > 0 ? item.data.files[0] : '',
+      name: formData.name ? formData.name : entry !== undefined ? entry.data.name : '',
+      folder: isFolder,
+      file: entry && entry.data.files && entry.data.files.length > 0 ? entry.data.files[0] : '',
       parent: parent && parent.data._id ? parent.data._id : undefined
     })
-  }, [parent, item]);
+  }, [parent, entry]);
 
   useEffect(() => {
-    setIsFolder(item && item.data && item.data.folder ? true : false)
-  }, [item]);
+    setIsFolder(entry && entry.data && entry.data.folder ? true : false)
+  }, [entry]);
   
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    let entry = {...formData};
-    if(isFolder) entry.folder = true;
-    const result = await poster(`https://localhost:3000/entries`, entry, localStorage.getItem('accessToken'));
-    if(result._id) {handleClose()}
+  const onSubmit = async (e) => {
+    e.preventDefault()
+    handleSubmit(formData)
   };
   
-  const handleClose = async () => {
-    mutate([`https://localhost:3000/entries`, localStorage.getItem('accessToken')], false)
-    mutate([`https://localhost:3000/entries?user=true`, localStorage.getItem('accessToken')], false)
-    mutate([`https://localhost:3000/entries?user=true&foldersOnly=false`, localStorage.getItem('accessToken')], false)
-    setIsFolder(false);
-    setParent();
-    setExpanded(false);
-    setTreeSelectionMode(false);
-    setFormData({
-      name: '',
-      file: '',
-      parent: ''
-    });
-
-  };
-
   const toggleSelectionMode = () => {
     setTreeSelectionMode(!treeSelectionMode);
     setOriginalParent(parent);
@@ -84,13 +66,13 @@ export const AddEntry = ({
     setTreeSelectionMode(!treeSelectionMode);
   }
 
-  const title = item && item.data ? item.data.name : 
+  const title = entry && entry.data ? entry.data.name : 
     isFolder ? t('general:messages.add-folder') : t('general:messages.add-policy');
 
   const disabled = (!isFolder && ((!formData.name || formData.name === '') || (!formData.file || formData.file === ''))) || treeSelectionMode;
 
   return (
-    <Slider expanded={expanded} handleClose={handleClose} title={title}>
+    <Slider expanded={true} handleClose={handleClose} title={title}>
       {
         <Row>
           <Col className='px-0'>
@@ -107,10 +89,10 @@ export const AddEntry = ({
               }
             >
               <Nav.Item as="li">
-                <Nav.Link disabled={!!item} eventKey="policy">{t('general:messages.policy')}</Nav.Link>
+                <Nav.Link disabled={!!entry} eventKey="policy">{t('general:messages.policy')}</Nav.Link>
               </Nav.Item>
               <Nav.Item as="li">
-                <Nav.Link disabled={!!item} eventKey="folder">{t('general:messages.folder')}</Nav.Link>
+                <Nav.Link disabled={!!entry} eventKey="folder">{t('general:messages.folder')}</Nav.Link>
               </Nav.Item>
             </Nav>
           </Col>
@@ -119,7 +101,7 @@ export const AddEntry = ({
 
       <Row>
         <Col>
-          <Form onSubmit={handleSubmit} >
+          <Form onSubmit={onSubmit} >
             <Form.Group as={Row} className='mb-3'>
               <Form.Label className='ps-0' htmlFor='title'>{t('general:inputs.policy-name.label')}</Form.Label>
               <Form.Control
@@ -158,4 +140,4 @@ export const AddEntry = ({
     </Slider>)
 }
 
-export default AddEntry
+export default EntryDetails
